@@ -1,9 +1,29 @@
 version: '3'
 
 services:
+  postgres-server:
+    image: postgres:17.4-alpine3.21
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_password
+      POSTGRES_DB: db_apex
   apex-server:
     build:
       context: .
     command: npm run start:dev
     ports:
-      - "4321:3000"
+      - "4000:3000"
+    volumes:
+      - ./src:/usr/app/src
+    depends_on:
+      - postgres-server
+    environment:
+      DB_HOST: postgres-server
+      DB_PORT: 5432
+      DB_USER: db_user
+      DB_PASS: db_password
+      DB_NAME: db_apex
