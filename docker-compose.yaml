@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  apex-server:
+    build:
+      context: .
+    command: npm run start:dev
+    ports:
+      - "4321:3000"
