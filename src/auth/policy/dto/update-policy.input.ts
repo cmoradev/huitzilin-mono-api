@@ -1,8 +1,8 @@
-import { CreatePolicyInput } from './create-policy.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, PartialType } from "@nestjs/graphql";
+import { CreatePolicyInput } from "./create-policy.input";
 
-@InputType()
+@InputType('UpdatePolicy')
 export class UpdatePolicyInput extends PartialType(CreatePolicyInput) {
-  @Field(() => Int)
-  id: number;
+  @Field(() => ID, { nullable: false })
+  id: string;
 }

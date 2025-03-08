@@ -16,7 +16,7 @@ export class PolicyService {
     return `This action returns a #${id} policy`;
   }
 
-  update(id: number, updatePolicyInput: UpdatePolicyInput) {
+  update(id: string, updatePolicyInput: UpdatePolicyInput) {
     return `This action updates a #${id} policy`;
   }
 

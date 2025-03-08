@@ -7,7 +7,7 @@ export class User extends Base {
   @Column({ type: 'varchar', nullable: false, length: 16, })
   username : string;
 
-  @Column({ type: 'varchar', nullable: false, length: 64, })
+  @Column({ type: 'varchar', nullable: false, length: 96, })
   password : Date;
 
   @ManyToMany(() => Policy, (policy) => policy.users)

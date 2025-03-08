@@ -1,7 +1,9 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
+import { MaxLength } from 'class-validator';
 
-@InputType()
+@InputType('CreatePolicy')
 export class CreatePolicyInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @MaxLength(32)
+  @Field(() => String, { nullable: false })
+  name: string;
 }

@@ -16,7 +16,7 @@ export class BranchService {
     return `This action returns a #${id} branch`;
   }
 
-  update(id: number, updateBranchInput: UpdateBranchInput) {
+  update(id: string, updateBranchInput: UpdateBranchInput) {
     return `This action updates a #${id} branch`;
   }
 

@@ -1,8 +1,8 @@
-import { CreateBranchInput } from './create-branch.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, PartialType } from "@nestjs/graphql";
+import { CreateBranchInput } from "./create-branch.input";
 
-@InputType()
+@InputType('UpdateBranch')
 export class UpdateBranchInput extends PartialType(CreateBranchInput) {
-  @Field(() => Int)
-  id: number;
+  @Field(() => ID, { nullable: false })
+  id: string;
 }

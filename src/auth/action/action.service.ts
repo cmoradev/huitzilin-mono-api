@@ -5,22 +5,22 @@ import { UpdateActionInput } from './dto/update-action.input';
 @Injectable()
 export class ActionService {
   create(createActionInput: CreateActionInput) {
-    return 'This action adds a new action';
+    return {};
   }
 
   findAll() {
-    return `This action returns all action`;
+    return {};
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} action`;
+    return {};
   }
 
-  update(id: number, updateActionInput: UpdateActionInput) {
-    return `This action updates a #${id} action`;
+  update(id: string, updateActionInput: UpdateActionInput) {
+    return {};
   }
 
   remove(id: number) {
-    return `This action removes a #${id} action`;
+    return {};
   }
 }

@@ -1,7 +1,10 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 
-@InputType()
+@InputType('CreateBranch')
 export class CreateBranchInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @Field(() => String, { nullable: false })
+  picture: string;
+
+  @Field(() => String, { nullable: false })
+  name: string;
 }

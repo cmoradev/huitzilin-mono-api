@@ -1,7 +1,13 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
+import { MaxLength } from 'class-validator';
 
-@InputType()
+@InputType('CreateUser')
 export class CreateUserInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @MaxLength(16)
+  @Field(() => String, { nullable: false })
+  username: string;
+
+  @MaxLength(32)
+  @Field(() => String, { nullable: false })
+  password: string;
 }
