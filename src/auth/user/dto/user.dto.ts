@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { MaxLength } from 'class-validator';
+import { IsUUID, MaxLength } from 'class-validator';
 import { BaseDto } from 'src/common/utils/base.dto';
 
 @ObjectType('User')
@@ -8,5 +8,10 @@ export class UserDto extends BaseDto {
   @Field(() => String, { nullable: false })
   username: string;
 
-//   policies: PolicyDto[];
+  @IsUUID()
+  @Field(() => String, { nullable: false })
+  branchId: string;
+
+  // branch: Branch;
+  // policies: PolicyDto[];
 }

@@ -1,4 +1,4 @@
-import { Action } from 'src/auth';
+import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
@@ -10,6 +10,9 @@ export class Branch extends Base {
   @Column({ type: 'varchar', nullable: false, length: 16 })
   name: string;
 
-  @OneToMany(() => Action, (action) => action.policy)
-  actions: Action[];
+  @OneToMany(() => Policy, (action) => action.branch)
+  policies: Policy[];
+
+  @OneToMany(() => User, (action) => action.branch)
+  users: User[];
 }

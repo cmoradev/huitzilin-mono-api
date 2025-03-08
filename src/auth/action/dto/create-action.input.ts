@@ -14,7 +14,4 @@ export class CreateActionInput {
 
   @Field(() => String, { nullable: false })
   policyId: string;
-
-  @Field(() => String, { nullable: false })
-  branchId: string;
 }

@@ -5,6 +5,8 @@ import { DatabaseModule } from './common/database/database.module';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AuthModule } from './auth/auth.module';
+import { CycleModule } from './school/cycle/cycle.module';
+import { CourseModule } from './school/course/course.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     DatabaseModule,
     AuthModule,
+    CycleModule,
+    CourseModule,
   ],
 })
 export class AppModule {}

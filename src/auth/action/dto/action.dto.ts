@@ -22,9 +22,4 @@ export class ActionDto extends BaseDto {
   policyId: string;
 
   // policy: PolicyDto;
-
-  @Field(() => String, { nullable: false })
-  branchId: string;
-
-  // branch: BranchDto;
 }
