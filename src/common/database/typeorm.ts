@@ -20,6 +20,7 @@ const entitiesDir = join(
   '..',
   '..',
   '**',
+  '**',
   'entities',
   '*.entity{.ts,.js}',
 );

@@ -1,8 +1,8 @@
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { ActionEffectEnum } from '../enums';
-import { Policy } from 'src/policy/entities/policy.entity';
-import { Branch } from 'src/branch/entities/branch.entity';
+import { Policy } from 'src/auth/policy/entities/policy.entity';
+import { Branch } from 'src/auth/branch/entities/branch.entity';
 
 @Entity({ schema: 'auth', name: 'actions' })
 export class Action extends Base {
