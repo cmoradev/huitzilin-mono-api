@@ -1,5 +1,5 @@
+import { Policy } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Policy } from 'src/auth/policy/entities/policy.entity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'users' })	

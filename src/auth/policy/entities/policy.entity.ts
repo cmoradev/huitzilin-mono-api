@@ -1,6 +1,5 @@
-import { Action } from 'src/action/entities/action.entity';
+import { Action, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { User } from 'src/auth/user/entities/user.entity';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'policies' })

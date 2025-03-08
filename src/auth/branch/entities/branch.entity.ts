@@ -1,4 +1,4 @@
-import { Action } from 'src/action/entities/action.entity';
+import { Action } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
