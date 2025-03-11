@@ -8,16 +8,15 @@ export class ActionDto extends BaseDto {
   @Field(() => ActionEffect, { nullable: false })
   effect: ActionEffect;
 
-  @IsUUID()
   @MaxLength(32)
   @Field(() => String, { nullable: false })
   action: string;
 
-  @IsUUID()
   @MaxLength(32)
   @Field(() => String, { nullable: false })
   route: string;
 
+  @IsUUID()
   @Field(() => String, { nullable: false })
   policyId: string;
 

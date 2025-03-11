@@ -1,5 +1,5 @@
 import { Base } from 'src/common/utils/base.entity';
-import { Fee } from 'src/school';
+import { Enrollment, Fee } from 'src/school';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 
 @Entity({ schema: 'school', name: 'courses' })
@@ -13,4 +13,7 @@ export class Course extends Base {
 
   @OneToMany(() => Fee, (action) => action.course, { cascade: ['insert'] })
   fees: Fee[];
+
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  enrollments: Enrollment[];
 }
