@@ -1,11 +1,9 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Migration1741741718257 implements MigrationInterface {
-    name = 'Migration1741741718257'
+export class Migration1741746563744 implements MigrationInterface {
+    name = 'Migration1741746563744'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE SCHEMA "school"`);
-        await queryRunner.query(`CREATE SCHEMA "auth"`);
         await queryRunner.query(`CREATE TABLE "school"."classroom" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "color" character varying(10) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_729f896c8b7b96ddf10c341e6ff" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_05ecd27a3b8b99c0f17166c4f1" ON "school"."classroom" ("branchId") `);
         await queryRunner.query(`CREATE TABLE "school"."courses" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_3f70a487cc718ad8eda4e6d58c9" PRIMARY KEY ("id"))`);
@@ -36,10 +34,10 @@ export class Migration1741741718257 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "auth"."actions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "effect" "auth"."actions_effect_enum" NOT NULL, "action" character varying(32) NOT NULL, "route" character varying(32) NOT NULL, "policyId" uuid NOT NULL, CONSTRAINT "PK_7bfb822f56be449c0b8adbf83cf" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_fd0976f6bbaaf7876f52f04b84" ON "auth"."actions" ("policyId") `);
         await queryRunner.query(`CREATE TABLE "auth"."branchs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "picture" character varying(128) NOT NULL, "name" character varying(16) NOT NULL, CONSTRAINT "PK_c2a14f542feef68e3968ce1766c" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "auth"."policies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_603e09f183df0108d8695c57e28" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE INDEX "IDX_5e234b497d27d66e987c2ee0b9" ON "auth"."policies" ("branchId") `);
         await queryRunner.query(`CREATE TABLE "auth"."users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "username" character varying(16) NOT NULL, "password" character varying(96) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_246426dfd001466a1d5e47322f" ON "auth"."users" ("branchId") `);
+        await queryRunner.query(`CREATE TABLE "auth"."policies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_603e09f183df0108d8695c57e28" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_5e234b497d27d66e987c2ee0b9" ON "auth"."policies" ("branchId") `);
         await queryRunner.query(`CREATE TABLE "school"."tutors_to_students" ("tutorsId" uuid NOT NULL, "studentsId" uuid NOT NULL, CONSTRAINT "PK_6042b49370f6bbac02d70abe76e" PRIMARY KEY ("tutorsId", "studentsId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_99c0bd83fb5c40abc7abd1a69d" ON "school"."tutors_to_students" ("tutorsId") `);
         await queryRunner.query(`CREATE INDEX "IDX_12275fa6fe1c99a4c2e19a771e" ON "school"."tutors_to_students" ("studentsId") `);
@@ -53,8 +51,8 @@ export class Migration1741741718257 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "school"."enrollments" ADD CONSTRAINT "FK_a766f2b4118abeedc8636ef567b" FOREIGN KEY ("classroomId") REFERENCES "school"."classroom"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "school"."fees" ADD CONSTRAINT "FK_20e5b5461f19083606077552b05" FOREIGN KEY ("courseId") REFERENCES "school"."courses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auth"."actions" ADD CONSTRAINT "FK_fd0976f6bbaaf7876f52f04b841" FOREIGN KEY ("policyId") REFERENCES "auth"."policies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auth"."policies" ADD CONSTRAINT "FK_5e234b497d27d66e987c2ee0b98" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auth"."users" ADD CONSTRAINT "FK_246426dfd001466a1d5e47322f4" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auth"."policies" ADD CONSTRAINT "FK_5e234b497d27d66e987c2ee0b98" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "school"."tutors_to_students" ADD CONSTRAINT "FK_99c0bd83fb5c40abc7abd1a69d2" FOREIGN KEY ("tutorsId") REFERENCES "school"."tutors"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "school"."tutors_to_students" ADD CONSTRAINT "FK_12275fa6fe1c99a4c2e19a771e1" FOREIGN KEY ("studentsId") REFERENCES "school"."students"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auth"."users_to_policies" ADD CONSTRAINT "FK_95261aae112877a8ee869ac3f4f" FOREIGN KEY ("usersId") REFERENCES "auth"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
@@ -66,8 +64,8 @@ export class Migration1741741718257 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "auth"."users_to_policies" DROP CONSTRAINT "FK_95261aae112877a8ee869ac3f4f"`);
         await queryRunner.query(`ALTER TABLE "school"."tutors_to_students" DROP CONSTRAINT "FK_12275fa6fe1c99a4c2e19a771e1"`);
         await queryRunner.query(`ALTER TABLE "school"."tutors_to_students" DROP CONSTRAINT "FK_99c0bd83fb5c40abc7abd1a69d2"`);
-        await queryRunner.query(`ALTER TABLE "auth"."users" DROP CONSTRAINT "FK_246426dfd001466a1d5e47322f4"`);
         await queryRunner.query(`ALTER TABLE "auth"."policies" DROP CONSTRAINT "FK_5e234b497d27d66e987c2ee0b98"`);
+        await queryRunner.query(`ALTER TABLE "auth"."users" DROP CONSTRAINT "FK_246426dfd001466a1d5e47322f4"`);
         await queryRunner.query(`ALTER TABLE "auth"."actions" DROP CONSTRAINT "FK_fd0976f6bbaaf7876f52f04b841"`);
         await queryRunner.query(`ALTER TABLE "school"."fees" DROP CONSTRAINT "FK_20e5b5461f19083606077552b05"`);
         await queryRunner.query(`ALTER TABLE "school"."enrollments" DROP CONSTRAINT "FK_a766f2b4118abeedc8636ef567b"`);
@@ -81,10 +79,10 @@ export class Migration1741741718257 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX "school"."IDX_12275fa6fe1c99a4c2e19a771e"`);
         await queryRunner.query(`DROP INDEX "school"."IDX_99c0bd83fb5c40abc7abd1a69d"`);
         await queryRunner.query(`DROP TABLE "school"."tutors_to_students"`);
-        await queryRunner.query(`DROP INDEX "auth"."IDX_246426dfd001466a1d5e47322f"`);
-        await queryRunner.query(`DROP TABLE "auth"."users"`);
         await queryRunner.query(`DROP INDEX "auth"."IDX_5e234b497d27d66e987c2ee0b9"`);
         await queryRunner.query(`DROP TABLE "auth"."policies"`);
+        await queryRunner.query(`DROP INDEX "auth"."IDX_246426dfd001466a1d5e47322f"`);
+        await queryRunner.query(`DROP TABLE "auth"."users"`);
         await queryRunner.query(`DROP TABLE "auth"."branchs"`);
         await queryRunner.query(`DROP INDEX "auth"."IDX_fd0976f6bbaaf7876f52f04b84"`);
         await queryRunner.query(`DROP TABLE "auth"."actions"`);
@@ -115,8 +113,6 @@ export class Migration1741741718257 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "school"."courses"`);
         await queryRunner.query(`DROP INDEX "school"."IDX_05ecd27a3b8b99c0f17166c4f1"`);
         await queryRunner.query(`DROP TABLE "school"."classroom"`);
-        await queryRunner.query(`DROP SCHEMA "auth"`);
-        await queryRunner.query(`DROP SCHEMA "school"`);
     }
 
 }
