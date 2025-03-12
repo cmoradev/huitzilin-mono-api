@@ -4,6 +4,10 @@ import { BaseDto } from 'src/common/utils/base.dto';
 
 @ObjectType('Student')
 export class StudentDto extends BaseDto {
+  @MaxLength(8)
+  @Field(() => String, { nullable: false })
+  code: string;
+
   @MaxLength(128)
   @Field(() => String, { nullable: false })
   picture: string;

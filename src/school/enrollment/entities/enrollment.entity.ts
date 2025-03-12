@@ -1,7 +1,14 @@
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { EnrollmentState } from '../enums';
-import { Classroom, Course, Cycle, Student } from 'src/school';
+import { Classroom, Course, Cycle, Debit, Student } from 'src/school';
 
 @Entity({ schema: 'school', name: 'enrollments' })
 export class Enrollment extends Base {
@@ -46,4 +53,7 @@ export class Enrollment extends Base {
   @ManyToOne(() => Classroom, (student) => student.enrollments)
   @JoinColumn({ name: 'classroomId' })
   classroom: Classroom;
+
+  @OneToMany(() => Debit, (debit) => debit.enrollment)
+  debts: Debit[];
 }
