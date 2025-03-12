@@ -1,7 +1,6 @@
 export { Classroom } from './classroom/entities/classroom.entity';
 export { Course } from './course/entities/course.entity';
 export { Cycle } from './cycle/entities/cycle.entity';
-export { Deal } from './deal/entities/deal.entity';
 export { Debit } from './debit/entities/debit.entity';
 export { Enrollment } from './enrollment/entities/enrollment.entity';
 export { Fee } from './fee/entities/fee.entity';
