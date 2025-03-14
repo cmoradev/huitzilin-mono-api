@@ -8,9 +8,9 @@ export class User extends Base {
   username: string;
 
   @Column({ type: 'varchar', nullable: false, length: 96 })
-  password: Date;
+  password: string;
 
-  @Column({ type: 'uuid', nullable: false })
+  @Column({ type: 'uuid', nullable: true })
   @Index()
   branchId: string;
 

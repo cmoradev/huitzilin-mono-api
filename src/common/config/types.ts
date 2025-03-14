@@ -1,4 +1,5 @@
 export type Config = {
+  secretKey: string;
   database: DatabaseEnvs;
 };
 

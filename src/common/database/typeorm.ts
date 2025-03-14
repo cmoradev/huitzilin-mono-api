@@ -1,7 +1,17 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
+import * as joi from 'joi';
 import { join } from 'path';
-import { validationSchema } from '../config';
+import { DataSource, DataSourceOptions } from 'typeorm';
+
+export const validationSchema = joi
+  .object({
+    DB_HOST: joi.string().required(),
+    DB_PORT: joi.number().required(),
+    DB_USER: joi.string().required(),
+    DB_PASS: joi.string().required(),
+    DB_NAME: joi.string().required(),
+  })
+  .unknown(true);
 
 const dotenv = dotenvConfig({ path: '.env' });
 
@@ -9,7 +19,7 @@ if (!!dotenv.error) {
   throw Error('No .env file found');
 }
 
-const {value: envs, error} = validationSchema.validate(dotenv.parsed);
+const { value: envs, error } = validationSchema.validate(dotenv.parsed);
 
 if (error) {
   throw Error(`Config validation error: ${error.message}`);

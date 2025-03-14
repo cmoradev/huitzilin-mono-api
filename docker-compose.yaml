@@ -4,7 +4,7 @@ services:
   postgres-server:
     image: postgres:17.4-alpine3.21
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./data:/var/lib/postgresql/data
     environment:
@@ -16,12 +16,13 @@ services:
       context: .
     command: npm run start:dev
     ports:
-      - "4000:3000"
+      - '4000:3000'
     volumes:
       - ./src:/usr/app/src
     depends_on:
       - postgres-server
     environment:
+      SECRET_KEY: d5b78faed7f61e7d
       DB_HOST: postgres-server
       DB_PORT: 5432
       DB_USER: db_user

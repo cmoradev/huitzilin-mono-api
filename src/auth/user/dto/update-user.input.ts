@@ -1,9 +1,9 @@
-import { CreateUserInput } from './create-user.input';
+import { SignUpInput } from './sign-up.input';
 import { InputType, Field, OmitType, PartialType, ID } from '@nestjs/graphql';
 
 @InputType('UpdateUser')
 export class UpdateUserInput extends PartialType(
-  OmitType(CreateUserInput, ['password']),
+  OmitType(SignUpInput, ['password']),
 ) {
   @Field(() => ID, { nullable: false })
   id: string;

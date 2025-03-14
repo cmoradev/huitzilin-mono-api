@@ -1,6 +1,7 @@
-import { Config } from "./types";
+import { Config } from './types';
 
 export default (): Config => ({
+  secretKey: `${process.env.SECRET_KEY}`,
   database: {
     host: `${process.env.DB_HOST}`,
     port: parseInt(`${process.env.DB_PORT}`, 10) || 5432,
