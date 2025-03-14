@@ -17,6 +17,8 @@ import { SchoolModule } from './school/school.module';
       driver: ApolloDriver,
       autoSchemaFile: true,
       subscriptions: { 'graphql-ws': true },
+      playground: true,
+      // debug: true,
     }),
     DatabaseModule,
     AuthModule,

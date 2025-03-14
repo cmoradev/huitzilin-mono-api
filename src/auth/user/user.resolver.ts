@@ -20,16 +20,6 @@ export class UserResolver {
     return this.userService.signUp(input);
   }
 
-  @Query(() => [UserDto], { name: 'user' })
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Query(() => UserDto, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
-  }
-
   @Mutation(() => UserDto)
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.userService.update(updateUserInput.id, updateUserInput);

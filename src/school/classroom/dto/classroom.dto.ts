@@ -1,6 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
-import { BaseDto } from 'src/common/utils/base.dto';
+import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Classroom')
 export class ClassroomDto extends BaseDto {

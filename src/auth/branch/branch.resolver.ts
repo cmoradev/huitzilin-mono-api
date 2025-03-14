@@ -9,8 +9,8 @@ export class BranchResolver {
   constructor(private readonly branchService: BranchService) {}
 
   @Mutation(() => BranchDto)
-  createBranch(@Args('createBranchInput') createBranchInput: CreateBranchInput) {
-    return this.branchService.create(createBranchInput);
+  createBranch(@Args('input') input: CreateBranchInput) {
+    return this.branchService.create(input);
   }
 
   @Query(() => [BranchDto], { name: 'branch' })
@@ -24,8 +24,8 @@ export class BranchResolver {
   }
 
   @Mutation(() => BranchDto)
-  updateBranch(@Args('updateBranchInput') updateBranchInput: UpdateBranchInput) {
-    return this.branchService.update(updateBranchInput.id, updateBranchInput);
+  updateBranch(@Args('input') input: UpdateBranchInput) {
+    return this.branchService.update(input);
   }
 
   @Mutation(() => BranchDto)

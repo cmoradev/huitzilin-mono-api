@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { MaxLength, IsUUID } from 'class-validator';
-import { BaseDto } from 'src/common/utils/base.dto';
+import { BaseDto } from 'src/common/dtos/base.dto';
 import { ActionEffect } from '../enums';
 
 @ObjectType('Action')

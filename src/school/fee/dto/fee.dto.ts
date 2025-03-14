@@ -1,6 +1,6 @@
 import { ObjectType, Field, Float } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
-import { BaseDto } from 'src/common/utils/base.dto';
+import { BaseDto } from 'src/common/dtos/base.dto';
 import { Frequency } from '../enums';
 
 @ObjectType('Fee')

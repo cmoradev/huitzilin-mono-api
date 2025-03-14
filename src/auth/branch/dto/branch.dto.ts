@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsUrl, MaxLength } from 'class-validator';
-import { BaseDto } from 'src/common/utils/base.dto';
+import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Branch')
 export class BranchDto extends BaseDto {

@@ -71,14 +71,6 @@ export class UserService {
     return this._sign(user);
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
   update(id: string, updateUserInput: UpdateUserInput) {
     return `This action updates a #${id} user`;
   }
