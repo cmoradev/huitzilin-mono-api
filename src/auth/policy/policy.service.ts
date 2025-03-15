@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePolicyInput } from './dto/create-policy.input';
-import { UpdatePolicyInput } from './dto/update-policy.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Policy } from '..';
 
 @Injectable()
-export class PolicyService {
-  create(createPolicyInput: CreatePolicyInput) {
-    return 'This action adds a new policy';
-  }
-
-  findAll() {
-    return `This action returns all policy`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} policy`;
-  }
-
-  update(id: string, updatePolicyInput: UpdatePolicyInput) {
-    return `This action updates a #${id} policy`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} policy`;
+export class PolicyService extends TypeOrmQueryService<Policy> {
+  constructor(
+    @InjectRepository(Policy)
+    private readonly _policyRepository: Repository<Policy>,
+  ) {
+    super(_policyRepository, { useSoftDelete: true });
   }
 }

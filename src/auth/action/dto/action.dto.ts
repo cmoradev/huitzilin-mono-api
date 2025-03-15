@@ -8,10 +8,10 @@ export class ActionDto extends BaseDto {
   @Field(() => ActionEffect, { nullable: false })
   effect: ActionEffect;
 
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   action: string;
 
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   route: string;
 
   @FilterableField(() => String, { nullable: false })

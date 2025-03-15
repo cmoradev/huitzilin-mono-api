@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, ID } from '@nestjs/graphql';
 import { PolicyService } from './policy.service';
-import { CreatePolicyInput } from './dto/create-policy.input';
-import { UpdatePolicyInput } from './dto/update-policy.input';
 import { PolicyDto } from './dto/policy.dto';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 
 @Resolver(() => PolicyDto)
 export class PolicyResolver {
   constructor(private readonly policyService: PolicyService) {}
 
   @Mutation(() => PolicyDto)
-  createPolicy(@Args('createPolicyInput') createPolicyInput: CreatePolicyInput) {
-    return this.policyService.create(createPolicyInput);
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<PolicyDto> {
+    return this.policyService.restoreOne(id);
   }
 
-  @Query(() => [PolicyDto], { name: 'policy' })
-  findAll() {
-    return this.policyService.findAll();
-  }
-
-  @Query(() => PolicyDto, { name: 'policy' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.policyService.findOne(id);
-  }
-
-  @Mutation(() => PolicyDto)
-  updatePolicy(@Args('updatePolicyInput') updatePolicyInput: UpdatePolicyInput) {
-    return this.policyService.update(updatePolicyInput.id, updatePolicyInput);
-  }
-
-  @Mutation(() => PolicyDto)
-  removePolicy(@Args('id', { type: () => Int }) id: number) {
-    return this.policyService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(PolicyDto) })
+    filter: Filter<PolicyDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.policyService.restoreMany(filter);
   }
 }
