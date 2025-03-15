@@ -1,10 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 import { IsUUID, MaxLength } from 'class-validator';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Student')
 export class StudentDto extends BaseDto {
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   code: string;
 
   @Field(() => String, { nullable: false })
@@ -16,7 +17,7 @@ export class StudentDto extends BaseDto {
   @Field(() => String, { nullable: false })
   lastname: string;
 
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   fullname: string;
 
   @Field(() => String, { nullable: false })

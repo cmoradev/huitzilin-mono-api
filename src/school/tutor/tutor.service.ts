@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTutorInput } from './dto/create-tutor.input';
-import { UpdateTutorInput } from './dto/update-tutor.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Tutor } from './entities/tutor.entity';
 
 @Injectable()
-export class TutorService {
-  create(createTutorInput: CreateTutorInput) {
-    return 'This action adds a new tutor';
-  }
-
-  findAll() {
-    return `This action returns all tutor`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} tutor`;
-  }
-
-  update(id: string, updateTutorInput: UpdateTutorInput) {
-    return `This action updates a #${id} tutor`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tutor`;
+export class TutorService extends TypeOrmQueryService<Tutor> {
+  constructor(
+    @InjectRepository(Tutor)
+    private readonly _tutorRepository: Repository<Tutor>,
+  ) {
+    super(_tutorRepository, { useSoftDelete: true });
   }
 }

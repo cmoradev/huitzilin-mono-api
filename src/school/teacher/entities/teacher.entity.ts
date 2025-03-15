@@ -15,7 +15,7 @@ export class Teacher extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   fullname: string;
 
-  @Column({ type: 'uuid', nullable: false })
+  @Column({ type: 'uuid', nullable: true })
   @Index()
   userId: string;
 }
