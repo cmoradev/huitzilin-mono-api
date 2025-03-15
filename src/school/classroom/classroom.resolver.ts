@@ -1,7 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 import { ClassroomService } from './classroom.service';
-import { CreateClassroomInput } from './dto/create-classroom.input';
-import { UpdateClassroomInput } from './dto/update-classroom.input';
 import { ClassroomDto } from './dto/classroom.dto';
 
 @Resolver(() => ClassroomDto)
@@ -9,27 +12,17 @@ export class ClassroomResolver {
   constructor(private readonly classroomService: ClassroomService) {}
 
   @Mutation(() => ClassroomDto)
-  createClassroom(@Args('createClassroomInput') createClassroomInput: CreateClassroomInput) {
-    return this.classroomService.create(createClassroomInput);
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<ClassroomDto> {
+    return this.classroomService.restoreOne(id);
   }
 
-  @Query(() => [ClassroomDto], { name: 'classroom' })
-  findAll() {
-    return this.classroomService.findAll();
-  }
-
-  @Query(() => ClassroomDto, { name: 'classroom' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.classroomService.findOne(id);
-  }
-
-  @Mutation(() => ClassroomDto)
-  updateClassroom(@Args('updateClassroomInput') updateClassroomInput: UpdateClassroomInput) {
-    return this.classroomService.update(updateClassroomInput.id, updateClassroomInput);
-  }
-
-  @Mutation(() => ClassroomDto)
-  removeClassroom(@Args('id', { type: () => Int }) id: number) {
-    return this.classroomService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(ClassroomDto) })
+    filter: Filter<ClassroomDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.classroomService.restoreMany(filter);
   }
 }
