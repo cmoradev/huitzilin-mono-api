@@ -16,9 +16,7 @@ import { SchoolModule } from './school/school.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      subscriptions: { 'graphql-ws': true },
       playground: true,
-      // debug: true,
     }),
     DatabaseModule,
     AuthModule,
