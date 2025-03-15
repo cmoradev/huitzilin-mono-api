@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, ID } from '@nestjs/graphql';
 import { ActionService } from './action.service';
-import { CreateActionInput } from './dto/create-action.input';
-import { UpdateActionInput } from './dto/update-action.input';
 import { ActionDto } from './dto/action.dto';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 
 @Resolver(() => ActionDto)
 export class ActionResolver {
   constructor(private readonly actionService: ActionService) {}
 
   @Mutation(() => ActionDto)
-  createAction(@Args('createActionInput') createActionInput: CreateActionInput) {
-    return this.actionService.create(createActionInput);
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<ActionDto> {
+    return this.actionService.restoreOne(id);
   }
 
-  @Query(() => [ActionDto], { name: 'action' })
-  findAll() {
-    return this.actionService.findAll();
-  }
-
-  @Query(() => ActionDto, { name: 'action' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.actionService.findOne(id);
-  }
-
-  @Mutation(() => ActionDto)
-  updateAction(@Args('updateActionInput') updateActionInput: UpdateActionInput) {
-    return this.actionService.update(updateActionInput.id, updateActionInput);
-  }
-
-  @Mutation(() => ActionDto)
-  removeAction(@Args('id', { type: () => Int }) id: number) {
-    return this.actionService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(ActionDto) })
+    filter: Filter<ActionDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.actionService.restoreMany(filter);
   }
 }

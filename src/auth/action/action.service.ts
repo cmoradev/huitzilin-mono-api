@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateActionInput } from './dto/create-action.input';
-import { UpdateActionInput } from './dto/update-action.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Action } from '..';
 
 @Injectable()
-export class ActionService {
-  create(createActionInput: CreateActionInput) {
-    return {};
-  }
-
-  findAll() {
-    return {};
-  }
-
-  findOne(id: number) {
-    return {};
-  }
-
-  update(id: string, updateActionInput: UpdateActionInput) {
-    return {};
-  }
-
-  remove(id: number) {
-    return {};
+export class ActionService extends TypeOrmQueryService<Action> {
+  constructor(
+    @InjectRepository(Action)
+    private readonly _actionRepository: Repository<Action>,
+  ) {
+    super(_actionRepository, { useSoftDelete: true });
   }
 }
