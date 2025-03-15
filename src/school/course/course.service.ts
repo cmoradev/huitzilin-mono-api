@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseInput } from './dto/create-course.input';
-import { UpdateCourseInput } from './dto/update-course.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Course } from './entities/course.entity';
 
 @Injectable()
-export class CourseService {
-  create(createCourseInput: CreateCourseInput) {
-    return 'This action adds a new course';
-  }
-
-  findAll() {
-    return `This action returns all course`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
-  }
-
-  update(id: string, updateCourseInput: UpdateCourseInput) {
-    return `This action updates a #${id} course`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+export class CourseService extends TypeOrmQueryService<Course> {
+  constructor(
+    @InjectRepository(Course)
+    private readonly _branchRepository: Repository<Course>,
+  ) {
+    super(_branchRepository, { useSoftDelete: true });
   }
 }
