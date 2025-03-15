@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { FeeService } from './fee.service';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 import { FeeDto } from './dto/fee.dto';
-import { CreateFeeInput } from './dto/create-fee.input';
-import { UpdateFeeInput } from './dto/update-fee.input';
+import { FeeService } from './fee.service';
 
 @Resolver(() => FeeDto)
 export class FeeResolver {
   constructor(private readonly feeService: FeeService) {}
 
   @Mutation(() => FeeDto)
-  createFee(@Args('createFeeInput') createFeeInput: CreateFeeInput) {
-    return this.feeService.create(createFeeInput);
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<FeeDto> {
+    return this.feeService.restoreOne(id);
   }
 
-  @Query(() => [FeeDto], { name: 'fee' })
-  findAll() {
-    return this.feeService.findAll();
-  }
-
-  @Query(() => FeeDto, { name: 'fee' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.feeService.findOne(id);
-  }
-
-  @Mutation(() => FeeDto)
-  updateFee(@Args('updateFeeInput') updateFeeInput: UpdateFeeInput) {
-    return this.feeService.update(updateFeeInput.id, updateFeeInput);
-  }
-
-  @Mutation(() => FeeDto)
-  removeFee(@Args('id', { type: () => Int }) id: number) {
-    return this.feeService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(FeeDto) })
+    filter: Filter<FeeDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.feeService.restoreMany(filter);
   }
 }

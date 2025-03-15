@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFeeInput } from './dto/create-fee.input';
-import { UpdateFeeInput } from './dto/update-fee.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Fee } from './entities/fee.entity';
 
 @Injectable()
-export class FeeService {
-  create(createFeeInput: CreateFeeInput) {
-    return 'This action adds a new fee';
-  }
-
-  findAll() {
-    return `This action returns all fee`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} fee`;
-  }
-
-  update(id: string, updateFeeInput: UpdateFeeInput) {
-    return `This action updates a #${id} fee`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} fee`;
+export class FeeService extends TypeOrmQueryService<Fee> {
+  constructor(
+    @InjectRepository(Fee)
+    private readonly _feeRepository: Repository<Fee>,
+  ) {
+    super(_feeRepository, { useSoftDelete: true });
   }
 }
