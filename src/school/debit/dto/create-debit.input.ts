@@ -26,7 +26,7 @@ export class CreateDebitInput {
   @Field(() => Date, { nullable: false })
   dueDate: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: false })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   paymentDate: Date;
 
   @IsUUID()

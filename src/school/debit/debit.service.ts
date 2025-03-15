@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDebitInput } from './dto/create-debit.input';
-import { UpdateDebitInput } from './dto/update-debit.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Debit } from './entities/debit.entity';
 
 @Injectable()
-export class DebitService {
-  create(createDebitInput: CreateDebitInput) {
-    return 'This action adds a new debit';
-  }
-
-  findAll() {
-    return `This action returns all debit`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} debit`;
-  }
-
-  update(id: string, updateDebitInput: UpdateDebitInput) {
-    return `This action updates a #${id} debit`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} debit`;
+export class DebitService extends TypeOrmQueryService<Debit> {
+  constructor(
+    @InjectRepository(Debit)
+    private readonly _debitRepository: Repository<Debit>,
+  ) {
+    super(_debitRepository, { useSoftDelete: true });
   }
 }

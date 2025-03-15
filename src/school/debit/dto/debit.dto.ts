@@ -3,10 +3,11 @@ import { IsUUID } from 'class-validator';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { Frequency } from 'src/school/fee/enums';
 import { DebitState } from '../enums';
+import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('Debit')
 export class DebitDto extends BaseDto {
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   description: string;
 
   @Field(() => Float, { nullable: false })
@@ -21,10 +22,10 @@ export class DebitDto extends BaseDto {
   @Field(() => Date, { nullable: false })
   dueDate: Date;
 
-  @Field(() => GraphQLISODateTime, { nullable: false })
+  @Field(() => GraphQLISODateTime, { nullable: true })
   paymentDate: Date;
 
   @IsUUID()
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   enrollmentId: string;
 }
