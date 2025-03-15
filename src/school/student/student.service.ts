@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentInput } from './dto/create-student.input';
-import { UpdateStudentInput } from './dto/update-student.input';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Student } from '..';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class StudentService {
-  create(createStudentInput: CreateStudentInput) {
-    return 'This action adds a new student';
-  }
-
-  findAll() {
-    return `This action returns all student`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
-  }
-
-  update(id: string, updateStudentInput: UpdateStudentInput) {
-    return `This action updates a #${id} student`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+export class StudentService extends TypeOrmQueryService<Student> {
+  constructor(
+    @InjectRepository(Student)
+    private readonly _studentRepository: Repository<Student>,
+  ) {
+    super(_studentRepository, { useSoftDelete: true });
   }
 }

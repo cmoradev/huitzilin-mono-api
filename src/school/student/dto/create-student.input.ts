@@ -16,6 +16,6 @@ export class CreateStudentInput {
   lastname: string;
 
   @IsUUID()
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   userId: string;
 }
