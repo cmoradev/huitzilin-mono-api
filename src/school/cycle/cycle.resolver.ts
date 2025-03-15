@@ -1,35 +1,30 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { CycleService } from './cycle.service';
 import { CreateCycleInput } from './dto/create-cycle.input';
 import { UpdateCycleInput } from './dto/update-cycle.input';
 import { CycleDto } from './dto/cycle.dto';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 
 @Resolver(() => CycleDto)
 export class CycleResolver {
   constructor(private readonly cycleService: CycleService) {}
 
   @Mutation(() => CycleDto)
-  createCycle(@Args('createCycleInput') createCycleInput: CreateCycleInput) {
-    return this.cycleService.create(createCycleInput);
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: number,
+  ): Promise<CycleDto> {
+    return this.cycleService.restoreOne(id);
   }
 
-  @Query(() => [CycleDto], { name: 'cycle' })
-  findAll() {
-    return this.cycleService.findAll();
-  }
-
-  @Query(() => CycleDto, { name: 'cycle' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.cycleService.findOne(id);
-  }
-
-  @Mutation(() => CycleDto)
-  updateCycle(@Args('updateCycleInput') updateCycleInput: UpdateCycleInput) {
-    return this.cycleService.update(updateCycleInput.id, updateCycleInput);
-  }
-
-  @Mutation(() => CycleDto)
-  removeCycle(@Args('id', { type: () => Int }) id: number) {
-    return this.cycleService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(CycleDto) })
+    filter: Filter<CycleDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.cycleService.restoreMany(filter);
   }
 }

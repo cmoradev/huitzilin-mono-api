@@ -8,8 +8,8 @@ import { Classroom } from './entities/classroom.entity';
 export class ClassroomService extends TypeOrmQueryService<Classroom> {
   constructor(
     @InjectRepository(Classroom)
-    private readonly _branchRepository: Repository<Classroom>,
+    private readonly _classroomRepository: Repository<Classroom>,
   ) {
-    super(_branchRepository, { useSoftDelete: true });
+    super(_classroomRepository, { useSoftDelete: true });
   }
 }
