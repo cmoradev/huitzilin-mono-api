@@ -1,6 +1,5 @@
 import {
   InputType,
-  Int,
   Field,
   Float,
   GraphQLISODateTime,

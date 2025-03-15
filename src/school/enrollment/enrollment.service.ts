@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEnrollmentInput } from './dto/create-enrollment.input';
-import { UpdateEnrollmentInput } from './dto/update-enrollment.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Enrollment } from './entities/enrollment.entity';
 
 @Injectable()
-export class EnrollmentService {
-  create(createEnrollmentInput: CreateEnrollmentInput) {
-    return 'This action adds a new enrollment';
-  }
-
-  findAll() {
-    return `This action returns all enrollment`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} enrollment`;
-  }
-
-  update(id: string, updateEnrollmentInput: UpdateEnrollmentInput) {
-    return `This action updates a #${id} enrollment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} enrollment`;
+export class EnrollmentService extends TypeOrmQueryService<Enrollment> {
+  constructor(
+    @InjectRepository(Enrollment)
+    private readonly _enrollmentRepository: Repository<Enrollment>,
+  ) {
+    super(_enrollmentRepository, { useSoftDelete: true });
   }
 }
