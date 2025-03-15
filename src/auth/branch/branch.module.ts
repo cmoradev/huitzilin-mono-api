@@ -20,7 +20,7 @@ import { UpdateBranchInput } from './dto/update-branch.input';
         {
           DTOClass: BranchDto,
           CreateDTOClass: CreateBranchInput,
-          // UpdateDTOClass: UpdateBranchInput,
+          UpdateDTOClass: UpdateBranchInput,
           ServiceClass: BranchService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
