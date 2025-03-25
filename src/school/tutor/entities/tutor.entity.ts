@@ -1,6 +1,15 @@
+import { Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Student } from 'src/school/student/entities/student.entity';
-import { Column, Entity, Index, JoinTable, ManyToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 
 @Entity({ schema: 'school', name: 'tutors' })
 export class Tutor extends Base {
@@ -20,7 +29,15 @@ export class Tutor extends Base {
   @Index()
   userId: string;
 
+  @ManyToOne(() => User, (user) => user.tutors)
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
   @ManyToMany(() => Student, (student) => student.tutors)
   @JoinTable({ name: 'tutors_to_students' })
   students: Student[];
+
+  @ManyToMany(() => Branch, (branch) => branch.tutors)
+  @JoinTable({ name: 'branchs_to_teachers' })
+  branchs: Branch[];
 }

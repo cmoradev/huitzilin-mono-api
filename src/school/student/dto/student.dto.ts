@@ -1,6 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { FilterableField } from '@ptc-org/nestjs-query-graphql';
-import { IsUUID, MaxLength } from 'class-validator';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Student')

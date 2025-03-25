@@ -1,6 +1,14 @@
 import { Action, Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'policies' })
 export class Policy extends Base {

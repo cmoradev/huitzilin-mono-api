@@ -1,6 +1,16 @@
 import { Branch, Policy } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { Student, Teacher, Tutor } from 'src/school';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'users' })
 export class User extends Base {
@@ -17,6 +27,15 @@ export class User extends Base {
   @ManyToOne(() => Branch, (branch) => branch.users)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
+
+  @OneToMany(() => Student, (student) => student.user)
+  students: Student[];
+
+  @OneToMany(() => Teacher, (teacher) => teacher.user)
+  teachers: Teacher[];
+
+  @OneToMany(() => Tutor, (tutor) => tutor.user)
+  tutors: Tutor[];
 
   @ManyToMany(() => Policy, (policy) => policy.users)
   @JoinTable({ name: 'users_to_policies' })

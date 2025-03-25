@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { EnrollmentState } from '../enums';
 import { Classroom, Course, Cycle, Debit, Student } from 'src/school';
+import { Branch } from 'src/auth';
 
 @Entity({ schema: 'school', name: 'enrollments' })
 export class Enrollment extends Base {
@@ -21,6 +22,10 @@ export class Enrollment extends Base {
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;
+
+  @ManyToOne(() => Branch, (branch) => branch.enrollments)
+  @JoinColumn({ name: 'branchId' })
+  branch: Branch;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
