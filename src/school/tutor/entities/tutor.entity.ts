@@ -38,6 +38,6 @@ export class Tutor extends Base {
   students: Student[];
 
   @ManyToMany(() => Branch, (branch) => branch.tutors)
-  @JoinTable({ name: 'branchs_to_teachers' })
+  @JoinTable({ name: 'branchs_to_tutors' })
   branchs: Branch[];
 }

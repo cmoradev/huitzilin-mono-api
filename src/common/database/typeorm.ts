@@ -34,7 +34,7 @@ const entitiesDir = join(
   'entities',
   '*.entity{.ts,.js}',
 );
-
+console.log(entitiesDir);
 const migrationsDir = join(__dirname, 'migrations', '*{.ts,.js}');
 
 const options: DataSourceOptions = {
