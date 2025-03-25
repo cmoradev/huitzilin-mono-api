@@ -15,7 +15,7 @@ export const validationSchema = joi
 
 const dotenv = dotenvConfig({ path: '.env' });
 
-if (!!dotenv.error) {
+if (dotenv?.error) {
   throw Error('No .env file found');
 }
 

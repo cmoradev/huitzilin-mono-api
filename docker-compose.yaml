@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+  # Postgres Server
   postgres-server:
     image: postgres:17.4-alpine3.21
     ports:
@@ -11,6 +12,7 @@ services:
       POSTGRES_USER: db_user
       POSTGRES_PASSWORD: db_password
       POSTGRES_DB: db_apex
+  # Apex Mono Api
   apex-server:
     build:
       context: .
@@ -28,3 +30,13 @@ services:
       DB_USER: db_user
       DB_PASS: db_password
       DB_NAME: db_apex
+  # Storage Server
+  storage-server:
+    image: registry.digitalocean.com/munyaal-docr/utils/storage-ms:1.0.1
+    ports:
+      - '4051:3000'
+    environment:
+      IAM_ACCESS_KEY: ${IAM_ACCESS_KEY}
+      IAM_SECRET_KEY: ${IAM_SECRET_KEY}
+      AWS_REGION: us-east-1
+      BUCKET_NAME: munyaal-storage-development
