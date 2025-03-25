@@ -1,9 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { ActionEffect } from '../enums';
-import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('Action')
+@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
 export class ActionDto extends BaseDto {
   @Field(() => ActionEffect, { nullable: false })
   effect: ActionEffect;

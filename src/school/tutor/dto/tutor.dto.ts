@@ -1,8 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { FilterableField } from '@ptc-org/nestjs-query-graphql';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Tutor')
+@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
 export class TutorDto extends BaseDto {
   @Field(() => String, { nullable: false })
   picture: string;

@@ -1,11 +1,13 @@
 import { Field, Float, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { IsUUID } from 'class-validator';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { Frequency } from 'src/school/fee/enums';
 import { DebitState } from '../enums';
-import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('Debit')
+@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
 export class DebitDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   description: string;

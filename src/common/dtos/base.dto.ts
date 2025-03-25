@@ -5,10 +5,11 @@ import {
   Int,
   ObjectType,
 } from '@nestjs/graphql';
+import { IDField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('base')
 export class BaseDto {
-  @Field(() => ID, { nullable: false })
+  @IDField(() => ID, { nullable: false })
   id: string;
 
   @Field(() => GraphQLISODateTime, { nullable: false })

@@ -1,9 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { EnrollmentState } from '../enums';
-import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('Enrollment')
+@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
 export class EnrollmentDto extends BaseDto {
   @Field(() => String, { nullable: false })
   details: string;

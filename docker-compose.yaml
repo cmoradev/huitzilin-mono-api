@@ -34,7 +34,7 @@ services:
   storage-server:
     image: registry.digitalocean.com/munyaal-docr/utils/storage-ms:1.0.1
     ports:
-      - '4051:3000'
+      - '4100:3000'
     environment:
       IAM_ACCESS_KEY: ${IAM_ACCESS_KEY}
       IAM_SECRET_KEY: ${IAM_SECRET_KEY}

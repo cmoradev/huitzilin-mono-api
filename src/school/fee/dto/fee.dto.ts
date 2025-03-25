@@ -1,9 +1,11 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { SortDirection } from '@ptc-org/nestjs-query-core';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { Frequency } from '../enums';
-import { FilterableField } from '@ptc-org/nestjs-query-graphql';
 
 @ObjectType('Fee')
+@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
 export class FeeDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;

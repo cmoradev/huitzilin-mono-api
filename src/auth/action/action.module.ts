@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
-import { NestjsQueryGraphQLModule, PagingStrategies } from '@ptc-org/nestjs-query-graphql';
+import {
+  NestjsQueryGraphQLModule,
+  PagingStrategies,
+} from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
 import { ActionResolver } from './action.resolver';
 import { ActionService } from './action.service';
@@ -9,23 +12,23 @@ import { UpdateActionInput } from './dto/update-action.input';
 import { Action } from './entities/action.entity';
 
 @Module({
-    imports: [
-      NestjsQueryGraphQLModule.forFeature({
-        imports: [NestjsQueryTypeOrmModule.forFeature([Action])],
-        services: [ActionService],
-        resolvers: [
-          {
-            DTOClass: ActionDto,
-            CreateDTOClass: CreateActionInput,
-            UpdateDTOClass: UpdateActionInput,
-            ServiceClass: ActionService,
-            pagingStrategy: PagingStrategies.OFFSET,
-            enableTotalCount: true,
-            enableSubscriptions: false,
-          },
-        ],
-      }),
-    ],
+  imports: [
+    NestjsQueryGraphQLModule.forFeature({
+      imports: [NestjsQueryTypeOrmModule.forFeature([Action])],
+      services: [ActionService],
+      resolvers: [
+        {
+          DTOClass: ActionDto,
+          CreateDTOClass: CreateActionInput,
+          UpdateDTOClass: UpdateActionInput,
+          ServiceClass: ActionService,
+          pagingStrategy: PagingStrategies.OFFSET,
+          enableTotalCount: true,
+          enableSubscriptions: false,
+        },
+      ],
+    }),
+  ],
   providers: [ActionResolver],
 })
 export class ActionModule {}
