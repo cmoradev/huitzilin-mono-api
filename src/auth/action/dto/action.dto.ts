@@ -5,7 +5,9 @@ import { BaseDto } from 'src/common/dtos/base.dto';
 import { ActionEffect } from '../enums';
 
 @ObjectType('Action')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class ActionDto extends BaseDto {
   @Field(() => ActionEffect, { nullable: false })
   effect: ActionEffect;

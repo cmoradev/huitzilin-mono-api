@@ -5,7 +5,9 @@ import { BaseDto } from 'src/common/dtos/base.dto';
 import { EnrollmentState } from '../enums';
 
 @ObjectType('Enrollment')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class EnrollmentDto extends BaseDto {
   @Field(() => String, { nullable: false })
   details: string;

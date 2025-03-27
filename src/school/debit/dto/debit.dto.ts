@@ -7,7 +7,9 @@ import { Frequency } from 'src/school/fee/enums';
 import { DebitState } from '../enums';
 
 @ObjectType('Debit')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class DebitDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   description: string;

@@ -5,7 +5,9 @@ import { BaseDto } from 'src/common/dtos/base.dto';
 import { Frequency } from '../enums';
 
 @ObjectType('Fee')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class FeeDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;

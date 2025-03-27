@@ -5,7 +5,9 @@ import { IsUUID, MaxLength } from 'class-validator';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('User')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class UserDto extends BaseDto {
   @MaxLength(16)
   @Field(() => String, { nullable: false })

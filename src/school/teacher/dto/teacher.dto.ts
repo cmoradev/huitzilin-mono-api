@@ -4,7 +4,9 @@ import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('Teacher')
-@QueryOptions({ defaultSort: [{ field: 'id', direction: SortDirection.DESC }] })
+@QueryOptions({
+  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
+})
 export class TeacherDto extends BaseDto {
   @Field(() => String, { nullable: false })
   picture: string;
