@@ -5,7 +5,7 @@ import { Course } from 'src/school';
 
 @Entity({ schema: 'school', name: 'fees' })
 export class Fee extends Base {
-  @Column({ type: 'varchar', nullable: false, length: 32 })
+  @Column({ type: 'varchar', nullable: false, length: 64 })
   name: string;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
