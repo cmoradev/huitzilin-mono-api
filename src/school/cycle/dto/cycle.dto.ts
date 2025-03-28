@@ -11,11 +11,11 @@ export class CycleDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;
 
-  @Field(() => Date, { nullable: false })
-  start: Date;
+  @Field(() => String, { nullable: false })
+  start: string;
 
-  @Field(() => Date, { nullable: false })
-  end: Date;
+  @Field(() => String, { nullable: false })
+  end: string;
 
   @FilterableField(() => String, { nullable: false })
   branchId: string;

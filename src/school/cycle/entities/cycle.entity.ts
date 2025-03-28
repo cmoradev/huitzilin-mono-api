@@ -16,10 +16,10 @@ export class Cycle extends Base {
   name: string;
 
   @Column({ type: 'date', nullable: false })
-  start: Date;
+  start: string;
 
   @Column({ type: 'date', nullable: false })
-  end: Date;
+  end: string;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()

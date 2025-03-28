@@ -1,13 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
-import { CycleService } from './cycle.service';
-import { CreateCycleInput } from './dto/create-cycle.input';
-import { UpdateCycleInput } from './dto/update-cycle.input';
-import { CycleDto } from './dto/cycle.dto';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
 import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
 import {
   FilterType,
   UpdateManyResponseType,
 } from '@ptc-org/nestjs-query-graphql';
+import { CycleService } from './cycle.service';
+import { CycleDto } from './dto/cycle.dto';
 
 @Resolver(() => CycleDto)
 export class CycleResolver {

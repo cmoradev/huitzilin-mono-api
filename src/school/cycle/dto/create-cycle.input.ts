@@ -7,11 +7,11 @@ export class CreateCycleInput {
   @Field(() => String, { nullable: false })
   name: string;
 
-  @Field(() => Date, { nullable: false })
-  start: Date;
+  @Field(() => String, { nullable: false })
+  start: string;
 
-  @Field(() => Date, { nullable: false })
-  end: Date;
+  @Field(() => String, { nullable: false })
+  end: string;
 
   @IsUUID()
   @Field(() => String, { nullable: false })
