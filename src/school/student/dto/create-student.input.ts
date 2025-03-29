@@ -14,7 +14,7 @@ export class CreateStudentInput {
   @MaxLength(32)
   @Field(() => String, { nullable: false })
   lastname: string;
-
+  
   @IsUUID()
   @Field(() => String, { nullable: true })
   userId: string;
