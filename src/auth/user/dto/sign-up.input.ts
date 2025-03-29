@@ -11,6 +11,10 @@ export class SignUpInput {
   @Field(() => String, { nullable: false })
   password: string;
 
+  @MaxLength(32)
+  @Field(() => String, { nullable: false })
+  email: string;
+
   @IsUUID()
   @Field(() => String, { nullable: true })
   branchId: string;

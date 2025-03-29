@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Migration1742935380973 implements MigrationInterface {
-    name = 'Migration1742935380973'
+export class Migration1743212805131 implements MigrationInterface {
+    name = 'Migration1743212805131'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "auth"."actions_effect_enum" AS ENUM('allow', 'deny')`);
@@ -25,7 +25,7 @@ export class Migration1742935380973 implements MigrationInterface {
         await queryRunner.query(`CREATE INDEX "IDX_c3070e8e34cbfffaf09724f9aa" ON "school"."enrollments" ("cycleId") `);
         await queryRunner.query(`CREATE INDEX "IDX_a766f2b4118abeedc8636ef567" ON "school"."enrollments" ("classroomId") `);
         await queryRunner.query(`CREATE TYPE "school"."fees_frequency_enum" AS ENUM('single', 'monthly', 'weekly', 'daily', 'hourly')`);
-        await queryRunner.query(`CREATE TABLE "school"."fees" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "price" numeric(10,2) NOT NULL, "frequency" "school"."fees_frequency_enum" NOT NULL, "courseId" uuid NOT NULL, CONSTRAINT "PK_97f3a1b1b8ee5674fd4da93f461" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "school"."fees" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "price" numeric(10,2) NOT NULL, "frequency" "school"."fees_frequency_enum" NOT NULL, "courseId" uuid NOT NULL, CONSTRAINT "PK_97f3a1b1b8ee5674fd4da93f461" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_20e5b5461f19083606077552b0" ON "school"."fees" ("courseId") `);
         await queryRunner.query(`CREATE TABLE "school"."students" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "code" character varying(8) NOT NULL, "picture" character varying(128) NOT NULL, "firstname" character varying(32) NOT NULL, "lastname" character varying(32) NOT NULL, "fullname" character varying(64) NOT NULL, "userId" uuid, CONSTRAINT "UQ_75fc8d4dc627f6a1abee8fdb53b" UNIQUE ("code"), CONSTRAINT "PK_7d7f07271ad4ce999880713f05e" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_e0208b4f964e609959aff431bf" ON "school"."students" ("userId") `);
@@ -34,7 +34,7 @@ export class Migration1742935380973 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "auth"."branchs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "picture" character varying(128) NOT NULL, "name" character varying(16) NOT NULL, CONSTRAINT "PK_c2a14f542feef68e3968ce1766c" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "auth"."policies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_603e09f183df0108d8695c57e28" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_5e234b497d27d66e987c2ee0b9" ON "auth"."policies" ("branchId") `);
-        await queryRunner.query(`CREATE TABLE "auth"."users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "username" character varying(16) NOT NULL, "password" character varying(96) NOT NULL, "branchId" uuid, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "auth"."users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "username" character varying(16) NOT NULL, "password" character varying(96) NOT NULL, "email" character varying(64) NOT NULL, "branchId" uuid, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_246426dfd001466a1d5e47322f" ON "auth"."users" ("branchId") `);
         await queryRunner.query(`CREATE TABLE "school"."tutors" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "picture" character varying(128) NOT NULL, "firstname" character varying(32) NOT NULL, "lastname" character varying(32) NOT NULL, "fullname" character varying(64) NOT NULL, "userId" uuid, CONSTRAINT "PK_bab3e19eb9a7a36a6a95377963b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_a193a9b3f925bf0767eaa83c18" ON "school"."tutors" ("userId") `);

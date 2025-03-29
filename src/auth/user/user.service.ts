@@ -53,6 +53,7 @@ export class UserService {
    */
   async signUp(input: SignUpInput): Promise<SessionDto> {
     input.username = input.username.trim().toLowerCase();
+    input.email = input.email.trim().toLowerCase();
 
     const existingUser = await this._userRepository.findOne({
       where: { username: input.username },

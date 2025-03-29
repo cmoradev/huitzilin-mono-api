@@ -20,6 +20,9 @@ export class User extends Base {
   @Column({ type: 'varchar', nullable: false, length: 96 })
   password: string;
 
+  @Column({ type: 'varchar', nullable: false, length: 64 })
+  email: string;
+
   @Column({ type: 'uuid', nullable: true })
   @Index()
   branchId: string;

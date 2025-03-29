@@ -9,11 +9,12 @@ import { BaseDto } from 'src/common/dtos/base.dto';
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 export class UserDto extends BaseDto {
-  @MaxLength(16)
   @Field(() => String, { nullable: false })
   username: string;
 
-  @IsUUID()
+  @Field(() => String, { nullable: false })
+  email: string;
+
   @Field(() => String, { nullable: false })
   branchId: string;
 
