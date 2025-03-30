@@ -1,9 +1,12 @@
-import { Field, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
+import { Field, ObjectType, GraphQLISODateTime, ID } from '@nestjs/graphql';
 import { BranchDto } from 'src/auth';
 import { CycleDto } from 'src/school';
 
 @ObjectType('Session')
 export class SessionDto {
+  @Field(() => ID, { nullable: false })
+  id: string;
+
   @Field(() => String, { nullable: false })
   token: string;
 

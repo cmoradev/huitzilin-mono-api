@@ -12,6 +12,7 @@ import { SignInInput } from './dto/sign-in.input';
 import { SignUpInput } from './dto/sign-up.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -80,12 +81,21 @@ export class UserService {
     return this._sign(user);
   }
 
-  update(id: string, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
+  async update(id: string, input: UpdateUserInput) {
+    if (input?.username) {
+      input.username = input.username.trim().toLowerCase();
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    if (input?.email) {
+      input.email = input.email.trim().toLowerCase();
+    }
+
+    const user = await this._userRepository.save({
+      id,
+      ...input,
+    });
+
+    return instanceToPlain<UserDto>(user) as UserDto;
   }
 
   /**
@@ -114,6 +124,7 @@ export class UserService {
     const cycle = await this._findCycleById(user.cycleId);
 
     return {
+      id,
       token,
       exp,
       iat,

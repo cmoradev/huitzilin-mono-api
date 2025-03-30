@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, ID, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { SignInInput } from './dto/sign-in.input';
 import { SignUpInput } from './dto/sign-up.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -21,12 +21,10 @@ export class UserResolver {
   }
 
   @Mutation(() => UserDto)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
-  }
-
-  @Mutation(() => UserDto)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.remove(id);
+  updateOneUser(
+    @Args('update') update: UpdateUserInput,
+    @Args('id', { type: () => ID }) id: string,
+  ) {
+    return this.userService.update(id, update);
   }
 }

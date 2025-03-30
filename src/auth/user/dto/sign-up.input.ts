@@ -18,4 +18,8 @@ export class SignUpInput {
   @IsUUID()
   @Field(() => String, { nullable: true })
   branchId: string;
+
+  @IsUUID()
+  @Field(() => String, { nullable: true })
+  cycleId: string;
 }
