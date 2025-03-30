@@ -16,6 +16,9 @@ export class CreateDebitInput {
   @Field(() => Float, { nullable: false })
   value: number;
 
+  @Field(() => Float, { nullable: false })
+  quantity: number;
+
   @Field(() => DebitState, { nullable: false })
   state: DebitState;
 

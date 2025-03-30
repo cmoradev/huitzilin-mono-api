@@ -1,6 +1,6 @@
 import { Branch, Policy } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Student, Teacher, Tutor } from 'src/school';
+import { Cycle, Student, Teacher, Tutor } from 'src/school';
 import {
   Column,
   Entity,
@@ -30,6 +30,14 @@ export class User extends Base {
   @ManyToOne(() => Branch, (branch) => branch.users)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
+
+  @Column({ type: 'uuid', nullable: true })
+  @Index()
+  cycleId: string;
+
+  @ManyToOne(() => Cycle, (branch) => branch.users)
+  @JoinColumn({ name: 'cycleId' })
+  cycle: Cycle;
 
   @OneToMany(() => Student, (student) => student.user)
   students: Student[];

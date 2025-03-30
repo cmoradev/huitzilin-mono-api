@@ -1,4 +1,4 @@
-import { Branch } from 'src/auth';
+import { Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Enrollment } from 'src/school';
 import {
@@ -31,4 +31,7 @@ export class Cycle extends Base {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.cycle)
   enrollments: Enrollment[];
+
+  @OneToMany(() => User, (user) => user.cycle)
+  users: User[];
 }

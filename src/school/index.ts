@@ -7,3 +7,13 @@ export { Fee } from './fee/entities/fee.entity';
 export { Student } from './student/entities/student.entity';
 export { Teacher } from './teacher/entities/teacher.entity';
 export { Tutor } from './tutor/entities/tutor.entity';
+
+export { ClassroomDto } from './classroom/dto/classroom.dto';
+export { CourseDto } from './course/dto/course.dto';
+export { CycleDto } from './cycle/dto/cycle.dto';
+export { DebitDto } from './debit/dto/debit.dto';
+export { EnrollmentDto } from './enrollment/dto/enrollment.dto';
+export { FeeDto } from './fee/dto/fee.dto';
+export { StudentDto } from './student/dto/student.dto';
+export { TeacherDto } from './teacher/dto/teacher.dto';
+export { TutorDto } from './tutor/dto/tutor.dto';

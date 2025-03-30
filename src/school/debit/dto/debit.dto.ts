@@ -17,6 +17,9 @@ export class DebitDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   value: number;
 
+  @Field(() => Float, { nullable: false })
+  quantity: number;
+
   @Field(() => DebitState, { nullable: false })
   state: DebitState;
 

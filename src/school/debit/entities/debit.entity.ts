@@ -12,6 +12,9 @@ export class Debit extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   value: number;
 
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  quantity: number;
+
   @Column({ type: 'enum', nullable: false, enum: Frequency })
   frequency: Frequency;
 
