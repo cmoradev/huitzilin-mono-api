@@ -26,8 +26,8 @@ export class DebitDto extends BaseDto {
   @Field(() => Frequency, { nullable: false })
   frequency: Frequency;
 
-  @Field(() => Date, { nullable: false })
-  dueDate: Date;
+  @Field(() => String, { nullable: false })
+  dueDate: string;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   paymentDate: Date;

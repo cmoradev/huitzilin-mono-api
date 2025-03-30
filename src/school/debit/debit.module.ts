@@ -25,7 +25,7 @@ import { Debit } from './entities/debit.entity';
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
           enableSubscriptions: false,
-          create: { many: { disabled: true }, one: { disabled: false } },
+          create: { many: { disabled: false }, one: { disabled: false } },
           update: { many: { disabled: true }, one: { disabled: false } },
           delete: { many: { disabled: true }, one: { disabled: false } },
         },

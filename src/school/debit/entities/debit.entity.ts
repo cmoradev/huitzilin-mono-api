@@ -22,7 +22,7 @@ export class Debit extends Base {
   state: DebitState;
 
   @Column({ type: 'date', nullable: false })
-  dueDate: Date;
+  dueDate: string;
 
   @Column({ type: 'timestamp', nullable: true })
   paymentDate: Date;
