@@ -10,22 +10,28 @@ import {
   OneToMany,
 } from 'typeorm';
 
-@Entity({ schema: 'school', name: 'courses' })
-export class Course extends Base {
+@Entity({ schema: 'school', name: 'activities' })
+export class Activity extends Base {
   @Column({ type: 'varchar', nullable: false, length: 32 })
   name: string;
+
+  @Column({ type: 'int', nullable: false })
+  order: number;
+
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isPackage: boolean;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;
 
-  @ManyToOne(() => Branch, (branch) => branch.courses)
+  @ManyToOne(() => Branch, (branch) => branch.activities)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
 
-  @OneToMany(() => Fee, (action) => action.course, { cascade: ['insert'] })
+  @OneToMany(() => Fee, (action) => action.activity, { cascade: ['insert'] })
   fees: Fee[];
 
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.activity)
   enrollments: Enrollment[];
 }

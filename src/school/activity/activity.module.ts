@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common';
-import { CourseResolver } from './course.resolver';
 import {
   NestjsQueryGraphQLModule,
   PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { CourseService } from './course.service';
-import { UpdateCourseInput } from './dto/update-course.input';
-import { CreateCourseInput } from './dto/create-course.input';
-import { CourseDto } from './dto/course.dto';
-import { Course } from './entities/course.entity';
+import { ActivityResolver } from './activity.resolver';
+import { ActivityService } from './activity.service';
+import { ActivityDto } from './dto/activity.dto';
+import { CreateActivityInput } from './dto/create-activity.input';
+import { UpdateActivityInput } from './dto/update-activity.input';
+import { Activity } from './entities/activity.entity';
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Course])],
-      services: [CourseService],
+      imports: [NestjsQueryTypeOrmModule.forFeature([Activity])],
+      services: [ActivityService],
       resolvers: [
         {
-          DTOClass: CourseDto,
-          CreateDTOClass: CreateCourseInput,
-          UpdateDTOClass: UpdateCourseInput,
-          ServiceClass: CourseService,
+          DTOClass: ActivityDto,
+          CreateDTOClass: CreateActivityInput,
+          UpdateDTOClass: UpdateActivityInput,
+          ServiceClass: ActivityService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
           enableSubscriptions: false,
@@ -32,6 +32,6 @@ import { Course } from './entities/course.entity';
       ],
     }),
   ],
-  providers: [CourseResolver],
+  providers: [ActivityResolver],
 })
-export class CourseModule {}
+export class ActivityModule {}
