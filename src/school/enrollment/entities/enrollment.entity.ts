@@ -62,6 +62,16 @@ export class Enrollment extends Base {
   @JoinColumn({ name: 'classroomId' })
   classroom: Classroom;
 
+  @Column({ type: 'int', nullable: true })
+  parentId: number | null;
+
+  // @ManyToOne(() => Enrollment, (enrollment) => enrollment.children)
+  // @JoinColumn({ name: 'parentId' })
+  // parent: Enrollment;
+
+  // @OneToMany(() => Enrollment, (enrollment) => enrollment.parent)
+  // children: Enrollment[];
+
   @OneToMany(() => Debit, (debit) => debit.enrollment)
   debts: Debit[];
 }

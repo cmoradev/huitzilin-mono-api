@@ -33,4 +33,8 @@ export class CreateEnrollmentInput {
   @IsUUID()
   @Field(() => String, { nullable: false })
   classroomId: string;
+
+  @IsUUID()
+  @Field(() => String, { nullable: true })
+  parentId: string | null;
 }

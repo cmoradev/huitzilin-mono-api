@@ -7,6 +7,8 @@ import { loader, validationSchema } from './common/config';
 import { DatabaseModule } from './common/database/database.module';
 import { SchoolModule } from './school/school.module';
 
+console.log(); // Log the NODE_ENV value
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,7 +18,7 @@ import { SchoolModule } from './school/school.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      playground: true,
+      playground: process.env.NODE_ENV === 'development',
     }),
     DatabaseModule,
     AuthModule,
