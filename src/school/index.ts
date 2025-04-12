@@ -1,5 +1,5 @@
+export { Activity } from './activity/entities/activity.entity';
 export { Classroom } from './classroom/entities/classroom.entity';
-export { Course } from './course/entities/course.entity';
 export { Cycle } from './cycle/entities/cycle.entity';
 export { Debit } from './debit/entities/debit.entity';
 export { Enrollment } from './enrollment/entities/enrollment.entity';
@@ -8,8 +8,8 @@ export { Student } from './student/entities/student.entity';
 export { Teacher } from './teacher/entities/teacher.entity';
 export { Tutor } from './tutor/entities/tutor.entity';
 
+export { ActivityDto } from './activity/dto/activity.dto';
 export { ClassroomDto } from './classroom/dto/classroom.dto';
-export { CourseDto } from './course/dto/course.dto';
 export { CycleDto } from './cycle/dto/cycle.dto';
 export { DebitDto } from './debit/dto/debit.dto';
 export { EnrollmentDto } from './enrollment/dto/enrollment.dto';

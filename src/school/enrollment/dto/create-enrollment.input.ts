@@ -10,7 +10,10 @@ export class CreateEnrollmentInput {
 
   @Field(() => EnrollmentState, { nullable: false })
   state: EnrollmentState;
-  
+
+  @Field(() => Number, { nullable: false })
+  order: number;
+
   @IsUUID()
   @Field(() => String, { nullable: false })
   branchId: string;
@@ -21,7 +24,7 @@ export class CreateEnrollmentInput {
 
   @IsUUID()
   @Field(() => String, { nullable: false })
-  courseId: string;
+  activityId: string;
 
   @IsUUID()
   @Field(() => String, { nullable: false })

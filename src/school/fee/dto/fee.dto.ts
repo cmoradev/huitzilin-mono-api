@@ -19,5 +19,5 @@ export class FeeDto extends BaseDto {
   frequency: Frequency;
 
   @FilterableField(() => String, { nullable: false })
-  courseId: string;
+  activityId: string;
 }

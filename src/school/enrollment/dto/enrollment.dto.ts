@@ -8,7 +8,7 @@ import {
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { EnrollmentState } from '../enums';
 import { BranchDto } from 'src/auth';
-import { StudentDto, CycleDto, CourseDto, ClassroomDto } from 'src/school';
+import { StudentDto, CycleDto, ActivityDto, ClassroomDto } from 'src/school';
 
 @ObjectType('Enrollment')
 @QueryOptions({
@@ -16,7 +16,7 @@ import { StudentDto, CycleDto, CourseDto, ClassroomDto } from 'src/school';
 })
 @Relation('branch', () => BranchDto, { nullable: false })
 @Relation('student', () => StudentDto, { nullable: false })
-@Relation('course', () => CourseDto, { nullable: false })
+@Relation('activity', () => ActivityDto, { nullable: false })
 @Relation('cycle', () => CycleDto, { nullable: false })
 @Relation('classroom', () => ClassroomDto, { nullable: false })
 export class EnrollmentDto extends BaseDto {
@@ -26,6 +26,9 @@ export class EnrollmentDto extends BaseDto {
   @Field(() => EnrollmentState, { nullable: false })
   state: EnrollmentState;
 
+  @FilterableField(() => Number, { nullable: false })
+  order: number;
+
   @FilterableField(() => String, { nullable: false })
   branchId: string;
 
@@ -33,7 +36,7 @@ export class EnrollmentDto extends BaseDto {
   studentId: string;
 
   @FilterableField(() => String, { nullable: false })
-  courseId: string;
+  activityId: string;
 
   @FilterableField(() => String, { nullable: false })
   cycleId: string;

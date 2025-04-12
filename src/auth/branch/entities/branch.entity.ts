@@ -2,7 +2,7 @@ import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import {
   Classroom,
-  Course,
+  Activity,
   Cycle,
   Enrollment,
   Student,
@@ -28,8 +28,8 @@ export class Branch extends Base {
   @OneToMany(() => Classroom, (classroom) => classroom.branch)
   classrooms: Classroom[];
 
-  @OneToMany(() => Course, (course) => course.branch)
-  courses: Course[];
+  @OneToMany(() => Activity, (activity) => activity.branch)
+  activities: Activity[];
 
   @OneToMany(() => Cycle, (cycle) => cycle.branch)
   cycles: Cycle[];

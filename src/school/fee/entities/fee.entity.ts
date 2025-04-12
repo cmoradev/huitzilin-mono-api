@@ -1,7 +1,7 @@
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Frequency } from '../enums';
-import { Course } from 'src/school';
+import { Activity } from 'src/school';
 
 @Entity({ schema: 'school', name: 'fees' })
 export class Fee extends Base {
@@ -16,9 +16,9 @@ export class Fee extends Base {
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
-  courseId: string;
+  activityId: string;
 
-  @ManyToOne(() => Course, (policy) => policy.fees)
-  @JoinColumn({ name: 'courseId' })
-  course: Course;
+  @ManyToOne(() => Activity, (activity) => activity.fees)
+  @JoinColumn({ name: 'activityId' })
+  activity: Activity;
 }
