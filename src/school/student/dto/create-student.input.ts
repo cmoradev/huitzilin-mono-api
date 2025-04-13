@@ -22,6 +22,10 @@ export class CreateStudentInput {
   dateBirth: string;
 
   @IsUUID()
+  @Field(() => String, { nullable: false })
+  levelId: string;
+
+  @IsUUID()
   @Field(() => String, { nullable: true })
   userId: string;
 }
