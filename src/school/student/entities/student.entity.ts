@@ -29,6 +29,12 @@ export class Student extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   fullname: string;
 
+  @Column({ type: 'varchar', nullable: false, length: 64 })
+  dni: string;
+
+  @Column({ type: 'date', nullable: false })
+  dateBirth: string;
+
   @Column({ type: 'uuid', nullable: true })
   @Index()
   userId: string;

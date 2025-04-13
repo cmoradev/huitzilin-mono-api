@@ -32,6 +32,12 @@ export class StudentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   fullname: string;
 
+  @FilterableField(() => String, { nullable: false })
+  dni: string;
+
+  @FilterableField(() => String, { nullable: false })
+  dateBirth: string;
+
   @Field(() => String, { nullable: false })
   userId: string;
 }
