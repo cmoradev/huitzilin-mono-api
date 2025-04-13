@@ -18,6 +18,9 @@ export class Activity extends Base {
   @Column({ type: 'int', nullable: false })
   order: number;
 
+  @Column({ type: 'int', nullable: false })
+  quantity: number;
+
   @Column({ type: 'boolean', nullable: false, default: false })
   isPackage: boolean;
 

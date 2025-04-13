@@ -10,6 +10,9 @@ export class CreateActivityInput {
   @Field(() => Number, { nullable: false })
   order: number;
 
+  @Field(() => Number, { nullable: false })
+  quantity: number;
+
   @Field(() => Boolean, { nullable: false })
   isPackage: boolean;
 

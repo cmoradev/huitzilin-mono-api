@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
@@ -13,6 +13,9 @@ export class ActivityDto extends BaseDto {
 
   @FilterableField(() => Number, { nullable: false })
   order: number;
+
+  @Field(() => Number, { nullable: false })
+  quantity: number;
 
   @FilterableField(() => Boolean, { nullable: false })
   isPackage: boolean;
