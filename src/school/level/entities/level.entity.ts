@@ -6,8 +6,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 
 @Entity({ schema: 'school', name: 'levels' })
@@ -26,6 +26,6 @@ export class Level extends Base {
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
 
-  @OneToMany(() => Student, (student) => student.level)
+  @ManyToMany(() => Student, (student) => student.levels)
   students: Student[];
 }

@@ -26,7 +26,7 @@ import { Activity } from './entities/activity.entity';
           enableTotalCount: true,
           enableSubscriptions: false,
           create: { many: { disabled: true }, one: { disabled: false } },
-          update: { many: { disabled: true }, one: { disabled: false } },
+          update: { many: { disabled: false }, one: { disabled: false } },
           delete: { many: { disabled: true }, one: { disabled: false } },
         },
       ],

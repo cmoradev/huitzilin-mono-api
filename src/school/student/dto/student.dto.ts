@@ -3,7 +3,6 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
   FilterableUnPagedRelation,
-  Relation,
   QueryOptions,
 } from '@ptc-org/nestjs-query-graphql';
 import { BranchDto } from 'src/auth/branch/dto';
@@ -18,7 +17,10 @@ import { LevelDto } from 'src/school/level/dto/level.dto';
   update: { enabled: true },
   remove: { enabled: true },
 })
-@Relation('level', () => LevelDto, { nullable: false })
+@FilterableUnPagedRelation('levels', () => LevelDto, {
+  update: { enabled: true },
+  remove: { enabled: true },
+})
 export class StudentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   code: string;
@@ -40,9 +42,6 @@ export class StudentDto extends BaseDto {
 
   @Field(() => String, { nullable: false })
   dateBirth: string;
-
-  @FilterableField(() => String, { nullable: false })
-  levelId: string;
 
   @Field(() => String, { nullable: true })
   userId: string;

@@ -35,14 +35,6 @@ export class Student extends Base {
   @Column({ type: 'date', nullable: false })
   dateBirth: string;
 
-  @Column({ type: 'uuid', nullable: false })
-  @Index()
-  levelId: string;
-
-  @ManyToOne(() => Level, (level) => level.students)
-  @JoinColumn({ name: 'levelId' })
-  level: Level;
-
   @Column({ type: 'uuid', nullable: true })
   @Index()
   userId: string;
@@ -54,6 +46,10 @@ export class Student extends Base {
   @ManyToMany(() => Branch, (branch) => branch.students)
   @JoinTable({ name: 'branchs_to_students' })
   branchs: Branch[];
+
+  @ManyToMany(() => Level, (level) => level.students)
+  @JoinTable({ name: 'levels_to_students' })
+  levels: Level[];
 
   @ManyToMany(() => Tutor, (tutor) => tutor.students)
   tutors: Tutor[];
