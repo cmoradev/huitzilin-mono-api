@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/name: mono-api
+  annotations:
+    cert-manager.io/issuer: letsencrypt-http01-prod
+  name: mono-api
+  namespace: huitzilin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api-portal.apexcentre.com.mx
+    http:
+      paths:
+      - backend:
+          service:
+            name: mono-api
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+      - 'api-portal.apexcentre.com.mx'
+    secretName: api-portal-apexcentre-com-mx-tls

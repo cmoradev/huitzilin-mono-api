@@ -34,7 +34,7 @@ const entitiesDir = join(
   'entities',
   '*.entity{.ts,.js}',
 );
-console.log(entitiesDir);
+
 const migrationsDir = join(__dirname, 'migrations', '*{.ts,.js}');
 
 const options: DataSourceOptions = {
@@ -47,6 +47,7 @@ const options: DataSourceOptions = {
   entities: [entitiesDir],
   migrations: [migrationsDir],
   migrationsTableName: 'migrations',
+  ssl: false,
   synchronize: false,
 };
 

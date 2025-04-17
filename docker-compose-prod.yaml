@@ -14,18 +14,18 @@ services:
       POSTGRES_DB: db_apex
   # Apex Mono Api
   apex-server:
-    image: huitzilin:latest
+    image: registry.digitalocean.com/softmora/huitzilin/mono-api:c41bc24
     ports:
       - '4000:3000'
     depends_on:
       - postgres-server
     environment:
       SECRET_KEY: d5b78faed7f61e7d
-      DB_HOST: postgres-server
-      DB_PORT: 5432
-      DB_USER: db_user
-      DB_PASS: db_password
-      DB_NAME: db_apex
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
   # Storage Server
   storage-server:
     image: registry.digitalocean.com/softmora/utils/storage-ms:5385118
