@@ -32,7 +32,7 @@ services:
       DB_NAME: db_apex
   # Storage Server
   storage-server:
-    image: registry.digitalocean.com/softmora/utils/storage-ms:4a9f692
+    image: registry.digitalocean.com/softmora/utils/storage-ms:5385118
     ports:
       - '4100:3000'
     environment:
