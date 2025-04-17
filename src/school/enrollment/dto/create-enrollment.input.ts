@@ -14,6 +14,12 @@ export class CreateEnrollmentInput {
   @Field(() => Number, { nullable: false })
   order: number;
 
+  @Field(() => Boolean, { nullable: false })
+  isPackage: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  inPackage: boolean;
+
   @IsUUID()
   @Field(() => String, { nullable: false })
   branchId: string;

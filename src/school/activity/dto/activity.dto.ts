@@ -20,6 +20,9 @@ export class ActivityDto extends BaseDto {
   @FilterableField(() => Boolean, { nullable: false })
   isPackage: boolean;
 
+  @FilterableField(() => Boolean, { nullable: false })
+  inPackage: boolean;
+
   @FilterableField(() => String, { nullable: false })
   branchId: string;
 }

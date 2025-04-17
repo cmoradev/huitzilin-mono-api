@@ -22,6 +22,12 @@ export class Enrollment extends Base {
   @Column({ type: 'int', nullable: false })
   order: number;
 
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isPackage: boolean;
+
+  @Column({ type: 'boolean', nullable: false, default: false })
+  inPackage: boolean;
+
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;
@@ -65,12 +71,12 @@ export class Enrollment extends Base {
   @Column({ type: 'int', nullable: true })
   parentId: number | null;
 
-  // @ManyToOne(() => Enrollment, (enrollment) => enrollment.children)
-  // @JoinColumn({ name: 'parentId' })
-  // parent: Enrollment;
+  @ManyToOne(() => Enrollment, (enrollment) => enrollment.children)
+  @JoinColumn({ name: 'parentId' })
+  parent: Enrollment;
 
-  // @OneToMany(() => Enrollment, (enrollment) => enrollment.parent)
-  // children: Enrollment[];
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.parent)
+  children: Enrollment[];
 
   @OneToMany(() => Debit, (debit) => debit.enrollment)
   debts: Debit[];

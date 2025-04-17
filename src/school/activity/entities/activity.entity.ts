@@ -24,6 +24,9 @@ export class Activity extends Base {
   @Column({ type: 'boolean', nullable: false, default: false })
   isPackage: boolean;
 
+  @Column({ type: 'boolean', nullable: false, default: false })
+  inPackage: boolean;
+
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;

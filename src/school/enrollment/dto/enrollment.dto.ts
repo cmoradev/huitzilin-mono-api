@@ -29,6 +29,12 @@ export class EnrollmentDto extends BaseDto {
   @FilterableField(() => Number, { nullable: false })
   order: number;
 
+  @FilterableField(() => Boolean, { nullable: false })
+  isPackage: boolean;
+
+  @FilterableField(() => Boolean, { nullable: false })
+  inPackage: boolean;
+
   @FilterableField(() => String, { nullable: false })
   branchId: string;
 
