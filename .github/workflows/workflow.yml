@@ -53,7 +53,7 @@ jobs:
         run: echo "TAG=$(echo $GITHUB_SHA | head -c7)" >> $GITHUB_ENV
       # Log In to Kubernetes Cluster
       - name: 'Save DigitalOcean kubeconfig with short-lived credentials'
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 kube
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 kubemora
       # Se asigna una nueva imagen
       - name: 'Set new image in deployment'
         run: kubectl set image deployment/${{ matrix.workspace.deploy }} ${{ matrix.workspace.container }}=registry.digitalocean.com/softmora/huitzilin/mono-api:${{ env.TAG }} -n ${{ matrix.workspace.namespace }}
