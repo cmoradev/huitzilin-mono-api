@@ -1,13 +1,13 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Student } from 'src/school';
+import { Enrollment } from 'src/school';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ schema: 'school', name: 'levels' })
@@ -26,6 +26,6 @@ export class Level extends Base {
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
 
-  @ManyToMany(() => Student, (student) => student.levels)
-  students: Student[];
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.level)
+  enrollments: Enrollment[];
 }

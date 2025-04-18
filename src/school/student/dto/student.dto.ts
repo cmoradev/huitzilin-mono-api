@@ -7,17 +7,12 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { BranchDto } from 'src/auth/branch/dto';
 import { BaseDto } from 'src/common/dtos/base.dto';
-import { LevelDto } from 'src/school/level/dto/level.dto';
 
 @ObjectType('Student')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 @FilterableUnPagedRelation('branchs', () => BranchDto, {
-  update: { enabled: true },
-  remove: { enabled: true },
-})
-@FilterableUnPagedRelation('levels', () => LevelDto, {
   update: { enabled: true },
   remove: { enabled: true },
 })
