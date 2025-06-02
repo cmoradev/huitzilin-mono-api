@@ -14,7 +14,7 @@ services:
       POSTGRES_DB: db_apex
   # Apex Mono Api
   apex-server:
-    image: registry.digitalocean.com/softmora/huitzilin/mono-api:5db75ed
+    image: registry.digitalocean.com/softmora/huitzilin/mono-api:1727b85
     ports:
       - '4000:3000'
     depends_on:
@@ -28,7 +28,7 @@ services:
       DB_NAME: ${DB_NAME}
   # Storage Server
   storage-server:
-    image: registry.digitalocean.com/softmora/utils/storage-ms:c637053
+    image: registry.digitalocean.com/softmora/utils/storage-ms:26cddb8
     ports:
       - '4100:3000'
     environment:
