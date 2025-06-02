@@ -25,7 +25,7 @@ services:
       - postgres-server
     environment:
       SECRET_KEY: d5b78faed7f61e7d
-      DB_HOST: ${DB_HOST}
+      DB_HOST: postgres-server
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}

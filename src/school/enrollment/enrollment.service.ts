@@ -4,7 +4,7 @@ import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 import { Repository } from 'typeorm';
 import { Enrollment } from './entities/enrollment.entity';
 import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
-import { SetOrderEnrollmentInput } from './dto/set-order-enrollment.input';
+import { SetOrderInput } from 'src/common/dtos';
 
 @Injectable()
 export class EnrollmentService extends TypeOrmQueryService<Enrollment> {
@@ -16,16 +16,12 @@ export class EnrollmentService extends TypeOrmQueryService<Enrollment> {
   }
 
   public async setOrderEnrollments(
-    params: SetOrderEnrollmentInput[],
+    params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
-    const values = params.map(
-      (param) => ({ order: param.order, id: param.enrollmentId }) as Enrollment,
-    );
-
-    const activities = await this._enrollmentRepository.save(values);
+    const enrollment = await this._enrollmentRepository.save(params);
 
     return {
-      updatedCount: activities.length,
+      updatedCount: enrollment.length,
     };
   }
 }

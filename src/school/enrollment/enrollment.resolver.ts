@@ -7,7 +7,7 @@ import {
 import { EnrollmentDto } from './dto/enrollment.dto';
 import { EnrollmentService } from './enrollment.service';
 import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
-import { SetOrderEnrollmentInput } from './dto/set-order-enrollment.input';
+import { SetOrderInput } from 'src/common/dtos';
 
 @Resolver(() => EnrollmentDto)
 export class EnrollmentResolver {
@@ -15,8 +15,8 @@ export class EnrollmentResolver {
 
   @Mutation(() => UpdateCountResponse)
   setOrderEnrollments(
-    @Args('input', { type: () => [SetOrderEnrollmentInput] })
-    params: SetOrderEnrollmentInput[],
+    @Args('input', { type: () => [SetOrderInput] })
+    params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
     return this.enrollmentService.setOrderEnrollments(params);
   }

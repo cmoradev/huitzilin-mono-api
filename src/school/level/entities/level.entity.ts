@@ -22,6 +22,9 @@ export class Level extends Base {
   @Index()
   branchId: string;
 
+  @Column({ type: 'int', nullable: false, default: 0 })
+  order: number;
+
   @ManyToOne(() => Branch, (branch) => branch.levels)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;

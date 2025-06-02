@@ -4,10 +4,10 @@ import {
   FilterType,
   UpdateManyResponseType,
 } from '@ptc-org/nestjs-query-graphql';
+import { SetOrderInput } from 'src/common/dtos';
+import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
 import { ActivityService } from './activity.service';
 import { ActivityDto } from './dto/activity.dto';
-import { SetOrderActivityInput } from './dto/set-order-activity.input';
-import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
 
 @Resolver(() => ActivityDto)
 export class ActivityResolver {
@@ -15,8 +15,8 @@ export class ActivityResolver {
 
   @Mutation(() => UpdateCountResponse)
   setOrderActivities(
-    @Args('input', { type: () => [SetOrderActivityInput] })
-    params: SetOrderActivityInput[],
+    @Args('input', { type: () => [SetOrderInput] })
+    params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
     return this.activityService.setOrderActivities(params);
   }

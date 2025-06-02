@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from './entities/activity.entity';
-import { SetOrderActivityInput } from './dto/set-order-activity.input';
 import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
+import { SetOrderInput } from 'src/common/dtos';
 @Injectable()
 export class ActivityService extends TypeOrmQueryService<Activity> {
   constructor(
@@ -15,13 +15,9 @@ export class ActivityService extends TypeOrmQueryService<Activity> {
   }
 
   public async setOrderActivities(
-    params: SetOrderActivityInput[],
+    params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
-    const values = params.map(
-      (param) => ({ order: param.order, id: param.activityId }) as Activity,
-    );
-
-    const activities = await this._activityRepository.save(values);
+    const activities = await this._activityRepository.save(params);
 
     return {
       updatedCount: activities.length,

@@ -6,10 +6,19 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { LevelDto } from './dto/level.dto';
 import { LevelService } from './level.service';
+import { SetOrderInput, UpdateCountResponse } from 'src/common/dtos';
 
 @Resolver(() => LevelDto)
 export class LevelResolver {
   constructor(private readonly levelService: LevelService) {}
+
+  @Mutation(() => UpdateCountResponse)
+  setOrderEnrollments(
+    @Args('input', { type: () => [SetOrderInput] })
+    params: SetOrderInput[],
+  ): Promise<UpdateCountResponse> {
+    return this.levelService.setOrderLevels(params);
+  }
 
   @Mutation(() => LevelDto)
   restoreOneVideo(
