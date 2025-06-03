@@ -13,7 +13,7 @@ export class LevelResolver {
   constructor(private readonly levelService: LevelService) {}
 
   @Mutation(() => UpdateCountResponse)
-  setOrderEnrollments(
+  setOrderLevels(
     @Args('input', { type: () => [SetOrderInput] })
     params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
