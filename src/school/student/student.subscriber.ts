@@ -21,23 +21,19 @@ export class StudentEventSubscriber
     return Student;
   }
 
-  async beforeInsert(e: InsertEvent<Student>): Promise<any | void> {
-    e.entity.firstname = titleCase(`${e.entity!.firstname || ''}`);
-    e.entity.lastname = titleCase(`${e.entity!.lastname || ''}`);
-    
-    e.entity.fullname = getFullname(e.entity);
-    
-    e.entity.code = randomCode();
+  beforeInsert(e: InsertEvent<Student>) {
+    e.entity.firstname = titleCase(`${e.entity.firstname || ''}`);
+    e.entity.lastname = titleCase(`${e.entity.lastname || ''}`);
 
-    return e;
+    e.entity.fullname = getFullname(e.entity);
+
+    e.entity.code = randomCode();
   }
 
-  async beforeUpdate(e: UpdateEvent<Student>): Promise<any | void> {
+  beforeUpdate(e: UpdateEvent<Student>) {
     e.entity!.firstname = titleCase(`${e.entity!.firstname || ''}`);
     e.entity!.lastname = titleCase(`${e.entity!.lastname || ''}`);
 
     e.entity!.fullname = getFullname(e.entity as Student);
-
-    return e;
   }
 }

@@ -10,6 +10,7 @@ import { UpdateFeeInput } from './dto/update-fee.input';
 import { Fee } from './entities/fee.entity';
 import { FeeResolver } from './fee.resolver';
 import { FeeService } from './fee.service';
+import { FeeEventSubscriber } from './fee.subscriber';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { FeeService } from './fee.service';
       ],
     }),
   ],
-  providers: [FeeResolver],
+  providers: [FeeResolver, FeeEventSubscriber],
 })
 export class FeeModule {}

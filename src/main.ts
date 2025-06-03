@@ -1,6 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
+import { Decimal } from 'decimal.js';
+
+Decimal.set({
+  precision: 10,
+  rounding: Decimal.ROUND_HALF_UP,
+});
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
