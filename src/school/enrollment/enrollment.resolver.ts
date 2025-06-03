@@ -23,7 +23,7 @@ export class EnrollmentResolver {
 
   @Mutation(() => EnrollmentDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<EnrollmentDto> {
     return this.enrollmentService.restoreOne(id);
   }

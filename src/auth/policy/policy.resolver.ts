@@ -13,7 +13,7 @@ export class PolicyResolver {
 
   @Mutation(() => PolicyDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<PolicyDto> {
     return this.policyService.restoreOne(id);
   }

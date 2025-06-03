@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
 import { EnrollmentState } from '../enums';
 
@@ -45,6 +45,6 @@ export class CreateEnrollmentInput {
   levelId: string;
 
   @IsUUID()
-  @Field(() => String, { nullable: true })
+  @Field(() => ID, { nullable: true })
   parentId: string | null;
 }

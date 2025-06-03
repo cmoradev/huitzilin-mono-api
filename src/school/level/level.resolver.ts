@@ -22,7 +22,7 @@ export class LevelResolver {
 
   @Mutation(() => LevelDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<LevelDto> {
     return this.levelService.restoreOne(id);
   }

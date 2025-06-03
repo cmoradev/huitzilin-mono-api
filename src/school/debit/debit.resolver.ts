@@ -13,7 +13,7 @@ export class DebitResolver {
 
   @Mutation(() => DebitDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<DebitDto> {
     return this.debitService.restoreOne(id);
   }

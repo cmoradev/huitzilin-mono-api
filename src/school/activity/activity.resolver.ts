@@ -23,7 +23,7 @@ export class ActivityResolver {
 
   @Mutation(() => ActivityDto)
   restoreOneActivity(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<ActivityDto> {
     return this.activityService.restoreOne(id);
   }

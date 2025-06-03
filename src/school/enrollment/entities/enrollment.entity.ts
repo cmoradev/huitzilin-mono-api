@@ -76,8 +76,8 @@ export class Enrollment extends Base {
   @JoinColumn({ name: 'levelId' })
   level: Level;
 
-  @Column({ type: 'int', nullable: true })
-  parentId: number | null;
+  @Column({ type: 'uuid', nullable: true })
+  parentId: string | null;
 
   @ManyToOne(() => Enrollment, (enrollment) => enrollment.children)
   @JoinColumn({ name: 'parentId' })

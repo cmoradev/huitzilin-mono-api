@@ -13,7 +13,7 @@ export class FeeResolver {
 
   @Mutation(() => FeeDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<FeeDto> {
     return this.feeService.restoreOne(id);
   }

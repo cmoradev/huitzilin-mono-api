@@ -13,7 +13,7 @@ export class ClassroomResolver {
 
   @Mutation(() => ClassroomDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<ClassroomDto> {
     return this.classroomService.restoreOne(id);
   }

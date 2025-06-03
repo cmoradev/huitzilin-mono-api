@@ -13,7 +13,7 @@ export class ActionResolver {
 
   @Mutation(() => ActionDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<ActionDto> {
     return this.actionService.restoreOne(id);
   }

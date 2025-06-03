@@ -13,7 +13,7 @@ export class BranchResolver {
 
   @Mutation(() => BranchDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<BranchDto> {
     return this.branchService.restoreOne(id);
   }

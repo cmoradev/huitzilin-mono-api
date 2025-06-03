@@ -13,7 +13,7 @@ export class CycleResolver {
 
   @Mutation(() => CycleDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<CycleDto> {
     return this.cycleService.restoreOne(id);
   }

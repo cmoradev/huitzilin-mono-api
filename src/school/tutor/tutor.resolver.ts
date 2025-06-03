@@ -13,7 +13,7 @@ export class TutorResolver {
 
   @Mutation(() => TutorDto)
   restoreOneVideo(
-    @Args('input', { type: () => ID }) id: number,
+    @Args('input', { type: () => ID }) id: string,
   ): Promise<TutorDto> {
     return this.tutorService.restoreOne(id);
   }
