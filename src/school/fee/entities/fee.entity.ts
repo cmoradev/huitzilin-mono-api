@@ -9,7 +9,16 @@ export class Fee extends Base {
   name: string;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  amount: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  tax: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   price: number;
+
+  @Column({ type: 'boolean', nullable: false, default: true })
+  withTax: boolean;
 
   @Column({ type: 'enum', nullable: false, enum: Frequency })
   frequency: Frequency;

@@ -13,7 +13,16 @@ export class FeeDto extends BaseDto {
   name: string;
 
   @Field(() => Float, { nullable: false })
+  amount: number;
+
+  @Field(() => Float, { nullable: false })
+  tax: number;
+
+  @Field(() => Float, { nullable: false })
   price: number;
+
+  @Field(() => Boolean, { nullable: false })
+  withTax: boolean;
 
   @Field(() => Frequency, { nullable: false })
   frequency: Frequency;

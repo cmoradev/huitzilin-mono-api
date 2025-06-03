@@ -19,6 +19,9 @@ export class CreateActivityInput {
   @Field(() => Boolean, { nullable: false })
   inPackage: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  withTax: boolean;
+
   @IsUUID()
   @Field(() => String, { nullable: false })
   branchId: string;

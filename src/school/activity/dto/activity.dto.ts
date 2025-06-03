@@ -23,6 +23,9 @@ export class ActivityDto extends BaseDto {
   @FilterableField(() => Boolean, { nullable: false })
   inPackage: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  withTax: boolean;
+
   @FilterableField(() => String, { nullable: false })
   branchId: string;
 }

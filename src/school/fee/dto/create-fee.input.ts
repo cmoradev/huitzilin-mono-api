@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { IsUUID, MaxLength } from 'class-validator';
+import { IsUUID, MaxLength, Min } from 'class-validator';
 import { Frequency } from '../enums';
 
 @InputType('CreateFee')
@@ -8,8 +8,12 @@ export class CreateFeeInput {
   @Field(() => String, { nullable: false })
   name: string;
 
+  @Min(1)
   @Field(() => Float, { nullable: false })
   price: number;
+
+  @Field(() => Boolean, { nullable: false })
+  withTax: boolean;
 
   @Field(() => Frequency, { nullable: false })
   frequency: Frequency;
