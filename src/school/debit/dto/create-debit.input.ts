@@ -1,9 +1,4 @@
-import {
-  InputType,
-  Field,
-  Float,
-  GraphQLISODateTime,
-} from '@nestjs/graphql';
+import { InputType, Field, Float, GraphQLISODateTime } from '@nestjs/graphql';
 import { DebitState } from '../enums';
 import { Frequency } from 'src/school/fee/enums';
 import { IsUUID } from 'class-validator';

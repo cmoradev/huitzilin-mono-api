@@ -12,7 +12,7 @@ export class Fee extends Base {
   amount: number;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
-  tax: number;
+  taxes: number;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   price: number;

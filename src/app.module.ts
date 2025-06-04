@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { loader, validationSchema } from './common/config';
 import { DatabaseModule } from './common/database/database.module';
 import { SchoolModule } from './school/school.module';
+import { DiscountsModule } from './miscellaneous/discounts/discounts.module';
 
 console.log(); // Log the NODE_ENV value
 
@@ -23,6 +24,7 @@ console.log(); // Log the NODE_ENV value
     DatabaseModule,
     AuthModule,
     SchoolModule,
+    DiscountsModule,
   ],
 })
 export class AppModule {}

@@ -35,10 +35,10 @@ export class FeeEventSubscriber implements EntitySubscriberInterface<Fee> {
         const { amount, taxes } = calculateAmountFromTotalAndTax(fee.price);
 
         fee.amount = amount;
-        fee.tax = taxes;
+        fee.taxes = taxes;
       } else {
         fee.amount = fee.price;
-        fee.tax = 0;
+        fee.taxes = 0;
       }
     }
 

@@ -16,7 +16,7 @@ export class FeeDto extends BaseDto {
   amount: number;
 
   @Field(() => Float, { nullable: false })
-  tax: number;
+  taxes: number;
 
   @Field(() => Float, { nullable: false })
   price: number;

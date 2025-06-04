@@ -9,6 +9,7 @@ import { LevelModule } from './level/level.module';
 import { StudentModule } from './student/student.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { TutorModule } from './tutor/tutor.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TutorModule } from './tutor/tutor.module';
     StudentModule,
     TeacherModule,
     TutorModule,
+    DocumentsModule,
   ],
 })
 export class SchoolModule {}

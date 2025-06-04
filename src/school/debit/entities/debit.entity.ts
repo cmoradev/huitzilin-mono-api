@@ -10,16 +10,34 @@ export class Debit extends Base {
   description: string;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
-  value: number;
+  unitPrice: number;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   quantity: number;
 
-  @Column({ type: 'enum', nullable: false, enum: Frequency })
-  frequency: Frequency;
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  amount: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  discount: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  subtotal: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  taxes: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  total: number;
+
+  @Column({ type: 'boolean', nullable: false, default: true })
+  withTax: boolean;
 
   @Column({ type: 'enum', nullable: false, enum: DebitState })
   state: DebitState;
+
+  @Column({ type: 'enum', nullable: false, enum: Frequency })
+  frequency: Frequency;
 
   @Column({ type: 'date', nullable: false })
   dueDate: string;

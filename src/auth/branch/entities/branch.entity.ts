@@ -1,5 +1,6 @@
 import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
+import { Discount } from 'src/miscellaneous';
 import {
   Classroom,
   Activity,
@@ -8,8 +9,8 @@ import {
   Student,
   Teacher,
   Tutor,
+  Level,
 } from 'src/school';
-import { Level } from 'src/school/level/entities/level.entity';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'branchs' })
@@ -40,6 +41,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Level, (level) => level.branch)
   levels: Level[];
+
+  @OneToMany(() => Discount, (discount) => discount.branch)
+  discounts: Discount[];
 
   @ManyToMany(() => Student, (student) => student.branchs)
   students: Student[];

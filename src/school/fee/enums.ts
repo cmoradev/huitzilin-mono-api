@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 /**
  * Enumera las diferentes frecuencias posibles para un evento o acción.
- * 
+ *
  * @enum {string}
  * @readonly
  */
