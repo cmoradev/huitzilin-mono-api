@@ -15,19 +15,7 @@ export class CreateDebitInput {
   quantity: number;
 
   @Field(() => Float, { nullable: false })
-  amount: number;
-
-  @Field(() => Float, { nullable: false })
   discount: number;
-
-  @Field(() => Float, { nullable: false })
-  subtotal: number;
-
-  @Field(() => Float, { nullable: false })
-  taxes: number;
-
-  @Field(() => Float, { nullable: false })
-  total: number;
 
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;

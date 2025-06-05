@@ -10,6 +10,7 @@ import { CreateDebitInput } from './dto/create-debit.input';
 import { DebitDto } from './dto/debit.dto';
 import { UpdateDebitInput } from './dto/update-debit.input';
 import { Debit } from './entities/debit.entity';
+import { DebitEventSubscriber } from './debit.subscriber';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { Debit } from './entities/debit.entity';
       ],
     }),
   ],
-  providers: [DebitResolver],
+  providers: [DebitResolver, DebitEventSubscriber],
 })
 export class DebitModule {}
