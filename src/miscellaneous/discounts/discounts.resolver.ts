@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { DiscountsService } from './discounts.service';
-import { Discount } from './entities/discount.entity';
-import { CreateDiscountInput } from './dto/create-discount.input';
-import { UpdateDiscountInput } from './dto/update-discount.input';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
+import { DiscountService } from './discounts.service';
+import { DiscountDto } from './dto';
 
-@Resolver(() => Discount)
-export class DiscountsResolver {
-  constructor(private readonly discountsService: DiscountsService) {}
+@Resolver(() => DiscountDto)
+export class DiscountResolver {
+  constructor(private readonly _discountService: DiscountService) {}
 
-  @Mutation(() => Discount)
-  createDiscount(@Args('createDiscountInput') createDiscountInput: CreateDiscountInput) {
-    return this.discountsService.create(createDiscountInput);
+  @Mutation(() => DiscountDto)
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: string,
+  ): Promise<DiscountDto> {
+    return this._discountService.restoreOne(id);
   }
 
-  @Query(() => [Discount], { name: 'discounts' })
-  findAll() {
-    return this.discountsService.findAll();
-  }
-
-  @Query(() => Discount, { name: 'discount' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.discountsService.findOne(id);
-  }
-
-  @Mutation(() => Discount)
-  updateDiscount(@Args('updateDiscountInput') updateDiscountInput: UpdateDiscountInput) {
-    return this.discountsService.update(updateDiscountInput.id, updateDiscountInput);
-  }
-
-  @Mutation(() => Discount)
-  removeDiscount(@Args('id', { type: () => Int }) id: number) {
-    return this.discountsService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(DiscountDto) })
+    filter: Filter<DiscountDto>,
+  ): Promise<UpdateManyResponse> {
+    return this._discountService.restoreMany(filter);
   }
 }

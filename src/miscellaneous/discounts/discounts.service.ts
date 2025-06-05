@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDiscountInput } from './dto/create-discount.input';
-import { UpdateDiscountInput } from './dto/update-discount.input';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Discount } from './entities/discount.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class DiscountsService {
-  create(createDiscountInput: CreateDiscountInput) {
-    return 'This action adds a new discount';
-  }
-
-  findAll() {
-    return `This action returns all discounts`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} discount`;
-  }
-
-  update(id: number, updateDiscountInput: UpdateDiscountInput) {
-    return `This action updates a #${id} discount`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} discount`;
+export class DiscountService extends TypeOrmQueryService<Discount> {
+  constructor(
+    @InjectRepository(Discount)
+    private readonly _discountRepository: Repository<Discount>,
+  ) {
+    super(_discountRepository, { useSoftDelete: true });
   }
 }

@@ -9,10 +9,28 @@ export class CreateDebitInput {
   description: string;
 
   @Field(() => Float, { nullable: false })
-  value: number;
+  unitPrice: number;
 
   @Field(() => Float, { nullable: false })
   quantity: number;
+
+  @Field(() => Float, { nullable: false })
+  amount: number;
+
+  @Field(() => Float, { nullable: false })
+  discount: number;
+
+  @Field(() => Float, { nullable: false })
+  subtotal: number;
+
+  @Field(() => Float, { nullable: false })
+  taxes: number;
+
+  @Field(() => Float, { nullable: false })
+  total: number;
+
+  @Field(() => Boolean, { nullable: false })
+  withTax: boolean;
 
   @Field(() => DebitState, { nullable: false })
   state: DebitState;

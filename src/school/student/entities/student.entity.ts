@@ -1,6 +1,6 @@
 import { Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Enrollment, Tutor } from 'src/school';
+import { Enrollment, Tutor, Document } from 'src/school';
 import {
   Column,
   Entity,
@@ -46,6 +46,10 @@ export class Student extends Base {
   @ManyToMany(() => Branch, (branch) => branch.students)
   @JoinTable({ name: 'branchs_to_students' })
   branchs: Branch[];
+
+  @ManyToMany(() => Document, (branch) => branch.students)
+  @JoinTable({ name: 'documents_to_students' })
+  documents: Branch[];
 
   @ManyToMany(() => Tutor, (tutor) => tutor.students)
   tutors: Tutor[];

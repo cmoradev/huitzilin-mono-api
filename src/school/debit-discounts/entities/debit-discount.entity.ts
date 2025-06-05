@@ -1,10 +1,10 @@
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { DiscountBy } from '../enums';
-import { Branch } from 'src/auth';
+import { Debit } from 'src/school/debit/entities/debit.entity';
+import { DiscountBy } from 'src/miscellaneous/discounts/enums';
 
-@Entity({ schema: 'miscellaneous', name: 'discounts' })
-export class Discount extends Base {
+@Entity({ schema: 'school', name: 'debit_discounts' })
+export class DebitDiscount extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   name: string;
 
@@ -16,9 +16,9 @@ export class Discount extends Base {
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
-  branchId: string;
+  debitId: string;
 
-  @ManyToOne(() => Branch, (branch) => branch.discounts)
-  @JoinColumn({ name: 'branchId' })
-  branch: Branch;
+  @ManyToOne(() => Debit, (debit) => debit.debitDiscounts)
+  @JoinColumn({ name: 'debitId' })
+  debit: Debit;
 }

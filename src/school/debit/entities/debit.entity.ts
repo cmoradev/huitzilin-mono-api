@@ -1,7 +1,14 @@
 import { Base } from 'src/common/utils/base.entity';
-import { Enrollment } from 'src/school';
+import { DebitDiscount, Enrollment } from 'src/school';
 import { Frequency } from 'src/school/fee/enums';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { DebitState } from '../enums';
 
 @Entity({ schema: 'school', name: 'debts' })
@@ -52,4 +59,7 @@ export class Debit extends Base {
   @ManyToOne(() => Enrollment, (enrollment) => enrollment.debts)
   @JoinColumn({ name: 'enrollmentId' })
   enrollment: Enrollment;
+
+  @OneToMany(() => DebitDiscount, (discount) => discount.debit)
+  debitDiscounts: DebitDiscount[];
 }

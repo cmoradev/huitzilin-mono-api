@@ -4,22 +4,26 @@ import {
   PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { DiscountResolver } from './discounts.resolver';
-import { DiscountService } from './discounts.service';
-import { CreateDiscountInput, DiscountDto, UpdateDiscountInput } from './dto';
-import { Discount } from './entities/discount.entity';
+import { DebitDiscountResolver } from './debit-discounts.resolver';
+import { DebitDiscountService } from './debit-discounts.service';
+import {
+  CreateDebitDiscountInput,
+  DebitDiscountDto,
+  UpdateDiscountInput,
+} from './dto';
+import { DebitDiscount } from './entities/debit-discount.entity';
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Discount])],
-      services: [DiscountService],
+      imports: [NestjsQueryTypeOrmModule.forFeature([DebitDiscount])],
+      services: [DebitDiscountService],
       resolvers: [
         {
-          DTOClass: DiscountDto,
-          CreateDTOClass: CreateDiscountInput,
+          DTOClass: DebitDiscountDto,
+          CreateDTOClass: CreateDebitDiscountInput,
           UpdateDTOClass: UpdateDiscountInput,
-          ServiceClass: DiscountService,
+          ServiceClass: DebitDiscountService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
           enableSubscriptions: false,
@@ -30,6 +34,6 @@ import { Discount } from './entities/discount.entity';
       ],
     }),
   ],
-  providers: [DiscountResolver],
+  providers: [DebitDiscountResolver],
 })
-export class DiscountModule {}
+export class DebitDiscountModule {}

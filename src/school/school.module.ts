@@ -10,6 +10,7 @@ import { StudentModule } from './student/student.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { TutorModule } from './tutor/tutor.module';
 import { DocumentsModule } from './documents/documents.module';
+import { DebitDiscountModule } from './debit-discounts/debit-discounts.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DocumentsModule } from './documents/documents.module';
     ClassroomModule,
     CycleModule,
     DebitModule,
+    DebitDiscountModule,
     EnrollmentModule,
     FeeModule,
     LevelModule,

@@ -1,7 +1,13 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
+import { MaxLength } from 'class-validator';
 
-@InputType()
+@InputType('CreateDocument')
 export class CreateDocumentInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @MaxLength(64)
+  @Field(() => String, { nullable: false })
+  name: string;
+
+  @MaxLength(128)
+  @Field(() => String, { nullable: false })
+  url: string;
 }
