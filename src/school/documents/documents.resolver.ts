@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { DocumentsService } from './documents.service';
-import { Document } from './entities/document.entity';
-import { CreateDocumentInput } from './dto/create-document.input';
-import { UpdateDocumentInput } from './dto/update-document.input';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
+import { DocumentDto } from './dto/document.dto';
+import { DocumentService } from './documents.service';
 
-@Resolver(() => Document)
-export class DocumentsResolver {
-  constructor(private readonly documentsService: DocumentsService) {}
+@Resolver(() => DocumentDto)
+export class DocumentResolver {
+  constructor(private readonly _documentService: DocumentService) {}
 
-  @Mutation(() => Document)
-  createDocument(@Args('createDocumentInput') createDocumentInput: CreateDocumentInput) {
-    return this.documentsService.create(createDocumentInput);
+  @Mutation(() => DocumentDto)
+  restoreOneVideo(
+    @Args('input', { type: () => ID }) id: string,
+  ): Promise<DocumentDto> {
+    return this._documentService.restoreOne(id);
   }
 
-  @Query(() => [Document], { name: 'documents' })
-  findAll() {
-    return this.documentsService.findAll();
-  }
-
-  @Query(() => Document, { name: 'document' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.documentsService.findOne(id);
-  }
-
-  @Mutation(() => Document)
-  updateDocument(@Args('updateDocumentInput') updateDocumentInput: UpdateDocumentInput) {
-    return this.documentsService.update(updateDocumentInput.id, updateDocumentInput);
-  }
-
-  @Mutation(() => Document)
-  removeDocument(@Args('id', { type: () => Int }) id: number) {
-    return this.documentsService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyVideos(
+    @Args('input', { type: () => FilterType(DocumentDto) })
+    filter: Filter<DocumentDto>,
+  ): Promise<UpdateManyResponse> {
+    return this._documentService.restoreMany(filter);
   }
 }

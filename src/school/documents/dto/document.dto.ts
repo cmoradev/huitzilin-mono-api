@@ -8,7 +8,7 @@ import {
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { StudentDto } from 'src/school/student/dto/student.dto';
 
-@ObjectType('Debit')
+@ObjectType('Document')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
@@ -16,7 +16,7 @@ import { StudentDto } from 'src/school/student/dto/student.dto';
   update: { enabled: true },
   remove: { enabled: true },
 })
-export class DebitDto extends BaseDto {
+export class DocumentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;
 

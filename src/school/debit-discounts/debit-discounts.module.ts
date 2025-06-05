@@ -9,7 +9,7 @@ import { DebitDiscountService } from './debit-discounts.service';
 import {
   CreateDebitDiscountInput,
   DebitDiscountDto,
-  UpdateDiscountInput,
+  UpdateDebitDiscountInput,
 } from './dto';
 import { DebitDiscount } from './entities/debit-discount.entity';
 
@@ -22,7 +22,7 @@ import { DebitDiscount } from './entities/debit-discount.entity';
         {
           DTOClass: DebitDiscountDto,
           CreateDTOClass: CreateDebitDiscountInput,
-          UpdateDTOClass: UpdateDiscountInput,
+          UpdateDTOClass: UpdateDebitDiscountInput,
           ServiceClass: DebitDiscountService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,

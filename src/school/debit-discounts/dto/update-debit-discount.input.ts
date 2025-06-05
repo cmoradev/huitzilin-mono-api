@@ -1,7 +1,7 @@
 import { CreateDebitDiscountInput } from './create-debit-discount.input';
 import { InputType, PartialType } from '@nestjs/graphql';
 
-@InputType('UpdateDiscount')
-export class UpdateDiscountInput extends PartialType(
+@InputType('UpdateDebitDiscount')
+export class UpdateDebitDiscountInput extends PartialType(
   CreateDebitDiscountInput,
 ) {}

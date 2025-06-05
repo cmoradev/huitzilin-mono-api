@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDocumentInput } from './dto/create-document.input';
-import { UpdateDocumentInput } from './dto/update-document.input';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Document } from './entities/document.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class DocumentsService {
-  create(createDocumentInput: CreateDocumentInput) {
-    return 'This action adds a new document';
-  }
-
-  findAll() {
-    return `This action returns all documents`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} document`;
-  }
-
-  update(id: number, updateDocumentInput: UpdateDocumentInput) {
-    return `This action updates a #${id} document`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} document`;
+export class DocumentService extends TypeOrmQueryService<Document> {
+  constructor(
+    @InjectRepository(Document)
+    private readonly _documentRepository: Repository<Document>,
+  ) {
+    super(_documentRepository, { useSoftDelete: true });
   }
 }
