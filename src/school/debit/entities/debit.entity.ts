@@ -60,6 +60,8 @@ export class Debit extends Base {
   @JoinColumn({ name: 'enrollmentId' })
   enrollment: Enrollment;
 
-  @OneToMany(() => DebitDiscount, (discount) => discount.debit)
+  @OneToMany(() => DebitDiscount, (discount) => discount.debit, {
+    cascade: ['insert'],
+  })
   debitDiscounts: DebitDiscount[];
 }
