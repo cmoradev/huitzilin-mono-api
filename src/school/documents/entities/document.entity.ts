@@ -7,6 +7,9 @@ export class Document extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   name: string;
 
+  @Column({ type: 'varchar', nullable: false, length: 64 })
+  key: string;
+
   @Column({ type: 'varchar', nullable: false, length: 128 })
   url: string;
 

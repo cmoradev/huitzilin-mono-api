@@ -17,9 +17,6 @@ export class CreateEnrollmentInput {
   @Field(() => Boolean, { nullable: false })
   isPackage: boolean;
 
-  @Field(() => Boolean, { nullable: false })
-  inPackage: boolean;
-
   @IsUUID()
   @Field(() => String, { nullable: false })
   branchId: string;
@@ -35,10 +32,6 @@ export class CreateEnrollmentInput {
   @IsUUID()
   @Field(() => String, { nullable: false })
   cycleId: string;
-
-  @IsUUID()
-  @Field(() => String, { nullable: false })
-  classroomId: string;
 
   @IsUUID()
   @Field(() => String, { nullable: false })

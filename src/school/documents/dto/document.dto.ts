@@ -20,6 +20,9 @@ export class DocumentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;
 
+  @FilterableField(() => String, { nullable: false })
+  key: string;
+
   @Field(() => String, { nullable: false })
   url: string;
 }

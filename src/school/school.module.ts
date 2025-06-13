@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ActivityModule } from './activity/activity.module';
-import { ClassroomModule } from './classroom/classroom.module';
 import { CycleModule } from './cycle/cycle.module';
 import { DebitModule } from './debit/debit.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
@@ -15,7 +14,6 @@ import { DebitDiscountModule } from './debit-discounts/debit-discounts.module';
 @Module({
   imports: [
     ActivityModule,
-    ClassroomModule,
     CycleModule,
     DebitModule,
     DebitDiscountModule,

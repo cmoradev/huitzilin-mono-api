@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { EnrollmentState } from '../enums';
-import { Classroom, Activity, Cycle, Debit, Student, Level } from 'src/school';
+import { Activity, Cycle, Debit, Student, Level } from 'src/school';
 import { Branch } from 'src/auth';
 
 @Entity({ schema: 'school', name: 'enrollments' })
@@ -24,9 +24,6 @@ export class Enrollment extends Base {
 
   @Column({ type: 'boolean', nullable: false, default: false })
   isPackage: boolean;
-
-  @Column({ type: 'boolean', nullable: false, default: false })
-  inPackage: boolean;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
@@ -59,14 +56,6 @@ export class Enrollment extends Base {
   @ManyToOne(() => Cycle, (student) => student.enrollments)
   @JoinColumn({ name: 'cycleId' })
   cycle: Cycle;
-
-  @Column({ type: 'uuid', nullable: false })
-  @Index()
-  classroomId: string;
-
-  @ManyToOne(() => Classroom, (student) => student.enrollments)
-  @JoinColumn({ name: 'classroomId' })
-  classroom: Classroom;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()

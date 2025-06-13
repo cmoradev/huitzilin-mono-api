@@ -2,7 +2,6 @@ import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Discount } from 'src/miscellaneous';
 import {
-  Classroom,
   Activity,
   Cycle,
   Enrollment,
@@ -26,9 +25,6 @@ export class Branch extends Base {
 
   @OneToMany(() => User, (action) => action.branch)
   users: User[];
-
-  @OneToMany(() => Classroom, (classroom) => classroom.branch)
-  classrooms: Classroom[];
 
   @OneToMany(() => Activity, (activity) => activity.branch)
   activities: Activity[];

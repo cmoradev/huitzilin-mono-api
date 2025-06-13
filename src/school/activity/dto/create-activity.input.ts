@@ -17,9 +17,6 @@ export class CreateActivityInput {
   isPackage: boolean;
 
   @Field(() => Boolean, { nullable: false })
-  inPackage: boolean;
-
-  @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
   @IsUUID()
