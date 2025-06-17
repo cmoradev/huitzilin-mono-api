@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePeriodInput } from './dto/create-period.input';
-import { UpdatePeriodInput } from './dto/update-period.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Period } from './entities/period.entity';
 
 @Injectable()
-export class PeriodService {
-  create(createPeriodInput: CreatePeriodInput) {
-    return 'This action adds a new period';
-  }
-
-  findAll() {
-    return `This action returns all period`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} period`;
-  }
-
-  update(id: number, updatePeriodInput: UpdatePeriodInput) {
-    return `This action updates a #${id} period`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} period`;
+export class PeriodService extends TypeOrmQueryService<Period> {
+  constructor(
+    @InjectRepository(Period)
+    private readonly _periodRepository: Repository<Period>,
+  ) {
+    super(_periodRepository, { useSoftDelete: true });
   }
 }

@@ -12,14 +12,14 @@ export class TeacherResolver {
   constructor(private readonly teacherService: TeacherService) {}
 
   @Mutation(() => TeacherDto)
-  restoreOneVideo(
+  restoreOneTeacher(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<TeacherDto> {
     return this.teacherService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyTeachers(
     @Args('input', { type: () => FilterType(TeacherDto) })
     filter: Filter<TeacherDto>,
   ): Promise<UpdateManyResponse> {

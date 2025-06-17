@@ -12,14 +12,14 @@ export class StudentResolver {
   constructor(private readonly studentService: StudentService) {}
 
   @Mutation(() => StudentDto)
-  restoreOneVideo(
+  restoreOneStudent(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<StudentDto> {
     return this.studentService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyStudents(
     @Args('input', { type: () => FilterType(StudentDto) })
     filter: Filter<StudentDto>,
   ): Promise<UpdateManyResponse> {

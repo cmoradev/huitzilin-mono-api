@@ -12,14 +12,14 @@ export class ActionResolver {
   constructor(private readonly actionService: ActionService) {}
 
   @Mutation(() => ActionDto)
-  restoreOneVideo(
+  restoreOneAction(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<ActionDto> {
     return this.actionService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyActions(
     @Args('input', { type: () => FilterType(ActionDto) })
     filter: Filter<ActionDto>,
   ): Promise<UpdateManyResponse> {

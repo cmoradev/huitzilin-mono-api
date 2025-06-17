@@ -12,14 +12,14 @@ export class PolicyResolver {
   constructor(private readonly policyService: PolicyService) {}
 
   @Mutation(() => PolicyDto)
-  restoreOneVideo(
+  restoreOnePolicy(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<PolicyDto> {
     return this.policyService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyPolicies(
     @Args('input', { type: () => FilterType(PolicyDto) })
     filter: Filter<PolicyDto>,
   ): Promise<UpdateManyResponse> {

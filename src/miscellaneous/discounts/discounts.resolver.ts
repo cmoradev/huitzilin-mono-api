@@ -12,14 +12,14 @@ export class DiscountResolver {
   constructor(private readonly _discountService: DiscountService) {}
 
   @Mutation(() => DiscountDto)
-  restoreOneVideo(
+  restoreOneDiscount(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<DiscountDto> {
     return this._discountService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyDiscounts(
     @Args('input', { type: () => FilterType(DiscountDto) })
     filter: Filter<DiscountDto>,
   ): Promise<UpdateManyResponse> {

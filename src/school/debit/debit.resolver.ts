@@ -12,14 +12,14 @@ export class DebitResolver {
   constructor(private readonly debitService: DebitService) {}
 
   @Mutation(() => DebitDto)
-  restoreOneVideo(
+  restoreOneDebit(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<DebitDto> {
     return this.debitService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyDebits(
     @Args('input', { type: () => FilterType(DebitDto) })
     filter: Filter<DebitDto>,
   ): Promise<UpdateManyResponse> {

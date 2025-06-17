@@ -7,6 +7,7 @@ import {
   Enrollment,
   Level,
   Package,
+  Period,
   Student,
   Teacher,
   Tutor,
@@ -44,6 +45,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Discipline, (discipline) => discipline.branch)
   disciplines: Discipline[];
+
+  @OneToMany(() => Period, (period) => period.branch)
+  periods: Period[];
 
   @ManyToMany(() => Student, (student) => student.branchs)
   students: Student[];

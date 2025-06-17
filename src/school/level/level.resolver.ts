@@ -21,14 +21,14 @@ export class LevelResolver {
   }
 
   @Mutation(() => LevelDto)
-  restoreOneVideo(
+  restoreOneLevel(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<LevelDto> {
     return this.levelService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyLevels(
     @Args('input', { type: () => FilterType(LevelDto) })
     filter: Filter<LevelDto>,
   ): Promise<UpdateManyResponse> {

@@ -22,14 +22,14 @@ export class EnrollmentResolver {
   }
 
   @Mutation(() => EnrollmentDto)
-  restoreOneVideo(
+  restoreOneEnrollment(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<EnrollmentDto> {
     return this.enrollmentService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyEnrollments(
     @Args('input', { type: () => FilterType(EnrollmentDto) })
     filter: Filter<EnrollmentDto>,
   ): Promise<UpdateManyResponse> {

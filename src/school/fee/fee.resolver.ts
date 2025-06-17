@@ -12,14 +12,14 @@ export class FeeResolver {
   constructor(private readonly feeService: FeeService) {}
 
   @Mutation(() => FeeDto)
-  restoreOneVideo(
+  restoreOneFee(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<FeeDto> {
     return this.feeService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyFees(
     @Args('input', { type: () => FilterType(FeeDto) })
     filter: Filter<FeeDto>,
   ): Promise<UpdateManyResponse> {

@@ -12,14 +12,14 @@ export class BranchResolver {
   constructor(private readonly branchService: BranchService) {}
 
   @Mutation(() => BranchDto)
-  restoreOneVideo(
+  restoreOneBranch(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<BranchDto> {
     return this.branchService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyBranchs(
     @Args('input', { type: () => FilterType(BranchDto) })
     filter: Filter<BranchDto>,
   ): Promise<UpdateManyResponse> {

@@ -12,14 +12,14 @@ export class DocumentResolver {
   constructor(private readonly _documentService: DocumentService) {}
 
   @Mutation(() => DocumentDto)
-  restoreOneVideo(
+  restoreOneDocument(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<DocumentDto> {
     return this._documentService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyDocuments(
     @Args('input', { type: () => FilterType(DocumentDto) })
     filter: Filter<DocumentDto>,
   ): Promise<UpdateManyResponse> {

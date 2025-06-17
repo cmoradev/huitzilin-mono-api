@@ -12,14 +12,14 @@ export class CycleResolver {
   constructor(private readonly cycleService: CycleService) {}
 
   @Mutation(() => CycleDto)
-  restoreOneVideo(
+  restoreOneCycle(
     @Args('input', { type: () => ID }) id: string,
   ): Promise<CycleDto> {
     return this.cycleService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyVideos(
+  restoreManyCycles(
     @Args('input', { type: () => FilterType(CycleDto) })
     filter: Filter<CycleDto>,
   ): Promise<UpdateManyResponse> {
