@@ -19,11 +19,14 @@ export class Enrollment extends Base {
   @Column({ type: 'enum', nullable: false, enum: EnrollmentState })
   state: EnrollmentState;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ type: 'smallint', nullable: false })
   order: number;
 
-  @Column({ type: 'boolean', nullable: false, default: false })
-  isPackage: boolean;
+  @Column({ type: 'smallint', nullable: false })
+  hours: number;
+
+  @Column({ type: 'smallint', nullable: false })
+  diciplines: number;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
@@ -64,16 +67,6 @@ export class Enrollment extends Base {
   @ManyToOne(() => Level, (level) => level.enrollments)
   @JoinColumn({ name: 'levelId' })
   level: Level;
-
-  @Column({ type: 'uuid', nullable: true })
-  parentId: string | null;
-
-  @ManyToOne(() => Enrollment, (enrollment) => enrollment.children)
-  @JoinColumn({ name: 'parentId' })
-  parent: Enrollment;
-
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.parent)
-  children: Enrollment[];
 
   @OneToMany(() => Debit, (debit) => debit.enrollment)
   debts: Debit[];

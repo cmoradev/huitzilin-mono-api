@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
 import { EnrollmentState } from '../enums';
 
@@ -13,9 +13,6 @@ export class CreateEnrollmentInput {
 
   @Field(() => Number, { nullable: false })
   order: number;
-
-  @Field(() => Boolean, { nullable: false })
-  isPackage: boolean;
 
   @IsUUID()
   @Field(() => String, { nullable: false })
@@ -36,8 +33,4 @@ export class CreateEnrollmentInput {
   @IsUUID()
   @Field(() => String, { nullable: false })
   levelId: string;
-
-  @IsUUID()
-  @Field(() => ID, { nullable: true })
-  parentId: string | null;
 }

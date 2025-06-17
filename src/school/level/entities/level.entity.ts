@@ -1,11 +1,12 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Enrollment } from 'src/school';
+import { Enrollment, Discipline } from 'src/school';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -22,7 +23,7 @@ export class Level extends Base {
   @Index()
   branchId: string;
 
-  @Column({ type: 'int', nullable: false, default: 0 })
+  @Column({ type: 'smallint', nullable: false, default: 0 })
   order: number;
 
   @ManyToOne(() => Branch, (branch) => branch.levels)
@@ -31,4 +32,7 @@ export class Level extends Base {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.level)
   enrollments: Enrollment[];
+
+  @ManyToMany(() => Discipline, (discipline) => discipline.levels)
+  disciplines: Discipline[];
 }

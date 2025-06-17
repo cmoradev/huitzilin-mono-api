@@ -2,10 +2,8 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
-  PagingStrategies,
   QueryOptions,
   Relation,
-  UnPagedRelation,
 } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { EnrollmentState } from '../enums';
@@ -21,14 +19,6 @@ import { StudentDto, CycleDto, PackageDto, LevelDto } from 'src/school';
 @Relation('packageId', () => PackageDto, { nullable: false })
 @Relation('cycle', () => CycleDto, { nullable: false })
 @Relation('level', () => LevelDto, { nullable: false })
-@Relation('parent', () => EnrollmentDto, { nullable: true })
-@UnPagedRelation('children', () => EnrollmentDto, {
-  nullable: false,
-  defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
-  pagingStrategy: PagingStrategies.OFFSET,
-  enableTotalCount: true,
-  maxResultsSize: 50,
-})
 export class EnrollmentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   details: string;
@@ -39,8 +29,11 @@ export class EnrollmentDto extends BaseDto {
   @FilterableField(() => Number, { nullable: false })
   order: number;
 
-  @FilterableField(() => Boolean, { nullable: false })
-  isPackage: boolean;
+  @FilterableField(() => Number, { nullable: false })
+  hours: number;
+
+  @FilterableField(() => Number, { nullable: false })
+  diciplines: number;
 
   @FilterableField(() => ID, { nullable: false })
   branchId: string;
@@ -56,7 +49,4 @@ export class EnrollmentDto extends BaseDto {
 
   @FilterableField(() => ID, { nullable: false })
   levelId: string;
-
-  @FilterableField(() => ID, { nullable: true })
-  parentId: string | null;
 }
