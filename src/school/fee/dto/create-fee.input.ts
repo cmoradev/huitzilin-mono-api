@@ -20,5 +20,5 @@ export class CreateFeeInput {
 
   @IsUUID()
   @Field(() => String, { nullable: false })
-  activityId: string;
+  packageId: string;
 }

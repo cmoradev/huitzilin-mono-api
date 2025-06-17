@@ -6,33 +6,33 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { SetOrderInput } from 'src/common/dtos';
 import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
-import { ActivityService } from './activity.service';
-import { ActivityDto } from './dto/activity.dto';
+import { PackageDto } from './dto/package.dto';
+import { PackageService } from './package.service';
 
-@Resolver(() => ActivityDto)
-export class ActivityResolver {
-  constructor(private readonly activityService: ActivityService) {}
+@Resolver(() => PackageDto)
+export class PackageResolver {
+  constructor(private readonly _packageService: PackageService) {}
 
   @Mutation(() => UpdateCountResponse)
-  setOrderActivities(
+  setOrderPackages(
     @Args('input', { type: () => [SetOrderInput] })
     params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
-    return this.activityService.setOrderActivities(params);
+    return this._packageService.setOrderPackages(params);
   }
 
-  @Mutation(() => ActivityDto)
-  restoreOneActivity(
+  @Mutation(() => PackageDto)
+  restoreOnePackage(
     @Args('input', { type: () => ID }) id: string,
-  ): Promise<ActivityDto> {
-    return this.activityService.restoreOne(id);
+  ): Promise<PackageDto> {
+    return this._packageService.restoreOne(id);
   }
 
   @Mutation(() => UpdateManyResponseType())
-  restoreManyActivities(
-    @Args('input', { type: () => FilterType(ActivityDto) })
-    filter: Filter<ActivityDto>,
+  restoreManyPackages(
+    @Args('input', { type: () => FilterType(PackageDto) })
+    filter: Filter<PackageDto>,
   ): Promise<UpdateManyResponse> {
-    return this.activityService.restoreMany(filter);
+    return this._packageService.restoreMany(filter);
   }
 }

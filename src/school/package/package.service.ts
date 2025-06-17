@@ -2,25 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 import { Repository } from 'typeorm';
-import { Activity } from './entities/activity.entity';
+import { Package } from './entities/package.entity';
 import { UpdateCountResponse } from 'src/common/dtos/update.count.response.dto';
 import { SetOrderInput } from 'src/common/dtos';
 @Injectable()
-export class ActivityService extends TypeOrmQueryService<Activity> {
+export class PackageService extends TypeOrmQueryService<Package> {
   constructor(
-    @InjectRepository(Activity)
-    private readonly _activityRepository: Repository<Activity>,
+    @InjectRepository(Package)
+    private readonly _packageRepository: Repository<Package>,
   ) {
-    super(_activityRepository, { useSoftDelete: true });
+    super(_packageRepository, { useSoftDelete: true });
   }
 
-  public async setOrderActivities(
+  public async setOrderPackages(
     params: SetOrderInput[],
   ): Promise<UpdateCountResponse> {
-    const activities = await this._activityRepository.save(params);
+    const packages = await this._packageRepository.save(params);
 
     return {
-      updatedCount: activities.length,
+      updatedCount: packages.length,
     };
   }
 }

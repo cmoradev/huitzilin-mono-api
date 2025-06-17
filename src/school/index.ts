@@ -1,4 +1,4 @@
-export { Activity } from './activity/entities/activity.entity';
+export { Package } from './package/entities/package.entity';
 export { Cycle } from './cycle/entities/cycle.entity';
 export { Debit } from './debit/entities/debit.entity';
 export { Document } from './documents/entities/document.entity';
@@ -10,7 +10,7 @@ export { Teacher } from './teacher/entities/teacher.entity';
 export { Tutor } from './tutor/entities/tutor.entity';
 export { DebitDiscount } from './debit-discounts/entities/debit-discount.entity';
 
-export { ActivityDto } from './activity/dto/activity.dto';
+export { PackageDto } from './package/dto/package.dto';
 export { CycleDto } from './cycle/dto/cycle.dto';
 export { DebitDto } from './debit/dto/debit.dto';
 export { EnrollmentDto } from './enrollment/dto/enrollment.dto';

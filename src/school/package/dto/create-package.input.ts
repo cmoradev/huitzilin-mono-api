@@ -1,8 +1,8 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
 
-@InputType('CreateActivity')
-export class CreateActivityInput {
+@InputType('CreatePackage')
+export class CreatePackageInput {
   @MaxLength(32)
   @Field(() => String, { nullable: false })
   name: string;

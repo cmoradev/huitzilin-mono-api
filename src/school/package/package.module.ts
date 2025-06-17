@@ -4,24 +4,24 @@ import {
   PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { ActivityResolver } from './activity.resolver';
-import { ActivityService } from './activity.service';
-import { ActivityDto } from './dto/activity.dto';
-import { CreateActivityInput } from './dto/create-activity.input';
-import { UpdateActivityInput } from './dto/update-activity.input';
-import { Activity } from './entities/activity.entity';
+import { CreatePackageInput } from './dto/create-package.input';
+import { PackageDto } from './dto/package.dto';
+import { UpdatePackageInput } from './dto/update-package.input';
+import { Package } from './entities/package.entity';
+import { PackageResolver } from './package.resolver';
+import { PackageService } from './package.service';
 
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Activity])],
-      services: [ActivityService],
+      imports: [NestjsQueryTypeOrmModule.forFeature([Package])],
+      services: [PackageService],
       resolvers: [
         {
-          DTOClass: ActivityDto,
-          CreateDTOClass: CreateActivityInput,
-          UpdateDTOClass: UpdateActivityInput,
-          ServiceClass: ActivityService,
+          DTOClass: PackageDto,
+          CreateDTOClass: CreatePackageInput,
+          UpdateDTOClass: UpdatePackageInput,
+          ServiceClass: PackageService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
           enableSubscriptions: false,
@@ -32,6 +32,6 @@ import { Activity } from './entities/activity.entity';
       ],
     }),
   ],
-  providers: [ActivityResolver],
+  providers: [PackageResolver],
 })
-export class ActivityModule {}
+export class PackageModule {}

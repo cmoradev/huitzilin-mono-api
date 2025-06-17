@@ -27,7 +27,7 @@ export class CreateEnrollmentInput {
 
   @IsUUID()
   @Field(() => String, { nullable: false })
-  activityId: string;
+  packageId: string;
 
   @IsUUID()
   @Field(() => String, { nullable: false })

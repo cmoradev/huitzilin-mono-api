@@ -10,8 +10,8 @@ import {
   OneToMany,
 } from 'typeorm';
 
-@Entity({ schema: 'school', name: 'activities' })
-export class Activity extends Base {
+@Entity({ schema: 'school', name: 'packages' })
+export class Package extends Base {
   @Column({ type: 'varchar', nullable: false, length: 32 })
   name: string;
 
@@ -31,13 +31,13 @@ export class Activity extends Base {
   @Index()
   branchId: string;
 
-  @ManyToOne(() => Branch, (branch) => branch.activities)
+  @ManyToOne(() => Branch, (branch) => branch.packages)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
 
-  @OneToMany(() => Fee, (action) => action.activity, { cascade: ['insert'] })
+  @OneToMany(() => Fee, (action) => action.package, { cascade: ['insert'] })
   fees: Fee[];
 
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.activity)
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.package)
   enrollments: Enrollment[];
 }

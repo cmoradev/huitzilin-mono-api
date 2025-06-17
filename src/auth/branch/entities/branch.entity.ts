@@ -2,13 +2,13 @@ import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Discount } from 'src/miscellaneous';
 import {
-  Activity,
   Cycle,
   Enrollment,
+  Level,
+  Package,
   Student,
   Teacher,
   Tutor,
-  Level,
 } from 'src/school';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
@@ -26,8 +26,8 @@ export class Branch extends Base {
   @OneToMany(() => User, (action) => action.branch)
   users: User[];
 
-  @OneToMany(() => Activity, (activity) => activity.branch)
-  activities: Activity[];
+  @OneToMany(() => Package, (pack) => pack.branch)
+  packages: Package[];
 
   @OneToMany(() => Cycle, (cycle) => cycle.branch)
   cycles: Cycle[];

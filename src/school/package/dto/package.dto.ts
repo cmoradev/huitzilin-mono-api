@@ -3,11 +3,11 @@ import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
-@ObjectType('Activity')
+@ObjectType('Package')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-export class ActivityDto extends BaseDto {
+export class PackageDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;
 
