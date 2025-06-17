@@ -15,11 +15,11 @@ export class PackageDto extends BaseDto {
   @FilterableField(() => Number, { nullable: false })
   order: number;
 
+  @Field(() => Number, { nullable: false })
+  quantity: number;
+
   @Field(() => PackageKind, { nullable: false })
   kind: PackageKind;
-
-  @FilterableField(() => Boolean, { nullable: false })
-  isPackage: boolean;
 
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;

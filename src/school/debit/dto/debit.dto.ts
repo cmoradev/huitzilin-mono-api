@@ -6,7 +6,6 @@ import {
   UnPagedRelation,
 } from '@ptc-org/nestjs-query-graphql';
 import { IsUUID } from 'class-validator';
-import { NestedIdInput } from 'src/common/dtos';
 import { BaseDto } from 'src/common/dtos/base.dto';
 import { DiscountDto } from 'src/miscellaneous';
 import { Frequency } from 'src/school/fee/enums';
@@ -60,7 +59,4 @@ export class DebitDto extends BaseDto {
   @IsUUID()
   @FilterableField(() => String, { nullable: false })
   enrollmentId: string;
-
-  @Field(() => [NestedIdInput], { nullable: true })
-  discounts?: NestedIdInput[];
 }

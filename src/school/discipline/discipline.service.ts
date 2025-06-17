@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDisciplineInput } from './dto/create-discipline.input';
-import { UpdateDisciplineInput } from './dto/update-discipline.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Discipline } from './entities/discipline.entity';
 
 @Injectable()
-export class DisciplineService {
-  create(createDisciplineInput: CreateDisciplineInput) {
-    return 'This action adds a new discipline';
-  }
-
-  findAll() {
-    return `This action returns all discipline`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} discipline`;
-  }
-
-  update(id: number, updateDisciplineInput: UpdateDisciplineInput) {
-    return `This action updates a #${id} discipline`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} discipline`;
+export class DisciplineService extends TypeOrmQueryService<Discipline> {
+  constructor(
+    @InjectRepository(Discipline)
+    private readonly _disciplineRepository: Repository<Discipline>,
+  ) {
+    super(_disciplineRepository, { useSoftDelete: true });
   }
 }

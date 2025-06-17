@@ -2,6 +2,7 @@ import { InputType, Field, Float, GraphQLISODateTime } from '@nestjs/graphql';
 import { DebitState } from '../enums';
 import { Frequency } from 'src/school/fee/enums';
 import { IsUUID } from 'class-validator';
+import { NestedIdInput } from 'src/common/dtos';
 
 @InputType('CreateDebit')
 export class CreateDebitInput {
@@ -35,4 +36,7 @@ export class CreateDebitInput {
   @IsUUID()
   @Field(() => String, { nullable: false })
   enrollmentId: string;
+
+  @Field(() => [NestedIdInput], { nullable: true })
+  discounts?: NestedIdInput[];
 }

@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
 import { DisciplineService } from './discipline.service';
-import { Discipline } from './entities/discipline.entity';
-import { CreateDisciplineInput } from './dto/create-discipline.input';
-import { UpdateDisciplineInput } from './dto/update-discipline.input';
+import { DisciplineDto } from './dto/discipline.dto';
 
-@Resolver(() => Discipline)
+@Resolver(() => DisciplineDto)
 export class DisciplineResolver {
   constructor(private readonly disciplineService: DisciplineService) {}
 
-  @Mutation(() => Discipline)
-  createDiscipline(@Args('createDisciplineInput') createDisciplineInput: CreateDisciplineInput) {
-    return this.disciplineService.create(createDisciplineInput);
+  @Mutation(() => DisciplineDto)
+  restoreOneDiscipline(
+    @Args('input', { type: () => ID }) id: string,
+  ): Promise<DisciplineDto> {
+    return this.disciplineService.restoreOne(id);
   }
 
-  @Query(() => [Discipline], { name: 'discipline' })
-  findAll() {
-    return this.disciplineService.findAll();
-  }
-
-  @Query(() => Discipline, { name: 'discipline' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.disciplineService.findOne(id);
-  }
-
-  @Mutation(() => Discipline)
-  updateDiscipline(@Args('updateDisciplineInput') updateDisciplineInput: UpdateDisciplineInput) {
-    return this.disciplineService.update(updateDisciplineInput.id, updateDisciplineInput);
-  }
-
-  @Mutation(() => Discipline)
-  removeDiscipline(@Args('id', { type: () => Int }) id: number) {
-    return this.disciplineService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManyDisciplines(
+    @Args('input', { type: () => FilterType(DisciplineDto) })
+    filter: Filter<DisciplineDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.disciplineService.restoreMany(filter);
   }
 }
