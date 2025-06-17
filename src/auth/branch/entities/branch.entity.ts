@@ -12,6 +12,7 @@ import {
   Teacher,
   Tutor,
 } from 'src/school';
+import { Schedule } from 'src/school/schedule/entities/schedule.entity';
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ schema: 'auth', name: 'branchs' })
@@ -33,6 +34,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Cycle, (cycle) => cycle.branch)
   cycles: Cycle[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.branch)
+  schedules: Schedule[];
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.branch)
   enrollments: Enrollment[];

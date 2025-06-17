@@ -8,6 +8,7 @@ export { Level } from './level/entities/level.entity';
 export { Package } from './package/entities/package.entity';
 export { Period } from './period/entities/period.entity';
 export { Student } from './student/entities/student.entity';
+export { Schedule } from './schedule/entities/schedule.entity';
 export { Teacher } from './teacher/entities/teacher.entity';
 export { Tutor } from './tutor/entities/tutor.entity';
 
@@ -21,5 +22,6 @@ export { LevelDto } from './level/dto/level.dto';
 export { PeriodDto } from './period/dto/period.dto';
 export { PackageDto } from './package/dto/package.dto';
 export { StudentDto } from './student/dto/student.dto';
+export { ScheduleDto } from './schedule/dto/schedule.dto';
 export { TeacherDto } from './teacher/dto/teacher.dto';
 export { TutorDto } from './tutor/dto/tutor.dto';

@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateScheduleInput } from './dto/create-schedule.input';
-import { UpdateScheduleInput } from './dto/update-schedule.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { Repository } from 'typeorm';
+import { Schedule } from './entities/schedule.entity';
 
 @Injectable()
-export class ScheduleService {
-  create(createScheduleInput: CreateScheduleInput) {
-    return 'This action adds a new schedule';
-  }
-
-  findAll() {
-    return `This action returns all schedule`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} schedule`;
-  }
-
-  update(id: number, updateScheduleInput: UpdateScheduleInput) {
-    return `This action updates a #${id} schedule`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} schedule`;
+export class ScheduleService extends TypeOrmQueryService<Schedule> {
+  constructor(
+    @InjectRepository(Schedule)
+    private readonly _scheduleRepository: Repository<Schedule>,
+  ) {
+    super(_scheduleRepository, { useSoftDelete: true });
   }
 }

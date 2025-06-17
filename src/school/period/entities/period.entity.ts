@@ -1,6 +1,14 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Schedule } from 'src/school';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 @Entity({ schema: 'school', name: 'periods' })
 export class Period extends Base {
@@ -20,4 +28,7 @@ export class Period extends Base {
   @ManyToOne(() => Branch, (branch) => branch.periods)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.period)
+  schedules: Schedule[];
 }

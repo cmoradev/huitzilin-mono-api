@@ -1,35 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
+import {
+  FilterType,
+  UpdateManyResponseType,
+} from '@ptc-org/nestjs-query-graphql';
+import { ScheduleDto } from './dto/schedule.dto';
 import { ScheduleService } from './schedule.service';
-import { Schedule } from './entities/schedule.entity';
-import { CreateScheduleInput } from './dto/create-schedule.input';
-import { UpdateScheduleInput } from './dto/update-schedule.input';
 
-@Resolver(() => Schedule)
+@Resolver(() => ScheduleDto)
 export class ScheduleResolver {
   constructor(private readonly scheduleService: ScheduleService) {}
 
-  @Mutation(() => Schedule)
-  createSchedule(@Args('createScheduleInput') createScheduleInput: CreateScheduleInput) {
-    return this.scheduleService.create(createScheduleInput);
+  @Mutation(() => ScheduleDto)
+  restoreOneSchedule(
+    @Args('input', { type: () => ID }) id: string,
+  ): Promise<ScheduleDto> {
+    return this.scheduleService.restoreOne(id);
   }
 
-  @Query(() => [Schedule], { name: 'schedule' })
-  findAll() {
-    return this.scheduleService.findAll();
-  }
-
-  @Query(() => Schedule, { name: 'schedule' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.scheduleService.findOne(id);
-  }
-
-  @Mutation(() => Schedule)
-  updateSchedule(@Args('updateScheduleInput') updateScheduleInput: UpdateScheduleInput) {
-    return this.scheduleService.update(updateScheduleInput.id, updateScheduleInput);
-  }
-
-  @Mutation(() => Schedule)
-  removeSchedule(@Args('id', { type: () => Int }) id: number) {
-    return this.scheduleService.remove(id);
+  @Mutation(() => UpdateManyResponseType())
+  restoreManySchedules(
+    @Args('input', { type: () => FilterType(ScheduleDto) })
+    filter: Filter<ScheduleDto>,
+  ): Promise<UpdateManyResponse> {
+    return this.scheduleService.restoreMany(filter);
   }
 }
