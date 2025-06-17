@@ -3,6 +3,7 @@ import { Base } from 'src/common/utils/base.entity';
 import { Discount } from 'src/miscellaneous';
 import {
   Cycle,
+  Discipline,
   Enrollment,
   Level,
   Package,
@@ -40,6 +41,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Discount, (discount) => discount.branch)
   discounts: Discount[];
+
+  @OneToMany(() => Discipline, (discipline) => discipline.branch)
+  disciplines: Discipline[];
 
   @ManyToMany(() => Student, (student) => student.branchs)
   students: Student[];

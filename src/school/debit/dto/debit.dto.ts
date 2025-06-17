@@ -1,8 +1,14 @@
 import { Field, Float, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
-import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
+import {
+  FilterableField,
+  QueryOptions,
+  UnPagedRelation,
+} from '@ptc-org/nestjs-query-graphql';
 import { IsUUID } from 'class-validator';
+import { NestedIdInput } from 'src/common/dtos';
 import { BaseDto } from 'src/common/dtos/base.dto';
+import { DiscountDto } from 'src/miscellaneous';
 import { Frequency } from 'src/school/fee/enums';
 import { DebitState } from '../enums';
 
@@ -10,6 +16,7 @@ import { DebitState } from '../enums';
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
+@UnPagedRelation('discounts', () => DiscountDto)
 export class DebitDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   description: string;
@@ -53,4 +60,7 @@ export class DebitDto extends BaseDto {
   @IsUUID()
   @FilterableField(() => String, { nullable: false })
   enrollmentId: string;
+
+  @Field(() => [NestedIdInput], { nullable: true })
+  discounts?: NestedIdInput[];
 }

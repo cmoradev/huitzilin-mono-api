@@ -1,7 +1,15 @@
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 import { DiscountBy } from '../enums';
 import { Branch } from 'src/auth';
+import { Debit } from 'src/school';
 
 @Entity({ schema: 'miscellaneous', name: 'discounts' })
 export class Discount extends Base {
@@ -21,4 +29,7 @@ export class Discount extends Base {
   @ManyToOne(() => Branch, (branch) => branch.discounts)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
+
+  @ManyToMany(() => Debit, (debit) => debit.discounts)
+  debts: Debit[];
 }

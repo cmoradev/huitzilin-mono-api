@@ -10,6 +10,10 @@ import { PackageModule } from './package/package.module';
 import { StudentModule } from './student/student.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { TutorModule } from './tutor/tutor.module';
+import { PeriodModule } from './period/period.module';
+import { DisciplineModule } from './discipline/discipline.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { BlockModule } from './block/block.module';
 
 @Module({
   imports: [
@@ -24,6 +28,10 @@ import { TutorModule } from './tutor/tutor.module';
     StudentModule,
     TeacherModule,
     TutorModule,
+    PeriodModule,
+    DisciplineModule,
+    ScheduleModule,
+    BlockModule,
   ],
 })
 export class SchoolModule {}

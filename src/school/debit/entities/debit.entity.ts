@@ -1,13 +1,15 @@
 import { Base } from 'src/common/utils/base.entity';
-import { DebitDiscount, Enrollment } from 'src/school';
+import { Discount } from 'src/miscellaneous';
+import { Enrollment } from 'src/school';
 import { Frequency } from 'src/school/fee/enums';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import { DebitState } from '../enums';
 
@@ -60,8 +62,7 @@ export class Debit extends Base {
   @JoinColumn({ name: 'enrollmentId' })
   enrollment: Enrollment;
 
-  @OneToMany(() => DebitDiscount, (discount) => discount.debit, {
-    cascade: ['insert'],
-  })
-  debitDiscounts: DebitDiscount[];
+  @ManyToMany(() => Discount, (discount) => discount.debts, { cascade: true })
+  @JoinTable({ name: 'debts_to_discounts' })
+  discounts: Discount[];
 }

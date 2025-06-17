@@ -1,6 +1,7 @@
 export { Package } from './package/entities/package.entity';
 export { Cycle } from './cycle/entities/cycle.entity';
 export { Debit } from './debit/entities/debit.entity';
+export { Discipline } from './discipline/entities/discipline.entity';
 export { Document } from './documents/entities/document.entity';
 export { Enrollment } from './enrollment/entities/enrollment.entity';
 export { Fee } from './fee/entities/fee.entity';
