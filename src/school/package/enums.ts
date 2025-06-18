@@ -9,6 +9,7 @@ import { registerEnumType } from '@nestjs/graphql';
 export enum PackageKind {
   HOURS = 'hours',
   QUANTITY = 'quantity',
+  UNLIMITED = 'unlimited',
 }
 
 registerEnumType(PackageKind, {

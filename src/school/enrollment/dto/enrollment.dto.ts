@@ -19,6 +19,7 @@ import { StudentDto, CycleDto, PackageDto, LevelDto } from 'src/school';
 @Relation('packageId', () => PackageDto, { nullable: false })
 @Relation('cycle', () => CycleDto, { nullable: false })
 @Relation('level', () => LevelDto, { nullable: false })
+@Relation('package', () => PackageDto, { nullable: false })
 export class EnrollmentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   details: string;

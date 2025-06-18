@@ -83,7 +83,7 @@ export class Migration1750200880604 implements MigrationInterface {
       `CREATE INDEX "IDX_0cc788b604eeddb13848af667b" ON "school"."levels" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TYPE "school"."packages_kind_enum" AS ENUM('hours', 'quantity')`,
+      `CREATE TYPE "school"."packages_kind_enum" AS ENUM('hours', 'quantity', 'unlimited')`,
     );
     await queryRunner.query(
       `CREATE TABLE "school"."packages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "order" smallint NOT NULL, "quantity" smallint NOT NULL, "kind" "school"."packages_kind_enum" NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "branchId" uuid NOT NULL, CONSTRAINT "PK_020801f620e21f943ead9311c98" PRIMARY KEY ("id"))`,
