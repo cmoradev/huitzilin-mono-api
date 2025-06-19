@@ -21,6 +21,6 @@ export class DisciplineDto extends BaseDto {
   @Field(() => Int, { nullable: false })
   minHours: number;
 
-  @Field(() => ID, { nullable: false })
+  @FilterableField(() => ID, { nullable: false })
   branchId: string;
 }

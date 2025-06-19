@@ -13,6 +13,12 @@ export class PeriodDto extends BaseDto {
   @Field(() => String, { nullable: false })
   end: string;
 
+  @Field(() => String, { nullable: false })
+  firstHour: string;
+
+  @Field(() => String, { nullable: false })
+  lastHour: string;
+
   @FilterableField(() => String, { nullable: false })
   branchId: string;
 }

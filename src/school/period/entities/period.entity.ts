@@ -21,6 +21,12 @@ export class Period extends Base {
   @Column({ type: 'date', nullable: false })
   end: string;
 
+  @Column({ type: 'time', nullable: false })
+  firstHour: string;
+
+  @Column({ type: 'time', nullable: false })
+  lastHour: string;
+
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;

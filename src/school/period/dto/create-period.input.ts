@@ -13,6 +13,12 @@ export class CreatePeriodInput {
   @Field(() => String, { nullable: false })
   end: string;
 
+  @Field(() => String, { nullable: false })
+  firstHour: string;
+
+  @Field(() => String, { nullable: false })
+  lastHour: string;
+
   @IsUUID()
   @Field(() => String, { nullable: false })
   branchId: string;
