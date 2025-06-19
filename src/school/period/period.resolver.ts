@@ -6,10 +6,19 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { PeriodDto } from './dto/period.dto';
 import { PeriodService } from './period.service';
+import { SetOrderInput, UpdateCountResponse } from 'src/common/dtos';
 
 @Resolver(() => PeriodDto)
 export class PeriodResolver {
   constructor(private readonly periodService: PeriodService) {}
+
+  @Mutation(() => UpdateCountResponse)
+  setOrderPeriods(
+    @Args('input', { type: () => [SetOrderInput] })
+    params: SetOrderInput[],
+  ): Promise<UpdateCountResponse> {
+    return this.periodService.setOrderPeriods(params);
+  }
 
   @Mutation(() => PeriodDto)
   restoreOnePeriod(

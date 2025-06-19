@@ -15,6 +15,12 @@ export class Period extends Base {
   @Column({ type: 'varchar', nullable: false, length: 32 })
   name: string;
 
+  @Column({ type: 'smallint', nullable: false })
+  order: number;
+
+  @Column({ type: 'varchar', nullable: false, length: 16 })
+  days: string;
+
   @Column({ type: 'date', nullable: false })
   start: string;
 

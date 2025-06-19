@@ -7,6 +7,13 @@ export class CreatePeriodInput {
   @Field(() => String, { nullable: false })
   name: string;
 
+  @Field(() => Number, { nullable: false })
+  order: number;
+
+  @MaxLength(16)
+  @Field(() => String, { nullable: false })
+  days: string;
+
   @Field(() => String, { nullable: false })
   start: string;
 

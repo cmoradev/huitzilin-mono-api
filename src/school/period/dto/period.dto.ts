@@ -7,6 +7,12 @@ export class PeriodDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;
 
+  @FilterableField(() => Number, { nullable: false })
+  order: number;
+
+  @Field(() => String, { nullable: false })
+  days: string;
+
   @Field(() => String, { nullable: false })
   start: string;
 
