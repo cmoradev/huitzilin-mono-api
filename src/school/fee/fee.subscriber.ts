@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Fee } from './entities/fee.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { calculateAmountFromTotalAndTax } from 'src/common/lib/calculations';
+import { calculateTotalFromBaseAndTax } from 'src/common/lib/calculations';
 
 @EventSubscriber()
 export class FeeEventSubscriber implements EntitySubscriberInterface<Fee> {
@@ -30,14 +30,17 @@ export class FeeEventSubscriber implements EntitySubscriberInterface<Fee> {
   }
 
   private calculateTaxes(fee: Fee) {
-    if (typeof fee.withTax === 'boolean' && typeof fee.price === 'number') {
+    if (typeof fee.withTax === 'boolean' && typeof fee.amount === 'number') {
       if (fee.withTax) {
-        const { amount, taxes } = calculateAmountFromTotalAndTax(fee.price);
+        const { total, taxes, amount } = calculateTotalFromBaseAndTax(
+          fee.amount,
+        );
 
         fee.amount = amount;
+        fee.price = total;
         fee.taxes = taxes;
       } else {
-        fee.amount = fee.price;
+        fee.price = fee.amount;
         fee.taxes = 0;
       }
     }

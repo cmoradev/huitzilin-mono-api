@@ -10,7 +10,7 @@ export class CreateFeeInput {
 
   @Min(1)
   @Field(() => Float, { nullable: false })
-  price: number;
+  amount: number;
 
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;

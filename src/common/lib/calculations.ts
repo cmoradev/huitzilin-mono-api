@@ -47,6 +47,7 @@ export function calculateTotalFromBaseAndTax(
   return {
     total: Number(total.toFixed(2)),
     taxes: Number(taxes.toFixed(2)),
+    amount: Number(amountDecimal.toFixed(2)),
   };
 }
 /**
