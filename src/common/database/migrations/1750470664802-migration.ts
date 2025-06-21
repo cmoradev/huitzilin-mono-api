@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migration1750200880604 implements MigrationInterface {
-  name = 'Migration1750200880604';
+export class Migration1750470664802 implements MigrationInterface {
+  name = 'Migration1750470664802';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -92,7 +92,7 @@ export class Migration1750200880604 implements MigrationInterface {
       `CREATE INDEX "IDX_0db58e42121e067adf422522f8" ON "school"."packages" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "school"."periods" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "start" date NOT NULL, "end" date NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_86c6afb6c818d97dc321898627c" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "school"."periods" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "order" smallint NOT NULL, "days" character varying(16) NOT NULL, "start" date NOT NULL, "end" date NOT NULL, "firstHour" TIME NOT NULL, "lastHour" TIME NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_86c6afb6c818d97dc321898627c" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_75a3901d1518a40cff1ce772bc" ON "school"."periods" ("branchId") `,
