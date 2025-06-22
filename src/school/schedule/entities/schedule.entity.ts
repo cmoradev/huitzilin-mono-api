@@ -1,7 +1,15 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Discipline, Period } from 'src/school';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Discipline, Level, Period } from 'src/school';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 
 @Entity({ schema: 'school', name: 'schedules' })
 export class Schedule extends Base {
@@ -37,4 +45,8 @@ export class Schedule extends Base {
   @ManyToOne(() => Discipline, (discipline) => discipline.schedules)
   @JoinColumn({ name: 'disciplineId' })
   discipline: Discipline;
+
+  @ManyToMany(() => Level, (level) => level.schedules, { cascade: true })
+  @JoinTable({ name: 'schedules_to_levels' })
+  levels: Level[];
 }

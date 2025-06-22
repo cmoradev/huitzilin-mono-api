@@ -13,8 +13,5 @@ export class CreateDisciplineInput {
   branchId: string;
 
   @Field(() => [NestedIdInput], { nullable: true })
-  levels?: NestedIdInput[];
-
-  @Field(() => [NestedIdInput], { nullable: true })
   packages?: NestedIdInput[];
 }

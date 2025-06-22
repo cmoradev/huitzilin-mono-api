@@ -1,6 +1,6 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Level, Package, Schedule } from 'src/school';
+import { Package, Schedule } from 'src/school';
 import {
   Column,
   Entity,
@@ -34,8 +34,4 @@ export class Discipline extends Base {
   @ManyToMany(() => Package, (pack) => pack.disciplines, { cascade: true })
   @JoinTable({ name: 'packages_to_levels' })
   packages: Package[];
-
-  @ManyToMany(() => Level, (level) => level.disciplines, { cascade: true })
-  @JoinTable({ name: 'disciplines_to_levels' })
-  levels: Level[];
 }

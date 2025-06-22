@@ -1,4 +1,5 @@
 import { InputType, Int, Field, ID } from '@nestjs/graphql';
+import { NestedIdInput } from 'src/common/dtos';
 
 @InputType('CreateSchedule')
 export class CreateScheduleInput {
@@ -19,4 +20,7 @@ export class CreateScheduleInput {
 
   @Field(() => ID, { nullable: false })
   disciplineId: string;
+
+  @Field(() => [NestedIdInput], { nullable: true })
+  levels?: NestedIdInput[];
 }

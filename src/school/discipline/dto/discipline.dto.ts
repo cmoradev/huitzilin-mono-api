@@ -6,13 +6,12 @@ import {
   QueryOptions,
 } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos';
-import { LevelDto, PackageDto } from 'src/school';
+import { PackageDto } from 'src/school';
 
 @ObjectType('Discipline')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-@FilterableUnPagedRelation('levels', () => LevelDto)
 @FilterableUnPagedRelation('packages', () => PackageDto)
 export class DisciplineDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })

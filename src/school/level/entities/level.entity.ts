@@ -1,6 +1,6 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Enrollment, Discipline } from 'src/school';
+import { Enrollment, Schedule } from 'src/school';
 import {
   Column,
   Entity,
@@ -33,6 +33,6 @@ export class Level extends Base {
   @OneToMany(() => Enrollment, (enrollment) => enrollment.level)
   enrollments: Enrollment[];
 
-  @ManyToMany(() => Discipline, (discipline) => discipline.levels)
-  disciplines: Discipline[];
+  @ManyToMany(() => Schedule, (schedule) => schedule.levels)
+  schedules: Schedule[];
 }

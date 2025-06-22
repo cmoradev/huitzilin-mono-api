@@ -2,12 +2,13 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
+  FilterableUnPagedRelation,
   QueryOptions,
   Relation,
 } from '@ptc-org/nestjs-query-graphql';
 import { BranchDto } from 'src/auth';
 import { BaseDto } from 'src/common/dtos';
-import { DisciplineDto, PeriodDto } from 'src/school';
+import { DisciplineDto, LevelDto, PeriodDto } from 'src/school';
 
 @ObjectType('Schedule')
 @QueryOptions({
@@ -16,6 +17,7 @@ import { DisciplineDto, PeriodDto } from 'src/school';
 @Relation('branch', () => BranchDto, { nullable: false })
 @Relation('period', () => PeriodDto, { nullable: false })
 @Relation('discipline', () => DisciplineDto, { nullable: false })
+@FilterableUnPagedRelation('levels', () => LevelDto)
 export class ScheduleDto extends BaseDto {
   @FilterableField(() => Int, { nullable: false })
   day: number;
