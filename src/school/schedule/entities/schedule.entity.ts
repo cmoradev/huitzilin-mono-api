@@ -1,6 +1,6 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Discipline, Level, Period } from 'src/school';
+import { Discipline, Enrollment, Level, Period } from 'src/school';
 import {
   Column,
   Entity,
@@ -49,4 +49,7 @@ export class Schedule extends Base {
   @ManyToMany(() => Level, (level) => level.schedules, { cascade: true })
   @JoinTable({ name: 'schedules_to_levels' })
   levels: Level[];
+
+  @ManyToMany(() => Enrollment, (enrollment) => enrollment.schedules)
+  enrollments: Enrollment[];
 }

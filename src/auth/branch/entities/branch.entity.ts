@@ -60,5 +60,5 @@ export class Branch extends Base {
   teachers: Teacher[];
 
   @ManyToMany(() => Tutor, (tutor) => tutor.branchs)
-  tutors: Student[];
+  tutors: Tutor[];
 }

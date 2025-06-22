@@ -1,6 +1,6 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Schedule } from 'src/school';
+import { Enrollment, Schedule } from 'src/school';
 import {
   Column,
   Entity,
@@ -40,6 +40,9 @@ export class Period extends Base {
   @ManyToOne(() => Branch, (branch) => branch.periods)
   @JoinColumn({ name: 'branchId' })
   branch: Branch;
+
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.period)
+  enrollments: Enrollment[];
 
   @OneToMany(() => Schedule, (schedule) => schedule.period)
   schedules: Schedule[];
