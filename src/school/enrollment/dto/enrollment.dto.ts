@@ -15,6 +15,7 @@ import {
   PackageDto,
   LevelDto,
   ScheduleDto,
+  PeriodDto,
 } from 'src/school';
 
 @ObjectType('Enrollment')
@@ -27,6 +28,7 @@ import {
 @Relation('cycle', () => CycleDto, { nullable: false })
 @Relation('level', () => LevelDto, { nullable: false })
 @Relation('package', () => PackageDto, { nullable: false })
+@Relation('period', () => PeriodDto, { nullable: false })
 @FilterableUnPagedRelation('schedules', () => ScheduleDto)
 export class EnrollmentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
