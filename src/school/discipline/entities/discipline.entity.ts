@@ -32,6 +32,6 @@ export class Discipline extends Base {
   schedules: Schedule[];
 
   @ManyToMany(() => Package, (pack) => pack.disciplines, { cascade: true })
-  @JoinTable({ name: 'packages_to_levels' })
+  @JoinTable({ name: 'packages_to_disciplines' })
   packages: Package[];
 }

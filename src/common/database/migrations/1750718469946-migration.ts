@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migration1750687636177 implements MigrationInterface {
-  name = 'Migration1750687636177';
+export class Migration1750718469946 implements MigrationInterface {
+  name = 'Migration1750718469946';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -161,13 +161,13 @@ export class Migration1750687636177 implements MigrationInterface {
       `CREATE INDEX "IDX_64d3fb5f76a39fbeace5342714" ON "school"."debts_to_discounts" ("discountsId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "school"."packages_to_levels" ("disciplinesId" uuid NOT NULL, "packagesId" uuid NOT NULL, CONSTRAINT "PK_439f17bc901e59be0de1b94ec4d" PRIMARY KEY ("disciplinesId", "packagesId"))`,
+      `CREATE TABLE "school"."packages_to_disciplines" ("disciplinesId" uuid NOT NULL, "packagesId" uuid NOT NULL, CONSTRAINT "PK_2911ceeb2d72b9f77560625c519" PRIMARY KEY ("disciplinesId", "packagesId"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_a08b5aa497944166a72bfb1882" ON "school"."packages_to_levels" ("disciplinesId") `,
+      `CREATE INDEX "IDX_77a7b1a322ca3bdb00ed23a8a8" ON "school"."packages_to_disciplines" ("disciplinesId") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_49764e7fe3af0f07c6cb5df185" ON "school"."packages_to_levels" ("packagesId") `,
+      `CREATE INDEX "IDX_def0e772779ef8de1053c2d775" ON "school"."packages_to_disciplines" ("packagesId") `,
     );
     await queryRunner.query(
       `CREATE TABLE "school"."branchs_to_students" ("studentsId" uuid NOT NULL, "branchsId" uuid NOT NULL, CONSTRAINT "PK_6b0efbe6abdf1d260374ce97ced" PRIMARY KEY ("studentsId", "branchsId"))`,
@@ -320,10 +320,10 @@ export class Migration1750687636177 implements MigrationInterface {
       `ALTER TABLE "school"."debts_to_discounts" ADD CONSTRAINT "FK_64d3fb5f76a39fbeace5342714c" FOREIGN KEY ("discountsId") REFERENCES "miscellaneous"."discounts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "school"."packages_to_levels" ADD CONSTRAINT "FK_a08b5aa497944166a72bfb18826" FOREIGN KEY ("disciplinesId") REFERENCES "school"."disciplines"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "school"."packages_to_disciplines" ADD CONSTRAINT "FK_77a7b1a322ca3bdb00ed23a8a85" FOREIGN KEY ("disciplinesId") REFERENCES "school"."disciplines"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "school"."packages_to_levels" ADD CONSTRAINT "FK_49764e7fe3af0f07c6cb5df1857" FOREIGN KEY ("packagesId") REFERENCES "school"."packages"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+      `ALTER TABLE "school"."packages_to_disciplines" ADD CONSTRAINT "FK_def0e772779ef8de1053c2d775f" FOREIGN KEY ("packagesId") REFERENCES "school"."packages"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "school"."branchs_to_students" ADD CONSTRAINT "FK_f61ea7c168c3b86ce98fed66cba" FOREIGN KEY ("studentsId") REFERENCES "school"."students"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
@@ -425,10 +425,10 @@ export class Migration1750687636177 implements MigrationInterface {
       `ALTER TABLE "school"."branchs_to_students" DROP CONSTRAINT "FK_f61ea7c168c3b86ce98fed66cba"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "school"."packages_to_levels" DROP CONSTRAINT "FK_49764e7fe3af0f07c6cb5df1857"`,
+      `ALTER TABLE "school"."packages_to_disciplines" DROP CONSTRAINT "FK_def0e772779ef8de1053c2d775f"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "school"."packages_to_levels" DROP CONSTRAINT "FK_a08b5aa497944166a72bfb18826"`,
+      `ALTER TABLE "school"."packages_to_disciplines" DROP CONSTRAINT "FK_77a7b1a322ca3bdb00ed23a8a85"`,
     );
     await queryRunner.query(
       `ALTER TABLE "school"."debts_to_discounts" DROP CONSTRAINT "FK_64d3fb5f76a39fbeace5342714c"`,
@@ -565,12 +565,12 @@ export class Migration1750687636177 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "school"."branchs_to_students"`);
     await queryRunner.query(
-      `DROP INDEX "school"."IDX_49764e7fe3af0f07c6cb5df185"`,
+      `DROP INDEX "school"."IDX_def0e772779ef8de1053c2d775"`,
     );
     await queryRunner.query(
-      `DROP INDEX "school"."IDX_a08b5aa497944166a72bfb1882"`,
+      `DROP INDEX "school"."IDX_77a7b1a322ca3bdb00ed23a8a8"`,
     );
-    await queryRunner.query(`DROP TABLE "school"."packages_to_levels"`);
+    await queryRunner.query(`DROP TABLE "school"."packages_to_disciplines"`);
     await queryRunner.query(
       `DROP INDEX "school"."IDX_64d3fb5f76a39fbeace5342714"`,
     );
