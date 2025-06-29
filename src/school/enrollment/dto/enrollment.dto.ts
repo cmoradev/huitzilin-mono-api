@@ -34,7 +34,7 @@ export class EnrollmentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   details: string;
 
-  @Field(() => EnrollmentState, { nullable: false })
+  @FilterableField(() => EnrollmentState, { nullable: false })
   state: EnrollmentState;
 
   @FilterableField(() => Number, { nullable: false })
