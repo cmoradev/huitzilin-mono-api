@@ -44,7 +44,7 @@ export class DebitDto extends BaseDto {
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
-  @Field(() => DebitState, { nullable: false })
+  @FilterableField(() => DebitState, { nullable: false })
   state: DebitState;
 
   @Field(() => Frequency, { nullable: false })
