@@ -7,6 +7,9 @@ import { loader, validationSchema } from './common/config';
 import { DatabaseModule } from './common/database/database.module';
 import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 import { SchoolModule } from './school/school.module';
+import { IncomeModule } from './finance/income/income.module';
+import { ConceptModule } from './finance/concept/concept.module';
+import { PaymentModule } from './finance/payment/payment.module';
 
 console.log(); // Log the NODE_ENV value
 
@@ -25,6 +28,9 @@ console.log(); // Log the NODE_ENV value
     AuthModule,
     SchoolModule,
     MiscellaneousModule,
+    IncomeModule,
+    ConceptModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}

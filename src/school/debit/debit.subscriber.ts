@@ -48,6 +48,7 @@ export class DebitEventSubscriber implements EntitySubscriberInterface<Debit> {
     debit.subtotal = subtotal;
     debit.taxes = taxes;
     debit.total = total;
+    debit.pendingPayment = total;
 
     return debit;
   }

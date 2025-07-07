@@ -1,6 +1,6 @@
 import { Base } from 'src/common/utils/base.entity';
 import { Discount } from 'src/miscellaneous';
-import { Enrollment } from 'src/school';
+import { Enrollment, Student } from 'src/school';
 import { Frequency } from 'src/school/fee/enums';
 import {
   Column,
@@ -12,6 +12,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { DebitState } from '../enums';
+import { Concept } from 'src/finance';
 
 @Entity({ schema: 'school', name: 'debts' })
 export class Debit extends Base {
@@ -39,6 +40,9 @@ export class Debit extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   total: number;
 
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  pendingPayment: number;
+
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 
@@ -56,6 +60,14 @@ export class Debit extends Base {
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
+  studentId: string;
+
+  @ManyToOne(() => Student, (student) => student.debts)
+  @JoinColumn({ name: 'studentId' })
+  student: Student;
+
+  @Column({ type: 'uuid', nullable: false })
+  @Index()
   enrollmentId: string;
 
   @ManyToOne(() => Enrollment, (enrollment) => enrollment.debts)
@@ -65,4 +77,7 @@ export class Debit extends Base {
   @ManyToMany(() => Discount, (discount) => discount.debts, { cascade: true })
   @JoinTable({ name: 'debts_to_discounts' })
   discounts: Discount[];
+
+  @ManyToMany(() => Concept, (concept) => concept.debits)
+  concepts: Concept[];
 }

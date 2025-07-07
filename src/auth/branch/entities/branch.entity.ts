@@ -1,5 +1,6 @@
 import { Policy, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
+import { Income } from 'src/finance';
 import { Discount } from 'src/miscellaneous';
 import {
   Cycle,
@@ -52,6 +53,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Period, (period) => period.branch)
   periods: Period[];
+
+  @OneToMany(() => Income, (income) => income.branch)
+  incomes: Income[];
 
   @ManyToMany(() => Student, (student) => student.branchs)
   students: Student[];

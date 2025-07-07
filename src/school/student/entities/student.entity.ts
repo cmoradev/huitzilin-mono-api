@@ -1,6 +1,7 @@
 import { Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Enrollment, Tutor, Document } from 'src/school';
+import { Income } from 'src/finance';
+import { Enrollment, Tutor, Document, Debit } from 'src/school';
 import {
   Column,
   Entity,
@@ -56,4 +57,10 @@ export class Student extends Base {
 
   @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
   enrollments: Enrollment[];
+
+  @OneToMany(() => Debit, (debit) => debit.student)
+  debts: Debit[];
+
+  @ManyToMany(() => Income, (income) => income.students)
+  incomes: Income[];
 }
