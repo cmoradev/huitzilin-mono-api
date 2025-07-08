@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsUrl, MaxLength } from 'class-validator';
+import { NestedIdInput } from 'src/common/dtos';
 
 @InputType('CreateBranch')
 export class CreateBranchInput {
@@ -11,4 +12,7 @@ export class CreateBranchInput {
   @MaxLength(16)
   @Field(() => String, { nullable: false })
   name: string;
+
+  @Field(() => [NestedIdInput], { nullable: true })
+  clipAccounts: NestedIdInput[];
 }

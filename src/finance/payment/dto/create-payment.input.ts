@@ -1,11 +1,14 @@
 import { Field, Float, GraphQLISODateTime, InputType } from '@nestjs/graphql';
 import { IsUUID } from 'class-validator';
-import { PaymentState } from '../enum';
+import { PaymentMethod, PaymentState } from '../enum';
 
 @InputType('CreatePayment')
 export class CreatePaymentInput {
   @Field(() => PaymentState, { nullable: false })
   state: PaymentState;
+
+  @Field(() => PaymentMethod, { nullable: false })
+  method: PaymentMethod;
 
   @Field(() => GraphQLISODateTime, { nullable: false })
   date: Date;

@@ -8,7 +8,7 @@ import {
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos';
-import { PaymentState } from '../enum';
+import { PaymentMethod, PaymentState } from '../enum';
 
 @ObjectType('Payment')
 @QueryOptions({
@@ -20,6 +20,9 @@ export class PaymentDto extends BaseDto {
 
   @Field(() => PaymentState, { nullable: false })
   state: PaymentState;
+
+  @Field(() => PaymentMethod, { nullable: false })
+  method: PaymentMethod;
 
   @Field(() => GraphQLISODateTime, { nullable: false })
   date: Date;
