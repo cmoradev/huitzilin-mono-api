@@ -36,6 +36,9 @@ export class Student extends Base {
   @Column({ type: 'date', nullable: false })
   dateBirth: string;
 
+  @Column({ type: 'boolean', nullable: false, default: true })
+  active: boolean;
+
   @Column({ type: 'uuid', nullable: true })
   @Index()
   userId: string;
