@@ -47,7 +47,7 @@ export class Student extends Base {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToMany(() => Branch, (branch) => branch.students)
+  @ManyToMany(() => Branch, (branch) => branch.students, { cascade: true })
   @JoinTable({ name: 'branchs_to_students' })
   branchs: Branch[];
 
