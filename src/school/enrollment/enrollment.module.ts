@@ -10,6 +10,7 @@ import { UpdateEnrollmentInput } from './dto/update-enrollment.input';
 import { EnrollmentResolver } from './enrollment.resolver';
 import { EnrollmentService } from './enrollment.service';
 import { Enrollment } from './entities/enrollment.entity';
+import { EnrollmentEventSubscriber } from './enrollment.subscriber';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { Enrollment } from './entities/enrollment.entity';
       ],
     }),
   ],
-  providers: [EnrollmentResolver],
+  providers: [EnrollmentResolver, EnrollmentEventSubscriber],
 })
 export class EnrollmentModule {}

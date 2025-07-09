@@ -60,7 +60,7 @@ export class DebitDto extends BaseDto {
   dueDate: string;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  paymentDate: Date;
+  paymentDate: Date | null;
 
   @IsUUID()
   @FilterableField(() => String, { nullable: false })

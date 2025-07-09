@@ -92,7 +92,9 @@ export class Enrollment extends Base {
   @JoinColumn({ name: 'periodId' })
   period: Period;
 
-  @OneToMany(() => Debit, (debit) => debit.enrollment)
+  @OneToMany(() => Debit, (debit) => debit.enrollment, {
+    cascade: ['insert'],
+  })
   debts: Debit[];
 
   @ManyToMany(() => Schedule, (schedule) => schedule.enrollments, {

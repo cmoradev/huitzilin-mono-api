@@ -3,6 +3,13 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { Decimal } from 'decimal.js';
 
+import { setDefaultOptions } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+setDefaultOptions({
+  locale: es,
+});
+
 Decimal.set({
   precision: 10,
   rounding: Decimal.ROUND_HALF_UP,

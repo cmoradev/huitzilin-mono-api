@@ -59,7 +59,7 @@ export class Debit extends Base {
   dueDate: string;
 
   @Column({ type: 'timestamp', nullable: true })
-  paymentDate: Date;
+  paymentDate: Date | null;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
