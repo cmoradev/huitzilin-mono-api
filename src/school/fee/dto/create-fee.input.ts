@@ -15,6 +15,9 @@ export class CreateFeeInput {
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  autoLoad: boolean;
+
   @Field(() => Frequency, { nullable: false })
   frequency: Frequency;
 

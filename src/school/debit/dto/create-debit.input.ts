@@ -21,6 +21,9 @@ export class CreateDebitInput {
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  withPayment: boolean;
+
   @Field(() => DebitState, { nullable: false })
   state: DebitState;
 

@@ -16,7 +16,4 @@ export class CycleDto extends BaseDto {
 
   @Field(() => String, { nullable: false })
   end: string;
-
-  @FilterableField(() => String, { nullable: false })
-  branchId: string;
 }

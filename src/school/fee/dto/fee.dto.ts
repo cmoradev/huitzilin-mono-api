@@ -24,6 +24,9 @@ export class FeeDto extends BaseDto {
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
+  @FilterableField(() => Boolean, { nullable: false })
+  autoLoad: boolean;
+
   @Field(() => Frequency, { nullable: false })
   frequency: Frequency;
 

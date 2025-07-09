@@ -20,6 +20,9 @@ export class Fee extends Base {
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 
+  @Column({ type: 'boolean', nullable: false, default: true })
+  autoLoad: boolean;
+
   @Column({ type: 'enum', nullable: false, enum: Frequency })
   frequency: Frequency;
 

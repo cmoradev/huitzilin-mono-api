@@ -46,6 +46,9 @@ export class Debit extends Base {
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 
+  @Column({ type: 'boolean', nullable: false, default: false })
+  withPayment: boolean;
+
   @Column({ type: 'enum', nullable: false, enum: DebitState })
   state: DebitState;
 
