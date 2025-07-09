@@ -3,10 +3,10 @@ import { randomBytes } from 'crypto';
  * Generar un nombre aleatorio con la estrategia de bytes aleatorios de crypto
  *
  * @private
- * @param {number} [bytes=8] - Cantidad de bytes
+ * @param {number} [bytes=3] - Cantidad de bytes
  * @returns {string} - Nombre aleatorio
  */
-export const randomCode= (bytes = 4): string => {
+export const randomCode = (bytes = 3): string => {
   return randomBytes(bytes).toString('hex');
 };
 
