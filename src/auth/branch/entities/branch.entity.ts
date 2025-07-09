@@ -3,7 +3,6 @@ import { Base } from 'src/common/utils/base.entity';
 import { Income } from 'src/finance';
 import { ClipAccount, Discount } from 'src/miscellaneous';
 import {
-  Cycle,
   Discipline,
   Enrollment,
   Level,
@@ -32,9 +31,6 @@ export class Branch extends Base {
 
   @OneToMany(() => Package, (pack) => pack.branch)
   packages: Package[];
-
-  @OneToMany(() => Cycle, (cycle) => cycle.branch)
-  cycles: Cycle[];
 
   @OneToMany(() => Schedule, (schedule) => schedule.branch)
   schedules: Schedule[];
