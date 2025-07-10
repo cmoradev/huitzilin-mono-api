@@ -6,10 +6,19 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { IncomeDto } from './dto/income.dto';
 import { IncomeService } from './income.service';
+import { CreateIncomeInput } from './dto/create-income.input';
 
 @Resolver(() => IncomeDto)
 export class IncomeResolver {
   constructor(private readonly incomeService: IncomeService) {}
+
+  @Mutation(() => [IncomeDto])
+  createIncomes(
+    @Args('input', { type: () => CreateIncomeInput })
+    params: CreateIncomeInput,
+  ): Promise<IncomeDto[]> {
+    return this.incomeService.createIncomes(params);
+  }
 
   @Mutation(() => IncomeDto)
   restoreOneIncome(

@@ -1,6 +1,6 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { IsUUID } from 'class-validator';
 import { NestedIdInput } from 'src/common/dtos';
+import { Debit } from 'src/school';
 
 @InputType('CreateConcept')
 export class CreateConceptInput {
@@ -13,31 +13,22 @@ export class CreateConceptInput {
   @Field(() => Float, { nullable: false })
   quantity: number;
 
-  @Field(() => Float, { nullable: false })
-  amount: number;
-
-  @Field(() => Float, { nullable: false })
-  discount: number;
-
-  @Field(() => Float, { nullable: false })
-  subtotal: number;
-
-  @Field(() => Float, { nullable: false })
-  taxes: number;
-
-  @Field(() => Float, { nullable: false })
-  total: number;
-
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
-  @IsUUID()
   @Field(() => String, { nullable: false })
-  incomeId: string;
+  debitId: string;
 
   @Field(() => [NestedIdInput], { nullable: true })
   discounts: NestedIdInput[];
+}
 
-  @Field(() => [NestedIdInput], { nullable: true })
-  debits: NestedIdInput[];
+export class CreateConceptInputWithDebit {
+  description: string;
+  unitPrice: number;
+  quantity: number;
+  withTax: boolean;
+  debitId: string;
+  debit: Debit;
+  discounts: NestedIdInput[];
 }

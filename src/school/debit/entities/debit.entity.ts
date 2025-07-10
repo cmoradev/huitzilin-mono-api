@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { DebitState } from '../enums';
 import { Concept } from 'src/finance';
+import { Branch } from 'src/auth';
 
 @Entity({ schema: 'school', name: 'debts' })
 export class Debit extends Base {
@@ -40,9 +41,6 @@ export class Debit extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   total: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
-  pendingPayment: number;
-
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 
@@ -60,6 +58,14 @@ export class Debit extends Base {
 
   @Column({ type: 'timestamp', nullable: true })
   paymentDate: Date | null;
+
+  @Column({ type: 'uuid', nullable: false })
+  @Index()
+  branchId: string;
+
+  @ManyToOne(() => Branch, (branch) => branch.debts)
+  @JoinColumn({ name: 'branchId' })
+  branch: Branch;
 
   @Column({ type: 'uuid', nullable: false })
   @Index()

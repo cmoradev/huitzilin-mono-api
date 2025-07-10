@@ -47,6 +47,7 @@ export const generateDebits = (
             frequency: Frequency.SINGLE,
             paymentDate: null,
             studentId: enrollment.studentId,
+            branchId: enrollment.branchId,
             discounts: [],
           });
 
@@ -68,6 +69,7 @@ export const generateDebits = (
           frequency: Frequency.SINGLE,
           paymentDate: null,
           studentId: enrollment.studentId,
+          branchId: enrollment.branchId,
           discounts: [],
         },
       ];

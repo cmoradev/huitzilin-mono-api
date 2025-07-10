@@ -39,6 +39,10 @@ export class CreateDebitInput {
 
   @IsUUID()
   @Field(() => String, { nullable: false })
+  branchId: string;
+
+  @IsUUID()
+  @Field(() => String, { nullable: false })
   enrollmentId: string;
 
   @Field(() => [NestedIdInput], { nullable: true })

@@ -41,9 +41,6 @@ export class DebitDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   total: number;
 
-  @Field(() => Float, { nullable: false })
-  pendingPayment: number;
-
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 
@@ -65,6 +62,10 @@ export class DebitDto extends BaseDto {
   @IsUUID()
   @FilterableField(() => String, { nullable: false })
   studentId: string;
+
+  @IsUUID()
+  @Field(() => String, { nullable: false })
+  branchId: string;
 
   @IsUUID()
   @FilterableField(() => String, { nullable: false })

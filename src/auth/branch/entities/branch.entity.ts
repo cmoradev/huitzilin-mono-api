@@ -3,6 +3,7 @@ import { Base } from 'src/common/utils/base.entity';
 import { Income } from 'src/finance';
 import { ClipAccount, Discount } from 'src/miscellaneous';
 import {
+  Debit,
   Discipline,
   Enrollment,
   Level,
@@ -52,6 +53,9 @@ export class Branch extends Base {
 
   @OneToMany(() => Income, (income) => income.branch)
   incomes: Income[];
+
+  @OneToMany(() => Debit, (debit) => debit.student)
+  debts: Debit[];
 
   @ManyToMany(() => Student, (student) => student.branchs)
   students: Student[];

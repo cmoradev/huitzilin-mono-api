@@ -4,9 +4,9 @@ import {
   PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { CreateIncomeInput } from './dto/create-income.input';
+import { Discount } from 'src/miscellaneous';
+import { Debit } from 'src/school';
 import { IncomeDto } from './dto/income.dto';
-import { UpdateIncomeInput } from './dto/update-income.input';
 import { Income } from './entities/income.entity';
 import { IncomeResolver } from './income.resolver';
 import { IncomeService } from './income.service';
@@ -15,13 +15,11 @@ import { IncomeEventSubscriber } from './income.subscriber';
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Income])],
+      imports: [NestjsQueryTypeOrmModule.forFeature([Income, Debit, Discount])],
       services: [IncomeService],
       resolvers: [
         {
           DTOClass: IncomeDto,
-          CreateDTOClass: CreateIncomeInput,
-          UpdateDTOClass: UpdateIncomeInput,
           ServiceClass: IncomeService,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,

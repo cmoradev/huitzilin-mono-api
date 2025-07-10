@@ -23,7 +23,7 @@ export class EnrollmentEventSubscriber
   }
 
   async afterInsert(e: InsertEvent<Enrollment>) {
-    if (!!e.entity.packageId && !!e.entity.studentId) {
+    if (!!e.entity.packageId && !!e.entity.studentId && !!e.entity.branchId) {
       const feeRepository = e.manager.getRepository(Fee);
       const enrollmentRepository = e.manager.getRepository(Enrollment);
 
@@ -35,11 +35,14 @@ export class EnrollmentEventSubscriber
         (acc, fee) => [...acc, ...(generateDebits(fee, e.entity) as Debit[])],
         [] as Debit[],
       );
+
       // TODO - Revisar el insert en cascada
-      await enrollmentRepository.save({
-        id: e.entity.id,
-        debts: debits,
-      });
+      if (debits.length) {
+        await enrollmentRepository.save({
+          id: e.entity.id,
+          debts: debits,
+        });
+      }
     }
 
     return e;

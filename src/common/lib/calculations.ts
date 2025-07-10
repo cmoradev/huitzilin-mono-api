@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js';
+import { DiscountBy } from 'src/miscellaneous/discounts/enums';
 
 /**
  * Calculates the tax based on a fixed rate.
@@ -6,27 +7,6 @@ import Decimal from 'decimal.js';
 export enum TaxEnum {
   Zero = 0,
   Sixteen = 16,
-}
-
-/**
- * Calcula el importe base y los impuestos a partir del total y el porcentaje de impuestos.
- * @param total Monto total (importe + impuestos)
- * @param taxRate Porcentaje de impuestos (por ejemplo, 16 para 16%)
- * @returns Un objeto con importe e impuestos
- */
-export function calculateAmountFromTotalAndTax(
-  total: number,
-  taxRate: number = TaxEnum.Sixteen,
-): { amount: number; taxes: number } {
-  const totalDecimal = new Decimal(total);
-  const rateDecimal = new Decimal(taxRate).dividedBy(100);
-  const amount = totalDecimal.dividedBy(rateDecimal.plus(1));
-  const taxes = totalDecimal.minus(amount);
-
-  return {
-    amount: Number(amount.toFixed(2)),
-    taxes: Number(taxes.toFixed(2)),
-  };
 }
 
 /**
@@ -85,5 +65,63 @@ export function calculateTotalFromUnitPriceQuantityDiscountAndTax(
     subtotal: Number(subtotalDecimal.toFixed(2)),
     taxes: Number(taxes.toFixed(2)),
     total: Number(totalDecimal.toFixed(2)),
+  };
+}
+
+/**
+ * Calcula el descuento a partir de un importe y una lista de descuentos.
+ * @param amount Importe total
+ * @param discounts Lista de descuentos aplicables
+ * @returns Un objeto con el descuento total y el subtotal después de aplicar los descuentos
+ */
+export function calculateSubtotalAndDiscount(
+  amount: number,
+  discounts: { value: number; type: DiscountBy }[],
+) {
+  const amountDecimal = new Decimal(amount);
+
+  let discountTotal = new Decimal(0);
+
+  for (const discount of discounts) {
+    const valueDecimal = new Decimal(discount.value);
+
+    if (discount.type === DiscountBy.PERCENTAGE) {
+      discountTotal = discountTotal.plus(
+        amountDecimal.times(valueDecimal).dividedBy(100),
+      );
+      discountTotal = discountTotal.plus(valueDecimal);
+    }
+  }
+
+  const subtotalDecimal = amountDecimal.minus(discountTotal);
+
+  return {
+    discount: Number(discountTotal.toFixed(2)),
+    subtotal: Number(subtotalDecimal.toFixed(2)),
+  };
+}
+
+/**
+ * Calcula el monto total a partir del precio unitario y la cantidad.
+ *
+ * Utiliza la librería Decimal para realizar cálculos precisos con decimales.
+ * Retorna un objeto con el precio unitario, la cantidad y el monto total,
+ * todos redondeados a dos decimales.
+ *
+ * @param {number} unitPrice - Precio unitario del producto o servicio.
+ * @param {number} quantity - Cantidad de productos o servicios.
+ * @returns {{ unitPrice: number; quantity: number; amount: number }}
+ *   Objeto con el precio unitario, la cantidad y el monto total.
+ */
+export function calculateAmount(unitPrice: number, quantity: number) {
+  const unitPriceDecimal = new Decimal(unitPrice);
+  const quantityDecimal = new Decimal(quantity);
+
+  const amountDecimal = unitPriceDecimal.times(quantityDecimal);
+
+  return {
+    unitPrice: Number(unitPriceDecimal.toFixed(2)),
+    quantity: Number(quantityDecimal.toFixed(2)),
+    amount: Number(amountDecimal.toFixed(2)),
   };
 }

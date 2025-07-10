@@ -38,6 +38,9 @@ export class Concept extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   total: number;
 
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  pendingPayment: number;
+
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 
