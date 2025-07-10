@@ -44,6 +44,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
 
     const details = this._applyCalculationsInConcepts(matches, discounts);
 
+    this._applyPaymentsInConcepts(details, payments);
+
     console.log('Details:', details);
 
     // this._buildIncomes(matches, payments);
@@ -57,16 +59,22 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     return [];
   }
 
-  private _buildIncomes(
-    matches: Map<string, CreateConceptInput[]>,
+  private _applyPaymentsInConcepts(
+    details: CreateConceptPayload[],
     payments: CreatePaymentInput[],
   ) {
-    let received = payments.reduce(
+    payments.sort((a, b) => b.amount - a.amount);
+
+    details.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
+
+    const received = payments.reduce(
       (acc, payment) => acc.plus(payment.amount),
       new Decimal(0),
     );
 
-    payments.sort((a, b) => b.amount - a.amount);
+    console.log('Received amount:', received.toString());
+    console.log('Payments:', payments);
+    console.log('Details:', details);
 
     // matches.forEach((concepts, branchId) => {
     //   // TODO: Revisar los calculos de pagos y conceptos
@@ -94,9 +102,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     //   console.log(`Branch ID: ${branchId}`);
     //   console.log('Concepts:', concepts);
     // });
-
-    console.log('Payments:', payments);
-    console.log('Received:', received.toString());
   }
 
   private _applyCalculationsInConcepts(
@@ -132,6 +137,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
         discount,
         taxes,
         total,
+        dueDate: new Date(concept.debit.dueDate),
         withTax: concept.withTax,
         debitId: concept.debit.id,
         branchId: concept.debit.enrollment.branchId,

@@ -12,5 +12,6 @@ export class CreateConceptPayload {
   taxes: number;
   total: number;
   withTax: boolean;
+  dueDate: Date;
   discounts: NestedIdInput[];
 }
