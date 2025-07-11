@@ -33,21 +33,28 @@ export class DebitEventSubscriber implements EntitySubscriberInterface<Debit> {
   }
 
   private calculateTotal(debit: Debit) {
-    const { unitPrice, quantity, amount, discount, subtotal, taxes, total } =
-      calculateTotalFromUnitPriceQuantityDiscountAndTax(
-        debit.unitPrice,
-        debit.quantity,
-        debit.discount,
-        debit.withTax ? TaxEnum.Sixteen : TaxEnum.Zero,
-      );
+    if (
+      !!debit?.unitPrice &&
+      !!debit?.quantity &&
+      !!debit?.discount &&
+      debit.withTax !== undefined
+    ) {
+      const { unitPrice, quantity, amount, discount, subtotal, taxes, total } =
+        calculateTotalFromUnitPriceQuantityDiscountAndTax(
+          debit.unitPrice,
+          debit.quantity,
+          debit.discount,
+          debit.withTax ? TaxEnum.Sixteen : TaxEnum.Zero,
+        );
 
-    debit.unitPrice = unitPrice;
-    debit.quantity = quantity;
-    debit.amount = amount;
-    debit.discount = discount;
-    debit.subtotal = subtotal;
-    debit.taxes = taxes;
-    debit.total = total;
+      debit.unitPrice = unitPrice;
+      debit.quantity = quantity;
+      debit.amount = amount;
+      debit.discount = discount;
+      debit.subtotal = subtotal;
+      debit.taxes = taxes;
+      debit.total = total;
+    }
 
     return debit;
   }

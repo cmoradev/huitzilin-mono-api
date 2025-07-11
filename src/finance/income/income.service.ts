@@ -44,9 +44,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithPayments(groupDetails, payments);
 
-    await this._saveIncomes(incomes);
-
-    return [];
+    return this._saveIncomes(incomes);
   }
 
   private async _saveIncomes(bulk: CreateIncomePayload[]) {
