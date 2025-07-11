@@ -23,6 +23,12 @@ export class IncomeDto extends BaseDto {
   state: IncomeState;
 
   @Field(() => Float, { nullable: false })
+  amount: number;
+
+  @Field(() => Float, { nullable: false })
+  discount: number;
+
+  @Field(() => Float, { nullable: false })
   subtotal: number;
 
   @Field(() => Float, { nullable: false })

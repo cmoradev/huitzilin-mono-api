@@ -27,6 +27,12 @@ export class Income extends Base {
   state: IncomeState;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  amount: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  discount: number;
+
+  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   subtotal: number;
 
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })

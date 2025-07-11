@@ -1,24 +1,23 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
-import Decimal from 'decimal.js';
 import { Debit } from 'src/school';
-import { In, Repository } from 'typeorm';
-import {
-  CreateConceptInput,
-  CreateConceptInputWithDebit,
-} from '../concept/dto/create-concept.input';
-import { CreatePaymentInput } from '../payment/dto/create-payment.input';
+import { DataSource, In, Repository } from 'typeorm';
+import { CreateConceptInput } from '../concept/dto/create-concept.input';
 import { CreateIncomeInput } from './dto/create-income.input';
 import { Income } from './entities/income.entity';
-import {
-  calculateAmount,
-  calculateSubtotalAndDiscount,
-  calculateTotalFromBaseAndTax,
-  TaxEnum,
-} from 'src/common/lib/calculations';
 import { Discount } from 'src/miscellaneous';
-import { CreateConceptPayload } from '../concept/types';
+import {
+  applyCalculationsInConcepts,
+  applyPaymentsInConcepts,
+  buildIncomesWithPayments,
+  detailsGroupByBranchID,
+  matchConceptWithDebit,
+} from './helpers';
+import { CreateIncomePayload } from './types';
+import { Concept } from '../concept/entities/concept.entity';
+import { Payment } from '../payment/entities/payment.entity';
+import { PaymentState } from '../payment/enum';
 
 @Injectable()
 export class IncomeService extends TypeOrmQueryService<Income> {
@@ -29,6 +28,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     private readonly _debitRepository: Repository<Debit>,
     @InjectRepository(Discount)
     private readonly _discountRepository: Repository<Discount>,
+    @InjectDataSource() public dataSource: DataSource,
   ) {
     super(_incomeRepository, { useSoftDelete: true });
   }
@@ -37,132 +37,123 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const { concepts, payments } = params;
 
     const debits = await this._fetchDebitsFromConcepts(concepts);
-
     const discounts = await this._fetchDiscountsFromConcepts(concepts);
+    const matches = matchConceptWithDebit(concepts, debits);
+    const calculations = applyCalculationsInConcepts(matches, discounts);
+    const { details } = applyPaymentsInConcepts(calculations, payments);
+    const groupDetails = detailsGroupByBranchID(details);
+    const incomes = buildIncomesWithPayments(groupDetails, payments);
 
-    const matches = this._matchConceptWithDebit(concepts, debits);
-
-    const details = this._applyCalculationsInConcepts(matches, discounts);
-
-    this._applyPaymentsInConcepts(details, payments);
-
-    console.log('Details:', details);
-
-    // this._buildIncomes(matches, payments);
-
-    // const debitGroups = await this._groupDebitsByBranch(concepts);
-
-    // debitGroups.forEach((debits, branchId) => {});
-
-    // console.log('Creating incomes with params:', params);
+    await this._saveIncomes(incomes);
 
     return [];
   }
 
-  private _applyPaymentsInConcepts(
-    details: CreateConceptPayload[],
-    payments: CreatePaymentInput[],
-  ) {
-    payments.sort((a, b) => b.amount - a.amount);
+  private async _saveIncomes(bulk: CreateIncomePayload[]) {
+    if (bulk.length === 0) {
+      throw new NotFoundException('¡No hemos podido crear la venta!');
+    }
 
-    details.sort((a, b) => b.dueDate.getTime() - a.dueDate.getTime());
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    const received = payments.reduce(
-      (acc, payment) => acc.plus(payment.amount),
-      new Decimal(0),
-    );
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    console.log('Received amount:', received.toString());
-    console.log('Payments:', payments);
-    console.log('Details:', details);
+    const incomes: Income[] = [];
 
-    // matches.forEach((concepts, branchId) => {
-    //   // TODO: Revisar los calculos de pagos y conceptos
-    //   concepts.forEach((concept) => {
-    //     const { unitPrice, quantity, amount } = calculateAmount(
-    //       concept.unitPrice,
-    //       concept.quantity,
-    //     );
+    try {
+      await queryRunner.commitTransaction();
 
-    //     if (received.greaterThanOrEqualTo(concept.total)) {
-    //       received = received.minus(concept.total);
-    //       // concept.debit.paymentDate = new Date();
-    //       // concept.debit.state = DebitState.PAID;
-    //       // concept.pendingPayment = 0;
-    //     } else if (received.greaterThan(0)) {
-    //       received = new Decimal(0);
-    //       // concept.debit.paymentDate = new Date();
-    //       // concept.debit.state = DebitState.PARTIALLY_PAID;
+      for (const payload of bulk) {
+        const {
+          amount,
+          discount,
+          subtotal,
+          taxes,
+          total,
+          pendingPayment,
+          branchId,
+          state,
+          concepts: payloadConcepts,
+          payments: payloadPayments,
+        } = payload;
 
-    //       // const total = new Decimal(concept.total);
-    //       // concept.pendingPayment = total.minus(received).toNumber();
-    //     }
-    //   });
+        const income = await queryRunner.manager.save(Income, {
+          date: new Date().toISOString(),
+          state,
+          amount,
+          discount,
+          subtotal,
+          taxes,
+          total,
+          pendingPayment,
+          clipLink: null,
+          branchId,
+        });
 
-    //   console.log(`Branch ID: ${branchId}`);
-    //   console.log('Concepts:', concepts);
-    // });
-  }
-
-  private _applyCalculationsInConcepts(
-    concepts: CreateConceptInputWithDebit[],
-    allDiscounts: Discount[],
-  ): CreateConceptPayload[] {
-    return concepts.map((concept) => {
-      const { unitPrice, quantity, amount } = calculateAmount(
-        concept.unitPrice,
-        concept.quantity,
-      );
-
-      // Optimiza la búsqueda de descuentos usando un Set para O(1) lookups
-      const discountIdsSet = new Set(concept.discounts.map((c) => c.id));
-      const discounts = allDiscounts.filter((d) => discountIdsSet.has(d.id));
-
-      const { discount, subtotal } = calculateSubtotalAndDiscount(
-        amount,
-        discounts,
-      );
-
-      const { taxes, total } = calculateTotalFromBaseAndTax(
-        subtotal,
-        concept.withTax ? TaxEnum.Sixteen : TaxEnum.Zero,
-      );
-
-      return {
-        description: concept.description,
-        amount,
-        unitPrice,
-        quantity,
-        subtotal,
-        discount,
-        taxes,
-        total,
-        dueDate: new Date(concept.debit.dueDate),
-        withTax: concept.withTax,
-        debitId: concept.debit.id,
-        branchId: concept.debit.enrollment.branchId,
-        discounts: discounts.map((d) => ({
-          id: d.id,
-        })),
-      };
-    });
-  }
-
-  private _matchConceptWithDebit(
-    concepts: CreateConceptInput[],
-    debits: Debit[],
-  ): CreateConceptInputWithDebit[] {
-    return concepts.map((concept) => {
-      const debit = debits.find((d) => d.id === concept.debitId);
-
-      if (!debit) {
-        throw new ConflictException(
-          `Debit with ID ${concept.debitId} not found`,
+        const conceptsWithIncome: Concept[] = payloadConcepts.map(
+          (concept) =>
+            ({
+              description: concept.description,
+              unitPrice: concept.unitPrice,
+              quantity: concept.quantity,
+              amount: concept.amount,
+              discount: concept.discount,
+              subtotal: concept.subtotal,
+              taxes: concept.taxes,
+              total: concept.total,
+              pendingPayment: concept.pendingPayment,
+              withTax: concept.withTax,
+              incomeId: income.id,
+              discounts: concept.discounts.map(
+                (d) =>
+                  ({
+                    id: d.id,
+                  }) as Discount,
+              ),
+              debits: [{ id: concept.debitId } as Debit],
+            }) as Concept,
         );
+        // const concepts =
+        await queryRunner.manager.save(Concept, conceptsWithIncome);
+
+        const paymentsWithIncome: Payment[] = payloadPayments.map(
+          (payment) =>
+            ({
+              method: payment.method,
+              amount: payment.amount,
+              date: payment.date,
+              state: PaymentState.PAID,
+              bank: payment.bank,
+              transaction: payment.transaction,
+              incomeId: income.id,
+            }) as Payment,
+        );
+        // const payments =
+        await queryRunner.manager.save(Payment, paymentsWithIncome);
+
+        const debitUpdates: Debit[] = payloadConcepts.map(
+          (concept) =>
+            ({
+              id: concept.debitId,
+              state: concept.state,
+              paymentDate: concept.paymentDate,
+            }) as Debit,
+        );
+        // const debits =
+        await queryRunner.manager.save(Debit, debitUpdates);
+
+        incomes.push(income);
       }
 
-      return { ...concept, debit };
-    });
+      return incomes;
+    } catch (error) {
+      console.error('Error saving incomes:', error);
+      await queryRunner.rollbackTransaction();
+      throw new NotFoundException('¡No hemos podido crear la venta!');
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   private async _fetchDebitsFromConcepts(concepts: CreateConceptInput[]) {

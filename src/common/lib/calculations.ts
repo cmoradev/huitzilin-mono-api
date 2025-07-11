@@ -89,6 +89,7 @@ export function calculateSubtotalAndDiscount(
       discountTotal = discountTotal.plus(
         amountDecimal.times(valueDecimal).dividedBy(100),
       );
+    } else if (discount.type === DiscountBy.FIXED) {
       discountTotal = discountTotal.plus(valueDecimal);
     }
   }
