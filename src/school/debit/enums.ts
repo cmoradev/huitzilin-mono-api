@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 /**
  * Enumera los posibles estados de una deuda.
- * 
+ *
  * @enum {string}
  * @readonly
  */

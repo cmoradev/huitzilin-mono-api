@@ -36,7 +36,7 @@ export class DebitEventSubscriber implements EntitySubscriberInterface<Debit> {
     if (
       !!debit?.unitPrice &&
       !!debit?.quantity &&
-      !!debit?.discount &&
+      debit?.discount !== undefined &&
       debit.withTax !== undefined
     ) {
       const { unitPrice, quantity, amount, discount, subtotal, taxes, total } =
