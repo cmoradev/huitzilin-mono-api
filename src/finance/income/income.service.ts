@@ -4,12 +4,16 @@ import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 import { Debit } from 'src/school';
 import { DataSource, In, Repository } from 'typeorm';
 import { CreateConceptInput } from '../concept/dto/create-concept.input';
-import { CreateIncomeInput } from './dto/create-income.input';
+import {
+  CreateIncomeInput,
+  CreateLinkIncomeInput,
+} from './dto/create-income.input';
 import { Income } from './entities/income.entity';
 import { Discount } from 'src/miscellaneous';
 import {
   applyCalculationsInConcepts,
   applyPaymentsInConcepts,
+  buildIncomesWithoutPayments,
   buildIncomesWithPayments,
   detailsGroupByBranchID,
   matchConceptWithDebit,
@@ -33,6 +37,22 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     super(_incomeRepository, { useSoftDelete: true });
   }
 
+  public async createLinkIncomes(params: CreateLinkIncomeInput) {
+    const { concepts } = params;
+
+    const debits = await this._fetchDebitsFromConcepts(concepts);
+    const discounts = await this._fetchDiscountsFromConcepts(concepts);
+    const matches = matchConceptWithDebit(concepts, debits);
+    const details = applyCalculationsInConcepts(matches, discounts);
+    const groupDetails = detailsGroupByBranchID(details);
+    const incomes = buildIncomesWithoutPayments(groupDetails);
+
+    console.log('groupDetails', incomes);
+
+    // return this._saveIncomes(incomes);
+    return [];
+  }
+
   public async createIncomes(params: CreateIncomeInput) {
     const { concepts, payments } = params;
 
@@ -44,10 +64,10 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithPayments(groupDetails, payments);
 
-    return this._saveIncomes(incomes);
+    return this._saveIncomesWithPayments(incomes);
   }
 
-  private async _saveIncomes(bulk: CreateIncomePayload[]) {
+  private async _saveIncomesWithPayments(bulk: CreateIncomePayload[]) {
     if (bulk.length === 0) {
       throw new NotFoundException('¡No hemos podido crear la venta!');
     }
@@ -60,8 +80,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const incomes: Income[] = [];
 
     try {
-      await queryRunner.commitTransaction();
-
       for (const payload of bulk) {
         const {
           amount,
@@ -76,6 +94,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           payments: payloadPayments,
         } = payload;
 
+        const clipLink = payload.clipLink ?? null;
+
         const income = await queryRunner.manager.save(Income, {
           date: new Date().toISOString(),
           state,
@@ -85,7 +105,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           taxes,
           total,
           pendingPayment,
-          clipLink: null,
+          clipLink,
           branchId,
         });
 
@@ -143,6 +163,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
 
         incomes.push(income);
       }
+
+      await queryRunner.commitTransaction();
 
       return incomes;
     } catch (error) {

@@ -10,3 +10,9 @@ export class CreateIncomeInput {
   @Field(() => [CreatePaymentInput], { nullable: true })
   payments: CreatePaymentInput[];
 }
+
+@InputType('CreateLinkIncome')
+export class CreateLinkIncomeInput {
+  @Field(() => [CreateConceptInput], { nullable: true })
+  concepts: CreateConceptInput[];
+}

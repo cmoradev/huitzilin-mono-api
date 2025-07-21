@@ -1,22 +1,23 @@
-import { Debit } from 'src/school';
-import {
-  CreateConceptInput,
-  CreateConceptInputWithDebit,
-} from '../concept/dto/create-concept.input';
 import { ConflictException } from '@nestjs/common';
-import { CreateConceptPayload } from '../concept/types';
-import { Discount } from 'src/miscellaneous';
+import Decimal from 'decimal.js';
 import {
   calculateAmount,
   calculateSubtotalAndDiscount,
   calculateTotalFromBaseAndTax,
   TaxEnum,
 } from 'src/common/lib/calculations';
+import { Discount } from 'src/miscellaneous';
+import { Debit } from 'src/school';
 import { DebitState } from 'src/school/debit/enums';
+import {
+  CreateConceptInput,
+  CreateConceptInputWithDebit,
+} from '../concept/dto/create-concept.input';
+import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
-import Decimal from 'decimal.js';
-import { CreateIncomePayload } from './types';
 import { IncomeState } from './enum';
+import { request, RequestOptions } from 'https';
+import { CreateIncomePayload } from './types';
 
 export const matchConceptWithDebit = (
   concepts: CreateConceptInput[],
@@ -162,6 +163,34 @@ export const buildBreakdown = (details: CreateConceptPayload[]) => {
   };
 };
 
+export const buildIncomesWithoutPayments = (
+  groupDetails: Map<string, CreateConceptPayload[]>,
+): Omit<CreateIncomePayload, 'payments'>[] => {
+  const incomes: Omit<CreateIncomePayload, 'payments'>[] = [];
+
+  groupDetails.forEach((concepts, branchId) => {
+    const studentIds = concepts.map((c) => c.studentId);
+
+    const { amount, discount, subtotal, taxes, total, pendingPayment } =
+      buildBreakdown(concepts);
+
+    incomes.push({
+      amount,
+      discount,
+      subtotal,
+      taxes,
+      total,
+      pendingPayment,
+      branchId,
+      studentIds,
+      state: IncomeState.PENDING,
+      concepts,
+    });
+  });
+
+  return incomes;
+};
+
 export const buildIncomesWithPayments = (
   groupDetails: Map<string, CreateConceptPayload[]>,
   payments: CreatePaymentInput[],
@@ -236,4 +265,16 @@ export const distributePaymentsByBranch = (
     adjustedPayments,
     remainingPayments,
   };
+};
+
+export const createLinkClip = (token: string): string => {
+  const options: RequestOptions = {
+    hostname: 'api.payclip.com',
+    method: 'POST',
+    path: 'v2/checkout',
+  };
+
+  request(options);
+
+  return `https://payclip.com/checkout/${token}`;
 };
