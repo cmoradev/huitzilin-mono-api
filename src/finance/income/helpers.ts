@@ -1,5 +1,7 @@
 import { ConflictException } from '@nestjs/common';
+import { addDays, endOfDay } from 'date-fns';
 import Decimal from 'decimal.js';
+import { RequestOptions } from 'https';
 import {
   calculateAmount,
   calculateSubtotalAndDiscount,
@@ -13,8 +15,10 @@ import {
   CreateConceptInput,
   CreateConceptInputWithDebit,
 } from '../concept/dto/create-concept.input';
+import { Concept } from '../concept/entities/concept.entity';
 import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
+import { Income } from './entities/income.entity';
 import { IncomeState } from './enum';
 import { CreateIncomePayload } from './types';
 
@@ -266,14 +270,62 @@ export const distributePaymentsByBranch = (
   };
 };
 
-export const createLinkClip = (clipAccount: ClipAccount) => {
-  const { token, webhook, success, error, default: defaultUrl } = clipAccount;
+export const createLinkClip = (clipAccount: ClipAccount, income: Income) => {
+  const {
+    token,
+    webhook,
+    success: successUrl,
+    error: errorUrl,
+    default: defaultUrl,
+  } = clipAccount;
+
+  const { pendingPayment, id, concepts } = income;
+
+  const expireDate = endOfDay(addDays(new Date(), 7)).toISOString();
+
+  const purchaseDescription = generatePurchaseDescription(concepts);
+
+  const data = JSON.stringify({
+    amount: pendingPayment,
+    currency: 'MXN',
+    webhook_url: webhook,
+    purchase_description: purchaseDescription,
+    metadata: { external_reference: id },
+    expires_at: expireDate,
+    redirection_url: {
+      success:
+        'https://my-website.com/redirection/success?external_reference=OID123456789',
+      error:
+        'https://my-website.com/redirection/error?external_reference=OID123456789',
+      default: 'https://my-website.com/redirection/default',
+    },
+  });
+
+  const options: RequestOptions = {
+    hostname: 'api.payclip.com',
+    path: '/v2/checkout',
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+  };
+  console.log('Clip Account Token:', data, options);
+  // request();
 
   return {
     token,
     webhook,
-    success,
-    error,
+    error: errorUrl,
+    success: successUrl,
     default: defaultUrl,
   };
+};
+
+export const generatePurchaseDescription = (concepts: Concept[]): string => {
+  const lines = concepts.map((c) => {
+    return `• ${c.description}`;
+  });
+
+  return `Compra realizada:\n${lines.join('\n')}}`;
 };

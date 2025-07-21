@@ -15,6 +15,7 @@ import {
   applyPaymentsInConcepts,
   buildIncomesWithoutPayments,
   buildIncomesWithPayments,
+  createLinkClip,
   detailsGroupByBranchID,
   matchConceptWithDebit,
 } from './helpers';
@@ -115,6 +116,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           }
 
           console.log('Clip Account:', clipAccount);
+          await createLinkClip(clipAccount, income)
+
           // income.clipAccount = clipAccount;
         }
 
