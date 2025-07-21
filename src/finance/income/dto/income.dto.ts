@@ -40,9 +40,6 @@ export class IncomeDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   pendingPayment: number;
 
-  @Field(() => String, { nullable: true })
-  clipLink: string | null;
-
   @IsUUID()
   @FilterableField(() => String, { nullable: false })
   branchId: string;

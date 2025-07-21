@@ -94,8 +94,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           payments: payloadPayments,
         } = payload;
 
-        const clipLink = payload.clipLink ?? null;
-
         const income = await queryRunner.manager.save(Income, {
           date: new Date().toISOString(),
           state,
@@ -105,7 +103,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           taxes,
           total,
           pendingPayment,
-          clipLink,
           branchId,
         });
 
