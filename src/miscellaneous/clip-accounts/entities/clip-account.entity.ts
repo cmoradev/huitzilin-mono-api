@@ -10,6 +10,18 @@ export class ClipAccount extends Base {
   @Column({ type: 'varchar', nullable: false })
   token: string;
 
+  @Column({ type: 'varchar', nullable: false })
+  webhook: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  default: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  success: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  error: string;
+
   @ManyToMany(() => Branch, (branch) => branch.clipAccounts)
   @JoinTable({ name: 'clip-accounts_to_branchs' })
   branchs: Branch[];

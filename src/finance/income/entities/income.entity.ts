@@ -14,6 +14,7 @@ import { Branch } from 'src/auth';
 import { Concept } from 'src/finance';
 import { Student } from 'src/school';
 import { Payment } from 'src/finance';
+import { ClipLink } from 'src/miscellaneous';
 
 @Entity({ schema: 'finance', name: 'incomes' })
 export class Income extends Base {
@@ -44,9 +45,6 @@ export class Income extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
   pendingPayment: number;
 
-  @Column({ type: 'varchar', nullable: true })
-  clipLink: string | null;
-
   @Column({ type: 'uuid', nullable: false })
   @Index()
   branchId: string;
@@ -60,6 +58,9 @@ export class Income extends Base {
 
   @OneToMany(() => Payment, (payment) => payment.income)
   payments: Payment[];
+
+  @OneToMany(() => ClipLink, (clipLink) => clipLink.income)
+  clipLinks: ClipLink[];
 
   @ManyToMany(() => Student, (student) => student.incomes, { cascade: true })
   @JoinTable({ name: 'incomes_to_students' })

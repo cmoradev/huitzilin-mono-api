@@ -3,7 +3,6 @@ import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { IncomeState } from './enum';
 
 export type CreateIncomePayload = {
-  clipLink?: string;
   branchId: string;
   state: IncomeState;
   amount: number;
