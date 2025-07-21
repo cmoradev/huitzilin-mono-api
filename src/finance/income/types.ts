@@ -12,6 +12,6 @@ export type CreateIncomePayload = {
   total: number;
   pendingPayment: number;
   studentIds: string[];
-  payments: CreatePaymentInput[];
+  payments?: CreatePaymentInput[];
   concepts: CreateConceptPayload[];
 };

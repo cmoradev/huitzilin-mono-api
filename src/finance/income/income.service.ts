@@ -9,7 +9,7 @@ import {
   CreateLinkIncomeInput,
 } from './dto/create-income.input';
 import { Income } from './entities/income.entity';
-import { Discount } from 'src/miscellaneous';
+import { ClipAccount, Discount } from 'src/miscellaneous';
 import {
   applyCalculationsInConcepts,
   applyPaymentsInConcepts,
@@ -32,6 +32,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     private readonly _debitRepository: Repository<Debit>,
     @InjectRepository(Discount)
     private readonly _discountRepository: Repository<Discount>,
+    @InjectRepository(ClipAccount)
+    private readonly _clipAccountRepository: Repository<ClipAccount>,
     @InjectDataSource() public dataSource: DataSource,
   ) {
     super(_incomeRepository, { useSoftDelete: true });
@@ -41,16 +43,12 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const { concepts } = params;
 
     const debits = await this._fetchDebitsFromConcepts(concepts);
-    const discounts = await this._fetchDiscountsFromConcepts(concepts);
     const matches = matchConceptWithDebit(concepts, debits);
+    const discounts = await this._fetchDiscountsFromConcepts(concepts);
     const details = applyCalculationsInConcepts(matches, discounts);
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithoutPayments(groupDetails);
-
-    console.log('groupDetails', incomes);
-
-    // return this._saveIncomes(incomes);
-    return [];
+    return this._saveIncomes(incomes);
   }
 
   public async createIncomes(params: CreateIncomeInput) {
@@ -64,10 +62,13 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithPayments(groupDetails, payments);
 
-    return this._saveIncomesWithPayments(incomes);
+    return this._saveIncomes(incomes, true);
   }
 
-  private async _saveIncomesWithPayments(bulk: CreateIncomePayload[]) {
+  private async _saveIncomes(
+    bulk: CreateIncomePayload[],
+    createPaymentLink: boolean = false,
+  ) {
     if (bulk.length === 0) {
       throw new NotFoundException('¡No hemos podido crear la venta!');
     }
@@ -90,8 +91,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           pendingPayment,
           branchId,
           state,
-          concepts: payloadConcepts,
-          payments: payloadPayments,
         } = payload;
 
         const income = await queryRunner.manager.save(Income, {
@@ -106,57 +105,77 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           branchId,
         });
 
-        const conceptsWithIncome: Concept[] = payloadConcepts.map(
-          (concept) =>
-            ({
-              description: concept.description,
-              unitPrice: concept.unitPrice,
-              quantity: concept.quantity,
-              amount: concept.amount,
-              discount: concept.discount,
-              subtotal: concept.subtotal,
-              taxes: concept.taxes,
-              total: concept.total,
-              pendingPayment: concept.pendingPayment,
-              withTax: concept.withTax,
-              incomeId: income.id,
-              discounts: concept.discounts.map(
-                (d) =>
-                  ({
-                    id: d.id,
-                  }) as Discount,
-              ),
-              debits: [{ id: concept.debitId } as Debit],
-            }) as Concept,
-        );
-        // const concepts =
-        await queryRunner.manager.save(Concept, conceptsWithIncome);
+        if (createPaymentLink) {
+          const clipAccount = await this._getClipAccount(branchId);
 
-        const paymentsWithIncome: Payment[] = payloadPayments.map(
-          (payment) =>
-            ({
-              method: payment.method,
-              amount: payment.amount,
-              date: payment.date,
-              state: PaymentState.PAID,
-              bank: payment.bank,
-              transaction: payment.transaction,
-              incomeId: income.id,
-            }) as Payment,
-        );
-        // const payments =
-        await queryRunner.manager.save(Payment, paymentsWithIncome);
+          if (!clipAccount) {
+            throw new NotFoundException(
+              '¡No hemos podido encontrar la cuenta CLIP!',
+            );
+          }
 
-        const debitUpdates: Debit[] = payloadConcepts.map(
-          (concept) =>
-            ({
-              id: concept.debitId,
-              state: concept.state,
-              paymentDate: concept.paymentDate,
-            }) as Debit,
-        );
-        // const debits =
-        await queryRunner.manager.save(Debit, debitUpdates);
+          console.log('Clip Account:', clipAccount);
+          // income.clipAccount = clipAccount;
+        }
+
+        // Concepts
+        if (payload.concepts?.length) {
+          const conceptsWithIncome: Concept[] = payload.concepts.map(
+            (concept) =>
+              ({
+                description: concept.description,
+                unitPrice: concept.unitPrice,
+                quantity: concept.quantity,
+                amount: concept.amount,
+                discount: concept.discount,
+                subtotal: concept.subtotal,
+                taxes: concept.taxes,
+                total: concept.total,
+                pendingPayment: concept.pendingPayment,
+                withTax: concept.withTax,
+                incomeId: income.id,
+                discounts: concept.discounts.map(
+                  (d) =>
+                    ({
+                      id: d.id,
+                    }) as Discount,
+                ),
+                debits: [{ id: concept.debitId } as Debit],
+              }) as Concept,
+          );
+
+          await queryRunner.manager.save(Concept, conceptsWithIncome);
+        }
+
+        if (payload.payments?.length) {
+          const paymentsWithIncome: Payment[] = payload.payments.map(
+            (payment) =>
+              ({
+                method: payment.method,
+                amount: payment.amount,
+                date: payment.date,
+                state: PaymentState.PAID,
+                bank: payment.bank,
+                transaction: payment.transaction,
+                incomeId: income.id,
+              }) as Payment,
+          );
+          // const payments =
+          await queryRunner.manager.save(Payment, paymentsWithIncome);
+        }
+
+        if (payload.concepts?.length) {
+          const debitUpdates: Debit[] = payload.concepts.map(
+            (concept) =>
+              ({
+                id: concept.debitId,
+                state: concept.state,
+                paymentDate: concept.paymentDate,
+              }) as Debit,
+          );
+          // const debits =
+          await queryRunner.manager.save(Debit, debitUpdates);
+        }
 
         incomes.push(income);
       }
@@ -190,6 +209,12 @@ export class IncomeService extends TypeOrmQueryService<Income> {
 
     return this._discountRepository.find({
       where: { id: In(discountIds) },
+    });
+  }
+
+  private async _getClipAccount(branchId: string) {
+    return this._clipAccountRepository.findOne({
+      where: { branchs: { id: branchId } },
     });
   }
 }

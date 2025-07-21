@@ -4,7 +4,7 @@ import {
   PagingStrategies,
 } from '@ptc-org/nestjs-query-graphql';
 import { NestjsQueryTypeOrmModule } from '@ptc-org/nestjs-query-typeorm';
-import { Discount } from 'src/miscellaneous';
+import { Discount, ClipAccount } from 'src/miscellaneous';
 import { Debit } from 'src/school';
 import { IncomeDto } from './dto/income.dto';
 import { Income } from './entities/income.entity';
@@ -15,7 +15,14 @@ import { IncomeEventSubscriber } from './income.subscriber';
 @Module({
   imports: [
     NestjsQueryGraphQLModule.forFeature({
-      imports: [NestjsQueryTypeOrmModule.forFeature([Income, Debit, Discount])],
+      imports: [
+        NestjsQueryTypeOrmModule.forFeature([
+          Income,
+          Debit,
+          Discount,
+          ClipAccount,
+        ]),
+      ],
       services: [IncomeService],
       resolvers: [
         {
