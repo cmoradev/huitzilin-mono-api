@@ -6,7 +6,7 @@ import {
   calculateTotalFromBaseAndTax,
   TaxEnum,
 } from 'src/common/lib/calculations';
-import { Discount } from 'src/miscellaneous';
+import { ClipAccount, Discount } from 'src/miscellaneous';
 import { Debit } from 'src/school';
 import { DebitState } from 'src/school/debit/enums';
 import {
@@ -16,7 +16,6 @@ import {
 import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { IncomeState } from './enum';
-import { request, RequestOptions } from 'https';
 import { CreateIncomePayload } from './types';
 
 export const matchConceptWithDebit = (
@@ -267,14 +266,14 @@ export const distributePaymentsByBranch = (
   };
 };
 
-export const createLinkClip = (token: string): string => {
-  const options: RequestOptions = {
-    hostname: 'api.payclip.com',
-    method: 'POST',
-    path: 'v2/checkout',
+export const createLinkClip = (clipAccount: ClipAccount) => {
+  const { token, webhook, success, error, default: defaultUrl } = clipAccount;
+
+  return {
+    token,
+    webhook,
+    success,
+    error,
+    default: defaultUrl,
   };
-
-  request(options);
-
-  return `https://payclip.com/checkout/${token}`;
 };
