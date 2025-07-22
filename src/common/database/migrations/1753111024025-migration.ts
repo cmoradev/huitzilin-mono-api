@@ -26,7 +26,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE INDEX "IDX_4f9ff564fe6488a270521d8af8" ON "miscellaneous"."discounts" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "miscellaneous"."clip-links" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "link" character varying NOT NULL, "qr" character varying NOT NULL, "expiresAt" TIMESTAMP NOT NULL, "requestId" character varying NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_8af1345a5d6d9a1a9275622ddf0" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "miscellaneous"."clip-links" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "amount" numeric(10,2) NOT NULL, "link" character varying NOT NULL, "qr" character varying NOT NULL, "expiresAt" TIMESTAMP NOT NULL, "requestId" character varying NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_8af1345a5d6d9a1a9275622ddf0" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_fa11a314f929e8647ec4ef74a9" ON "miscellaneous"."clip-links" ("incomeId") `,
