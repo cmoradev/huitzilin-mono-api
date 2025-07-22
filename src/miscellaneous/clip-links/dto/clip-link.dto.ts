@@ -1,4 +1,4 @@
-import { Field, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
+import { Field, Float, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos';
@@ -8,6 +8,9 @@ import { BaseDto } from 'src/common/dtos';
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 export class ClipLinkDto extends BaseDto {
+  @Field(() => Float, { nullable: false })
+  amount: number;
+
   @Field(() => String, { nullable: false })
   link: string;
 
@@ -22,4 +25,7 @@ export class ClipLinkDto extends BaseDto {
 
   @FilterableField(() => String, { nullable: false })
   incomeId: string;
+
+  @FilterableField(() => String, { nullable: false })
+  accountId: string;
 }

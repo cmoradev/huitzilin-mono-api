@@ -1,7 +1,10 @@
-import { InputType, Field, GraphQLISODateTime } from '@nestjs/graphql';
+import { InputType, Field, GraphQLISODateTime, Float } from '@nestjs/graphql';
 
 @InputType('CreateClipLink')
 export class CreateClipLinkInput {
+  @Field(() => Float, { nullable: false })
+  amount: number;
+
   @Field(() => String, { nullable: false })
   link: string;
 
@@ -16,4 +19,7 @@ export class CreateClipLinkInput {
 
   @Field(() => String, { nullable: false })
   incomeId: string;
+
+  @Field(() => String, { nullable: false })
+  accountId: string;
 }

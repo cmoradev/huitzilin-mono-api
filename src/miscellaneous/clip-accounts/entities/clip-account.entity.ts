@@ -1,6 +1,7 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { ClipLink } from 'src/miscellaneous';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ schema: 'miscellaneous', name: 'clip-accounts' })
 export class ClipAccount extends Base {
@@ -21,6 +22,9 @@ export class ClipAccount extends Base {
 
   @Column({ type: 'varchar', nullable: false })
   error: string;
+
+  @OneToMany(() => ClipLink, (clipLink) => clipLink.account)
+  clipLinks: ClipLink[];
 
   @ManyToMany(() => Branch, (branch) => branch.clipAccounts)
   @JoinTable({ name: 'clip-accounts_to_branchs' })
