@@ -9,12 +9,18 @@ import { IsUUID } from 'class-validator';
 import { BaseDto } from 'src/common/dtos';
 import { IncomeState } from '../enum';
 import { StudentDto } from 'src/school';
+import { ConceptDto } from 'src/finance/concept/dto/concept.dto';
+import { PaymentDto } from 'src/finance/payment/dto/payment.dto';
+import { ClipLinkDto } from 'src/miscellaneous';
 
 @ObjectType('Income')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 @FilterableUnPagedRelation('students', () => StudentDto)
+@FilterableUnPagedRelation('concepts', () => ConceptDto)
+@FilterableUnPagedRelation('payments', () => PaymentDto)
+@FilterableUnPagedRelation('clipLinks', () => ClipLinkDto)
 export class IncomeDto extends BaseDto {
   @FilterableField(() => Int, { nullable: false })
   folio: number;

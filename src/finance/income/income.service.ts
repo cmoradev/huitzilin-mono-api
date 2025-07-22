@@ -9,7 +9,7 @@ import {
   CreateLinkIncomeInput,
 } from './dto/create-income.input';
 import { Income } from './entities/income.entity';
-import { ClipAccount, Discount } from 'src/miscellaneous';
+import { ClipAccount, ClipLink, Discount } from 'src/miscellaneous';
 import {
   applyCalculationsInConcepts,
   applyPaymentsInConcepts,
@@ -49,7 +49,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const details = applyCalculationsInConcepts(matches, discounts);
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithoutPayments(groupDetails);
-    return this._saveIncomes(incomes);
+    return this._saveIncomes(incomes, true);
   }
 
   public async createIncomes(params: CreateIncomeInput) {
@@ -63,7 +63,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const groupDetails = detailsGroupByBranchID(details);
     const incomes = buildIncomesWithPayments(groupDetails, payments);
 
-    return this._saveIncomes(incomes, true);
+    return this._saveIncomes(incomes);
   }
 
   private async _saveIncomes(
@@ -92,10 +92,12 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           pendingPayment,
           branchId,
           state,
+          studentIds,
         } = payload;
 
         const income = await queryRunner.manager.save(Income, {
           date: new Date().toISOString(),
+          students: studentIds.map((id) => ({ id })),
           state,
           amount,
           discount,
@@ -105,21 +107,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           pendingPayment,
           branchId,
         });
-
-        if (createPaymentLink) {
-          const clipAccount = await this._getClipAccount(branchId);
-
-          if (!clipAccount) {
-            throw new NotFoundException(
-              '¡No hemos podido encontrar la cuenta CLIP!',
-            );
-          }
-
-          console.log('Clip Account:', clipAccount);
-          await createLinkClip(clipAccount, income)
-
-          // income.clipAccount = clipAccount;
-        }
 
         // Concepts
         if (payload.concepts?.length) {
@@ -147,7 +134,39 @@ export class IncomeService extends TypeOrmQueryService<Income> {
               }) as Concept,
           );
 
-          await queryRunner.manager.save(Concept, conceptsWithIncome);
+          income.concepts = await queryRunner.manager.save(
+            Concept,
+            conceptsWithIncome,
+          );
+
+          if (createPaymentLink) {
+            const clipAccount = await this._getClipAccount(branchId);
+
+            if (!clipAccount) {
+              throw new NotFoundException(
+                '¡No hemos podido encontrar la cuenta CLIP!',
+              );
+            }
+
+            const link = await createLinkClip(clipAccount, income);
+
+            if (link) {
+              const clipLink: ClipLink = await queryRunner.manager.save(
+                ClipLink,
+                {
+                  amount: income.pendingPayment,
+                  qr: link.qr_image_url,
+                  link: link.payment_request_url,
+                  expiresAt: new Date(link.expires_at),
+                  requestId: link.payment_request_id,
+                  incomeId: income.id,
+                  accountId: clipAccount.id,
+                },
+              );
+
+              income.clipLinks = [clipLink];
+            }
+          }
         }
 
         if (payload.payments?.length) {
@@ -176,7 +195,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
                 paymentDate: concept.paymentDate,
               }) as Debit,
           );
-          // const debits =
+
           await queryRunner.manager.save(Debit, debitUpdates);
         }
 

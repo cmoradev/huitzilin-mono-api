@@ -1,7 +1,7 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Logger } from '@nestjs/common';
 import { addDays, endOfDay } from 'date-fns';
 import Decimal from 'decimal.js';
-import { RequestOptions } from 'https';
+import { request, RequestOptions } from 'https';
 import {
   calculateAmount,
   calculateSubtotalAndDiscount,
@@ -20,7 +20,7 @@ import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { Income } from './entities/income.entity';
 import { IncomeState } from './enum';
-import { CreateIncomePayload } from './types';
+import { CreateIncomePayload, LinkClipResponse } from './types';
 
 export const matchConceptWithDebit = (
   concepts: CreateConceptInput[],
@@ -271,61 +271,93 @@ export const distributePaymentsByBranch = (
 };
 
 export const createLinkClip = (clipAccount: ClipAccount, income: Income) => {
-  const {
-    token,
-    webhook,
-    success: successUrl,
-    error: errorUrl,
-    default: defaultUrl,
-  } = clipAccount;
+  const logger = new Logger('Clip');
 
-  const { pendingPayment, id, concepts } = income;
+  return new Promise<LinkClipResponse>((resolve, reject) => {
+    const {
+      token,
+      webhook,
+      success: successUrl,
+      error: errorUrl,
+      default: defaultUrl,
+    } = clipAccount;
 
-  const expireDate = endOfDay(addDays(new Date(), 7)).toISOString();
+    const { pendingPayment, id, concepts } = income;
 
-  const purchaseDescription = generatePurchaseDescription(concepts);
+    const expireDate = endOfDay(addDays(new Date(), 7)).toISOString();
 
-  const data = JSON.stringify({
-    amount: pendingPayment,
-    currency: 'MXN',
-    webhook_url: webhook,
-    purchase_description: purchaseDescription,
-    metadata: { external_reference: id },
-    expires_at: expireDate,
-    redirection_url: {
-      success:
-        'https://my-website.com/redirection/success?external_reference=OID123456789',
-      error:
-        'https://my-website.com/redirection/error?external_reference=OID123456789',
-      default: 'https://my-website.com/redirection/default',
-    },
+    const purchaseDescription = generatePurchaseDescription(concepts);
+
+    const data = JSON.stringify({
+      amount: pendingPayment,
+      currency: 'MXN',
+      purchase_description: purchaseDescription,
+      webhook_url: webhook,
+      metadata: { external_reference: id },
+      expires_at: expireDate,
+      redirection_url: {
+        success: `${successUrl}/${id}`,
+        error: `${errorUrl}/${id}`,
+        default: `${defaultUrl}`,
+      },
+    });
+
+    const options: RequestOptions = {
+      hostname: 'api.payclip.com',
+      path: '/v2/checkout',
+      method: 'POST',
+      headers: {
+        authorization: `Basic ${token}`,
+        'content-type': 'application/json',
+        accept: 'application/json',
+        'content-length': Buffer.byteLength(data),
+      },
+    };
+
+    const req = request(options, (res) => {
+      let body = '';
+
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+
+      res.on('end', () => {
+        if (res.statusCode !== 200) {
+          logger.error(`Error al crear el link de pago en Clip: ${body}`);
+          return reject(new Error(`Clip API error: ${res.statusCode}`));
+        }
+
+        try {
+          const response: LinkClipResponse = JSON.parse(body);
+
+          resolve(response);
+        } catch (error) {
+          logger.error(
+            `Error al procesar la respuesta de Clip: ${error instanceof Error ? error.message : JSON.stringify(error)}`,
+            error instanceof Error ? error.stack : undefined,
+          );
+
+          reject(new Error('Error al procesar la respuesta de Clip'));
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      logger.error(
+        `Error al crear el link de pago en Clip: ${error instanceof Error ? error.message : JSON.stringify(error)}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+
+      reject(error);
+    });
+
+    req.write(data);
+    req.end();
   });
-
-  const options: RequestOptions = {
-    hostname: 'api.payclip.com',
-    path: '/v2/checkout',
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      accept: 'application/json',
-    },
-  };
-  console.log('Clip Account Token:', data, options);
-  // request();
-
-  return {
-    token,
-    webhook,
-    error: errorUrl,
-    success: successUrl,
-    default: defaultUrl,
-  };
 };
 
 export const generatePurchaseDescription = (concepts: Concept[]): string => {
-  const lines = concepts.map((c) => {
-    return `• ${c.description}`;
-  });
+  const lines = concepts.map((c) => `~ ${c.description}`);
 
-  return `Compra realizada:\n${lines.join('\n')}}`;
+  return `${lines.join(' | ')}`;
 };
