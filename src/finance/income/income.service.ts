@@ -95,9 +95,11 @@ export class IncomeService extends TypeOrmQueryService<Income> {
           studentIds,
         } = payload;
 
+        const studentIdsSet = new Set(studentIds);
+
         const income = await queryRunner.manager.save(Income, {
           date: new Date().toISOString(),
-          students: studentIds.map((id) => ({ id })),
+          students: Array.from(studentIdsSet).map((id) => ({ id })),
           state,
           amount,
           discount,
