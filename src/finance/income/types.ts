@@ -1,3 +1,4 @@
+import { DebitState } from 'src/school/debit/enums';
 import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { IncomeState } from './enum';
@@ -35,4 +36,12 @@ export type LinkClipResponse = {
   expires_at: string;
   qr_image_url: string;
   api_version: string;
+};
+
+export type ConceptMetadata = {
+  conceptId: string;
+  conceptPendingPayment: number;
+  debitId: string | null;
+  debitPaymentDate: Date;
+  debitState: DebitState;
 };

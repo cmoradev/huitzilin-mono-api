@@ -20,7 +20,11 @@ import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { Income } from './entities/income.entity';
 import { IncomeState } from './enum';
-import { CreateIncomePayload, LinkClipResponse } from './types';
+import {
+  ConceptMetadata,
+  CreateIncomePayload,
+  LinkClipResponse,
+} from './types';
 
 export const matchConceptWithDebit = (
   concepts: CreateConceptInput[],
@@ -99,7 +103,7 @@ export const applyPaymentsInConcepts = (
   );
 
   for (const concept of details) {
-    const total = new Decimal(concept.total);
+    const total = new Decimal(concept.pendingPayment);
 
     if (received.greaterThan(0)) {
       const paidAmount = Decimal.min(received, total);
@@ -119,6 +123,32 @@ export const applyPaymentsInConcepts = (
     balance: Number(received.toFixed(2)),
     details,
   };
+};
+
+export const applyClipPaymentInConcepts = (
+  concepts: ConceptMetadata[],
+  payment: CreatePaymentInput,
+) => {
+  let received = new Decimal(payment.amount);
+
+  for (const concept of concepts) {
+    const total = new Decimal(concept.conceptPendingPayment);
+
+    if (received.greaterThan(0)) {
+      const paidAmount = Decimal.min(received, total);
+      received = received.minus(paidAmount);
+
+      const pendingPayment = total.minus(paidAmount);
+
+      concept.conceptPendingPayment = pendingPayment.toNumber();
+      concept.debitPaymentDate = new Date();
+      concept.debitState = pendingPayment.equals(0)
+        ? DebitState.PAID
+        : DebitState.PARTIALLY_PAID;
+    } else break;
+  }
+
+  return concepts;
 };
 
 export const detailsGroupByBranchID = (details: CreateConceptPayload[]) => {
@@ -268,6 +298,41 @@ export const distributePaymentsByBranch = (
     adjustedPayments,
     remainingPayments,
   };
+};
+
+export const prepareConceptWithDebit = (
+  concepts: Concept[],
+): ConceptMetadata[] => {
+  return concepts.map((concept) => {
+    const { id, pendingPayment, debits } = concept;
+
+    const debit = debits.find(() => true);
+
+    return {
+      conceptId: id,
+      conceptPendingPayment: pendingPayment,
+      debitId: debit?.id || null,
+      debitPaymentDate: new Date(),
+      debitState: DebitState.DEBT,
+    };
+  });
+};
+
+export const applyClipPaymentInIncome = (
+  income: Income,
+  payment: CreatePaymentInput,
+) => {
+  let pendingPayment = new Decimal(income.pendingPayment);
+  const received = new Decimal(payment.amount);
+
+  pendingPayment = pendingPayment.minus(received);
+
+  income.pendingPayment = pendingPayment.toNumber();
+  income.state = pendingPayment.greaterThan(0)
+    ? IncomeState.PENDING
+    : IncomeState.PAID;
+
+  return income;
 };
 
 export const createLinkClip = (clipAccount: ClipAccount, income: Income) => {
