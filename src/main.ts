@@ -15,6 +15,11 @@ Decimal.set({
   rounding: Decimal.ROUND_HALF_UP,
 });
 
+// const validationPipe = new ValidationPipe({
+//   whitelist: true,
+//   forbidNonWhitelisted: true,
+// });
+
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
@@ -23,6 +28,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.enableCors();
+
+  // app.useGlobalPipes(validationPipe);
 
   await app.listen(process.env.PORT ?? 3000);
 
