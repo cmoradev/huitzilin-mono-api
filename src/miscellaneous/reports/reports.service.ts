@@ -4,7 +4,11 @@ import { Payment } from 'src/finance';
 import { Repository } from 'typeorm';
 import { IncomeParams } from './dto';
 import { IncomeData } from './types';
-import { groupIncomeByBranch, groupIncomeByPaymentMethod } from './helpers';
+import {
+  groupIncomeByBranch,
+  groupIncomeByPaymentMethod,
+  totalIncome,
+} from './helpers';
 
 @Injectable()
 export class ReportsService {
@@ -18,10 +22,12 @@ export class ReportsService {
 
     const groupedByBranch = groupIncomeByBranch(data);
     const groupedByMethod = groupIncomeByPaymentMethod(data);
+    const total = totalIncome(data);
 
     return {
       groupedByBranch,
       groupedByMethod,
+      total,
       data,
     };
   }

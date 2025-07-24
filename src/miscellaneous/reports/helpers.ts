@@ -42,3 +42,15 @@ export function groupIncomeByPaymentMethod(data: IncomeData[]): Grouped[] {
 
   return Object.values(result);
 }
+
+/**
+ * Suma todos los paymentAmount usando decimal.js.
+ */
+export function totalIncome(data: IncomeData[]): string {
+  return data
+    .reduce(
+      (acc, item) => acc.plus(new Decimal(item.paymentAmount)),
+      new Decimal(0),
+    )
+    .toString();
+}
