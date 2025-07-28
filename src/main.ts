@@ -11,7 +11,7 @@ setDefaultOptions({
 });
 
 Decimal.set({
-  precision: 10,
+  precision: 14,
   rounding: Decimal.ROUND_HALF_UP,
 });
 

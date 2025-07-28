@@ -17,7 +17,7 @@ export class Discount extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   name: string;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   value: number;
 
   @Column({ type: 'enum', nullable: false, enum: DiscountBy })

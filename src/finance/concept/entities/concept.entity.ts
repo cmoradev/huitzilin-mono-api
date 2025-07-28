@@ -17,28 +17,28 @@ export class Concept extends Base {
   @Column({ type: 'varchar', nullable: false })
   description: string;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   unitPrice: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   quantity: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   amount: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   discount: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   subtotal: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   taxes: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   total: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   pendingPayment: number;
 
   @Column({ type: 'boolean', nullable: false, default: true })
