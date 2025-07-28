@@ -279,7 +279,7 @@ export const distributePaymentsByBranch = (
     const paymentDecimal = new Decimal(payment.amount);
 
     if (totalDecimal.greaterThanOrEqualTo(paymentDecimal)) {
-      adjustedPayments.push(payment);
+      adjustedPayments.push({ ...payment });
       totalDecimal = totalDecimal.minus(paymentDecimal);
       payment.amount = 0; // Marcar como pagado
     } else if (paymentDecimal.greaterThanOrEqualTo(totalDecimal)) {
