@@ -25,9 +25,9 @@ export function calculateTotalFromBaseAndTax(
   const total = amountDecimal.plus(taxes);
 
   return {
-    total: Number(total.toFixed(2)),
-    taxes: Number(taxes.toFixed(2)),
-    amount: Number(amountDecimal.toFixed(2)),
+    total: Number(total.toFixed(6)),
+    taxes: Number(taxes.toFixed(6)),
+    amount: Number(amountDecimal.toFixed(6)),
   };
 }
 /**
@@ -58,13 +58,13 @@ export function calculateTotalFromUnitPriceQuantityDiscountAndTax(
   const totalDecimal = subtotalDecimal.plus(taxes);
 
   return {
-    unitPrice: Number(unitPriceDecimal.toFixed(2)),
-    quantity: Number(quantityDecimal.toFixed(2)),
-    amount: Number(amountDecimal.toFixed(2)),
-    discount: Number(discountDecimal.toFixed(2)),
-    subtotal: Number(subtotalDecimal.toFixed(2)),
-    taxes: Number(taxes.toFixed(2)),
-    total: Number(totalDecimal.toFixed(2)),
+    unitPrice: Number(unitPriceDecimal.toFixed(6)),
+    quantity: Number(quantityDecimal.toFixed(6)),
+    amount: Number(amountDecimal.toFixed(6)),
+    discount: Number(discountDecimal.toFixed(6)),
+    subtotal: Number(subtotalDecimal.toFixed(6)),
+    taxes: Number(taxes.toFixed(6)),
+    total: Number(totalDecimal.toFixed(6)),
   };
 }
 
@@ -97,8 +97,8 @@ export function calculateSubtotalAndDiscount(
   const subtotalDecimal = amountDecimal.minus(discountTotal);
 
   return {
-    discount: Number(discountTotal.toFixed(2)),
-    subtotal: Number(subtotalDecimal.toFixed(2)),
+    discount: Number(discountTotal.toFixed(6)),
+    subtotal: Number(subtotalDecimal.toFixed(6)),
   };
 }
 
@@ -121,8 +121,8 @@ export function calculateAmount(unitPrice: number, quantity: number) {
   const amountDecimal = unitPriceDecimal.times(quantityDecimal);
 
   return {
-    unitPrice: Number(unitPriceDecimal.toFixed(2)),
-    quantity: Number(quantityDecimal.toFixed(2)),
-    amount: Number(amountDecimal.toFixed(2)),
+    unitPrice: Number(unitPriceDecimal.toFixed(6)),
+    quantity: Number(quantityDecimal.toFixed(6)),
+    amount: Number(amountDecimal.toFixed(6)),
   };
 }
