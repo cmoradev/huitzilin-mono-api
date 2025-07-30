@@ -5,9 +5,6 @@ export class Migration1753831851912 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "miscellaneous"."clip-links" ADD "amount" numeric(14,6) NOT NULL`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "miscellaneous"."discounts" ALTER COLUMN "value" TYPE numeric(14,6)`,
     );
     await queryRunner.query(
@@ -165,9 +162,6 @@ export class Migration1753831851912 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "miscellaneous"."discounts" ALTER COLUMN "value" TYPE numeric(10,2)`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "miscellaneous"."clip-links" DROP COLUMN "amount"`,
     );
   }
 }
