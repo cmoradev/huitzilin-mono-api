@@ -1,4 +1,4 @@
-import { IsNotEmpty, Matches } from 'class-validator';
+import { IsNotEmpty, IsUUID, Matches } from 'class-validator';
 
 export class IncomeParams {
   @IsNotEmpty()
@@ -12,4 +12,8 @@ export class IncomeParams {
     message: 'end must be a valid date in YYYY-MM-DD format',
   })
   end: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  branchId: string;
 }

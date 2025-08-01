@@ -4,11 +4,7 @@ import { Payment } from 'src/finance';
 import { Repository } from 'typeorm';
 import { IncomeParams } from './dto';
 import { IncomeData } from './types';
-import {
-  groupIncomeByBranch,
-  groupIncomeByPaymentMethod,
-  totalIncome,
-} from './helpers';
+import { groupIncomeByPaymentMethod, totalIncome } from './helpers';
 
 @Injectable()
 export class ReportsService {
@@ -19,13 +15,10 @@ export class ReportsService {
 
   public async incomes(params: IncomeParams) {
     const data = await this.getIncomesData(params);
-
-    const groupedByBranch = groupIncomeByBranch(data);
     const groupedByMethod = groupIncomeByPaymentMethod(data);
     const total = totalIncome(data);
 
     return {
-      groupedByBranch,
       groupedByMethod,
       total,
       data,
@@ -35,13 +28,14 @@ export class ReportsService {
   private async getIncomesData(
     params: IncomeParams,
   ): Promise<Array<IncomeData>> {
-    const { start, end } = params;
+    const { start, end, branchId } = params;
 
     const query = this._paymentRepository.createQueryBuilder('payment');
     query.innerJoinAndSelect('payment.income', 'income');
     query.innerJoinAndSelect('income.branch', 'branch');
     query.innerJoinAndSelect('income.students', 'student');
-    query.where('payment.date BETWEEN :start AND :end', { start, end });
+    query.where('branch.id = :branchId', { branchId });
+    query.andWhere('payment.date BETWEEN :start AND :end', { start, end });
     query.orderBy('payment.date', 'DESC');
     query.select([
       'payment.id',
