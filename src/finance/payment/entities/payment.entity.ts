@@ -17,7 +17,7 @@ export class Payment extends Base {
   @Column({ type: 'timestamp without time zone', nullable: false })
   date: Date;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   amount: number;
 
   @Column({ type: 'varchar', nullable: false })

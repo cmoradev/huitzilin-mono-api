@@ -120,7 +120,7 @@ export const applyPaymentsInConcepts = (
   }
 
   return {
-    balance: Number(received.toFixed(2)),
+    balance: Number(received.toFixed(6)),
     details,
   };
 };
@@ -187,12 +187,12 @@ export const buildBreakdown = (details: CreateConceptPayload[]) => {
     );
 
   return {
-    amount: Number(amount.toFixed(2)),
-    discount: Number(discount.toFixed(2)),
-    subtotal: Number(subtotal.toFixed(2)),
-    taxes: Number(taxes.toFixed(2)),
-    total: Number(total.toFixed(2)),
-    pendingPayment: Number(pendingPayment.toFixed(2)),
+    amount: Number(amount.toFixed(6)),
+    discount: Number(discount.toFixed(6)),
+    subtotal: Number(subtotal.toFixed(6)),
+    taxes: Number(taxes.toFixed(6)),
+    total: Number(total.toFixed(6)),
+    pendingPayment: Number(pendingPayment.toFixed(6)),
   };
 };
 

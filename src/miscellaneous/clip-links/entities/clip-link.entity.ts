@@ -5,7 +5,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity({ schema: 'miscellaneous', name: 'clip-links' })
 export class ClipLink extends Base {
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   amount: number;
 
   @Column({ type: 'varchar', nullable: false })

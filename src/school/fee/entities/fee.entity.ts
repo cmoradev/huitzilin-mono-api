@@ -8,13 +8,13 @@ export class Fee extends Base {
   @Column({ type: 'varchar', nullable: false, length: 64 })
   name: string;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   amount: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   taxes: number;
 
-  @Column({ type: 'decimal', nullable: false, precision: 10, scale: 2 })
+  @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   price: number;
 
   @Column({ type: 'boolean', nullable: false, default: true })
