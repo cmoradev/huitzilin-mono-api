@@ -1,7 +1,6 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
-import { QueryOptions } from '@ptc-org/nestjs-query-graphql';
-import { IsUUID, MaxLength } from 'class-validator';
+import { FilterableField, QueryOptions } from '@ptc-org/nestjs-query-graphql';
 import { BaseDto } from 'src/common/dtos/base.dto';
 
 @ObjectType('User')
@@ -9,15 +8,15 @@ import { BaseDto } from 'src/common/dtos/base.dto';
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 export class UserDto extends BaseDto {
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   username: string;
 
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   email: string;
 
-  @Field(() => String, { nullable: false })
+  @FilterableField(() => String, { nullable: false })
   branchId: string;
 
-  // branch: Branch;
-  // policies: PolicyDto[];
+  @FilterableField(() => String, { nullable: false })
+  cycleId: string;
 }

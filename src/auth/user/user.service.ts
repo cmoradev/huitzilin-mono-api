@@ -13,9 +13,10 @@ import { SignUpInput } from './dto/sign-up.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
+import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
 
 @Injectable()
-export class UserService {
+export class UserService extends TypeOrmQueryService<User> {
   constructor(
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
@@ -24,7 +25,9 @@ export class UserService {
     @InjectRepository(Cycle)
     private readonly _cycleRepository: Repository<Cycle>,
     private readonly _jwtService: JwtService,
-  ) {}
+  ) {
+    super(_userRepository, { useSoftDelete: true });
+  }
 
   /**
    * Inicia sesión en el sistema con un usuario existente.
@@ -69,7 +72,7 @@ export class UserService {
       withDeleted: true,
     });
 
-    if (!!existingUser) {
+    if (existingUser) {
       throw new ConflictException('User already exists');
     }
 
