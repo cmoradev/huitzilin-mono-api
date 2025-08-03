@@ -4,15 +4,27 @@ import { CreatePaymentInput } from 'src/finance/payment/dto/create-payment.input
 
 @InputType('CreateIncome')
 export class CreateIncomeInput {
-  @Field(() => [CreateConceptInput], { nullable: true })
+  @Field(() => String, { nullable: false })
+  branchID: string;
+
+  @Field(() => [String], { nullable: false })
+  studentIDs: string[];
+
+  @Field(() => [CreateConceptInput], { nullable: false })
   concepts: CreateConceptInput[];
 
-  @Field(() => [CreatePaymentInput], { nullable: true })
+  @Field(() => [CreatePaymentInput], { nullable: false })
   payments: CreatePaymentInput[];
 }
 
 @InputType('CreateLinkIncome')
 export class CreateLinkIncomeInput {
-  @Field(() => [CreateConceptInput], { nullable: true })
+  @Field(() => String, { nullable: false })
+  branchID: string;
+
+  @Field(() => [String], { nullable: false })
+  studentIDs: string[];
+
+  @Field(() => [CreateConceptInput], { nullable: false })
   concepts: CreateConceptInput[];
 }

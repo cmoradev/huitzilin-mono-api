@@ -31,7 +31,7 @@ export const matchConceptWithDebit = (
   debits: Debit[],
 ): CreateConceptInputWithDebit[] => {
   return concepts.map((concept) => {
-    const debit = debits.find((d) => d.id === concept.debitId) as Debit; // || null
+    const debit = debits.find((d) => d.id === concept.debitId) || null;
 
     return { ...concept, debit };
   });
@@ -65,6 +65,7 @@ export const applyCalculationsInConcepts = (
     );
 
     return {
+      withTax: concept.withTax,
       description: concept.description,
       amount,
       unitPrice,
@@ -76,11 +77,8 @@ export const applyCalculationsInConcepts = (
       pendingPayment: total,
       paymentDate: null,
       state: DebitState.DEBT,
-      withTax: concept.withTax,
-      dueDate: new Date(concept.debit.dueDate),
-      debitId: concept.debit.id,
-      studentId: concept.debit.enrollment.studentId,
-      branchId: concept.debit.enrollment.branchId,
+      dueDate: new Date(concept.debit?.dueDate ?? new Date()),
+      debitId: concept.debitId,
       discounts: discounts.map((d) => ({
         id: d.id,
       })),
@@ -92,16 +90,17 @@ export const applyPaymentsInConcepts = (
   details: CreateConceptPayload[],
   payments: CreatePaymentInput[],
 ) => {
-  payments.sort((a, b) => b.amount - a.amount);
+  const currentPayments = [...payments].sort((a, b) => b.amount - a.amount);
+  const currentDetails = [...details].sort(
+    (a, b) => a.dueDate.getTime() - b.dueDate.getTime(),
+  );
 
-  details.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-
-  let received = payments.reduce(
+  let received = currentPayments.reduce(
     (acc, payment) => acc.plus(payment.amount),
     new Decimal(0),
   );
 
-  for (const concept of details) {
+  currentDetails.forEach((concept) => {
     const total = new Decimal(concept.pendingPayment);
 
     if (received.greaterThan(0)) {
@@ -115,12 +114,12 @@ export const applyPaymentsInConcepts = (
       concept.state = pendingPayment.equals(0)
         ? DebitState.PAID
         : DebitState.PARTIALLY_PAID;
-    } else break;
-  }
+    }
+  });
 
   return {
     balance: Number(received.toFixed(6)),
-    details,
+    details: currentDetails,
   };
 };
 
@@ -148,18 +147,6 @@ export const applyClipPaymentInConcepts = (
   }
 
   return concepts;
-};
-
-export const detailsGroupByBranchID = (details: CreateConceptPayload[]) => {
-  return details.reduce((acc, current) => {
-    if (!acc.has(current.branchId)) {
-      acc.set(current.branchId, []);
-    }
-
-    acc.get(current.branchId)?.push(current);
-
-    return acc;
-  }, new Map<string, CreateConceptPayload[]>());
 };
 
 export const buildBreakdown = (details: CreateConceptPayload[]) => {
@@ -196,75 +183,65 @@ export const buildBreakdown = (details: CreateConceptPayload[]) => {
 };
 
 export const buildIncomesWithoutPayments = (
-  groupDetails: Map<string, CreateConceptPayload[]>,
-): Omit<CreateIncomePayload, 'payments'>[] => {
-  const incomes: Omit<CreateIncomePayload, 'payments'>[] = [];
+  concepts: CreateConceptPayload[],
+  branchId: string,
+  studentIds: string[],
+): Omit<CreateIncomePayload, 'payments'> => {
+  const { amount, discount, subtotal, taxes, total, pendingPayment } =
+    buildBreakdown(concepts);
 
-  groupDetails.forEach((concepts, branchId) => {
-    const studentIds = concepts.map((c) => c.studentId);
-
-    const { amount, discount, subtotal, taxes, total, pendingPayment } =
-      buildBreakdown(concepts);
-
-    incomes.push({
-      amount,
-      discount,
-      subtotal,
-      taxes,
-      total,
-      pendingPayment,
-      branchId,
-      studentIds,
-      state: IncomeState.PENDING,
-      concepts,
-    });
-  });
-
-  return incomes;
+  return {
+    amount,
+    discount,
+    subtotal,
+    taxes,
+    total,
+    pendingPayment,
+    state: IncomeState.PENDING,
+    branchId,
+    studentIds,
+    concepts,
+  };
 };
 
 export const buildIncomesWithPayments = (
-  groupDetails: Map<string, CreateConceptPayload[]>,
+  concepts: CreateConceptPayload[],
   payments: CreatePaymentInput[],
-): CreateIncomePayload[] => {
+  branchId: string,
+  studentIds: string[],
+): CreateIncomePayload => {
+  const withPending = concepts.some((concept) =>
+    new Decimal(concept.pendingPayment).greaterThan(0),
+  );
+
+  const { amount, discount, subtotal, taxes, total, pendingPayment } =
+    buildBreakdown(concepts);
+
   let currentPayments = [...payments].sort((a, b) => b.amount - a.amount);
 
-  const incomes: CreateIncomePayload[] = [];
+  const { adjustedPayments, remainingPayments } = distributePayments(
+    total,
+    currentPayments,
+  );
 
-  groupDetails.forEach((concepts, branchId) => {
-    const studentIds = concepts.map((c) => c.studentId);
+  currentPayments = remainingPayments;
 
-    const { amount, discount, subtotal, taxes, total, pendingPayment } =
-      buildBreakdown(concepts);
-
-    const withPending = concepts.some((concept) => concept.pendingPayment > 0);
-
-    const { adjustedPayments, remainingPayments } = distributePaymentsByBranch(
-      total,
-      currentPayments,
-    );
-
-    currentPayments = remainingPayments;
-
-    incomes.push({
-      amount,
-      discount,
-      subtotal,
-      taxes,
-      total,
-      pendingPayment,
-      branchId,
-      studentIds,
-      payments: adjustedPayments,
-      state: withPending ? IncomeState.PENDING : IncomeState.PAID,
-      concepts,
-    });
-  });
-
-  return incomes;
+  return {
+    amount,
+    discount,
+    subtotal,
+    taxes,
+    total,
+    pendingPayment,
+    branchId,
+    studentIds,
+    payments: adjustedPayments,
+    state: withPending ? IncomeState.PENDING : IncomeState.PAID,
+    concepts,
+  };
 };
 
-export const distributePaymentsByBranch = (
+export const distributePayments = (
   total: number,
   payments: CreatePaymentInput[],
 ) => {
@@ -291,7 +268,9 @@ export const distributePaymentsByBranch = (
     }
   });
 
-  remainingPayments = remainingPayments.filter((payment) => payment.amount > 0);
+  remainingPayments = remainingPayments.filter((payment) =>
+    new Decimal(payment.amount).greaterThan(0),
+  );
 
   return {
     adjustedPayments,

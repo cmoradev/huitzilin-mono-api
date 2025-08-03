@@ -13,10 +13,8 @@ export class CreateConceptPayload {
   pendingPayment: number;
   withTax: boolean;
   dueDate: Date;
-  state: DebitState;
+  state: DebitState | null;
   paymentDate: Date | null;
+  debitId: string | null;
   discounts: NestedIdInput[];
-  branchId: string;
-  debitId: string;
-  studentId: string;
 }

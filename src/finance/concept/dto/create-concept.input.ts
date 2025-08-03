@@ -17,7 +17,7 @@ export class CreateConceptInput {
   withTax: boolean;
 
   @Field(() => String, { nullable: true })
-  debitId: string; // null
+  debitId: string | null;
 
   @Field(() => [NestedIdInput], { nullable: true })
   discounts: NestedIdInput[];
@@ -28,7 +28,7 @@ export class CreateConceptInputWithDebit {
   unitPrice: number;
   quantity: number;
   withTax: boolean;
-  debitId: string; // | null
-  debit: Debit; // | null
+  debitId: string | null;
+  debit: Debit | null;
   discounts: NestedIdInput[];
 }
