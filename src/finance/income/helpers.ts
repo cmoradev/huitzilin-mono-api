@@ -1,4 +1,4 @@
-import { ConflictException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { addDays, endOfDay } from 'date-fns';
 import Decimal from 'decimal.js';
 import { request, RequestOptions } from 'https';
@@ -31,11 +31,7 @@ export const matchConceptWithDebit = (
   debits: Debit[],
 ): CreateConceptInputWithDebit[] => {
   return concepts.map((concept) => {
-    const debit = debits.find((d) => d.id === concept.debitId);
-
-    if (!debit) {
-      throw new ConflictException(`Debit with ID ${concept.debitId} not found`);
-    }
+    const debit = debits.find((d) => d.id === concept.debitId) as Debit; // || null
 
     return { ...concept, debit };
   });
@@ -50,6 +46,9 @@ export const applyCalculationsInConcepts = (
       concept.unitPrice,
       concept.quantity,
     );
+
+    // TODO: Aplicar varias veces el mismo descuento
+    // Posiblemente no acepte varios descuentos con el mismo ID
 
     // Optimiza la búsqueda de descuentos usando un Set para O(1) lookups
     const discountIdsSet = new Set(concept.discounts.map((c) => c.id));
@@ -75,10 +74,10 @@ export const applyCalculationsInConcepts = (
       taxes,
       total,
       pendingPayment: total,
-      dueDate: new Date(concept.debit.dueDate),
       paymentDate: null,
       state: DebitState.DEBT,
       withTax: concept.withTax,
+      dueDate: new Date(concept.debit.dueDate),
       debitId: concept.debit.id,
       studentId: concept.debit.enrollment.studentId,
       branchId: concept.debit.enrollment.branchId,

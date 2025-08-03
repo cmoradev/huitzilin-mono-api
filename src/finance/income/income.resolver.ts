@@ -1,19 +1,26 @@
-import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
-import { Filter, UpdateManyResponse } from '@ptc-org/nestjs-query-core';
-import {
-  FilterType,
-  UpdateManyResponseType,
-} from '@ptc-org/nestjs-query-graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { IncomeDto } from './dto/income.dto';
 import { IncomeService } from './income.service';
 import {
+  AddPaymentInput,
   CreateIncomeInput,
   CreateLinkIncomeInput,
-} from './dto/create-income.input';
+} from './dto';
+import { AccountsReceivableInput } from './dto/accounts-receivable.input';
 
 @Resolver(() => IncomeDto)
 export class IncomeResolver {
   constructor(private readonly incomeService: IncomeService) {}
+
+  @Query(() => IncomeDto)
+  getAccountsReceivable(
+    @Args('input', { type: () => AccountsReceivableInput })
+    params: AccountsReceivableInput,
+  ): Promise<IncomeDto> {
+    return this.incomeService.getAccountsReceivable(
+      params,
+    ) as Promise<IncomeDto>;
+  }
 
   @Mutation(() => [IncomeDto])
   createLinkIncomes(
@@ -32,17 +39,10 @@ export class IncomeResolver {
   }
 
   @Mutation(() => IncomeDto)
-  restoreOneIncome(
-    @Args('input', { type: () => ID }) id: string,
+  addPaymentToIncome(
+    @Args('input', { type: () => AddPaymentInput })
+    params: AddPaymentInput,
   ): Promise<IncomeDto> {
-    return this.incomeService.restoreOne(id);
-  }
-
-  @Mutation(() => UpdateManyResponseType())
-  restoreManyIncomes(
-    @Args('input', { type: () => FilterType(IncomeDto) })
-    filter: Filter<IncomeDto>,
-  ): Promise<UpdateManyResponse> {
-    return this.incomeService.restoreMany(filter);
+    return this.incomeService.addPaymentToIncome(params);
   }
 }

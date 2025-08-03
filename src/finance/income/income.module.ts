@@ -11,6 +11,7 @@ import { Income } from './entities/income.entity';
 import { IncomeResolver } from './income.resolver';
 import { IncomeService } from './income.service';
 import { IncomeEventSubscriber } from './income.subscriber';
+import { Concept } from '../concept/entities/concept.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { IncomeEventSubscriber } from './income.subscriber';
           Debit,
           Discount,
           ClipAccount,
+          Concept,
         ]),
       ],
       services: [IncomeService],

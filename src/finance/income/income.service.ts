@@ -1,15 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmQueryService } from '@ptc-org/nestjs-query-typeorm';
+import { ClipAccount, ClipLink, Discount } from 'src/miscellaneous';
 import { Debit } from 'src/school';
 import { DataSource, In, Repository } from 'typeorm';
 import { CreateConceptInput } from '../concept/dto/create-concept.input';
+import { Concept } from '../concept/entities/concept.entity';
+import { Payment } from '../payment/entities/payment.entity';
+import { PaymentState } from '../payment/enum';
+import { AddPaymentInput } from './dto';
 import {
   CreateIncomeInput,
   CreateLinkIncomeInput,
 } from './dto/create-income.input';
 import { Income } from './entities/income.entity';
-import { ClipAccount, ClipLink, Discount } from 'src/miscellaneous';
 import {
   applyCalculationsInConcepts,
   applyPaymentsInConcepts,
@@ -20,9 +24,7 @@ import {
   matchConceptWithDebit,
 } from './helpers';
 import { CreateIncomePayload } from './types';
-import { Concept } from '../concept/entities/concept.entity';
-import { Payment } from '../payment/entities/payment.entity';
-import { PaymentState } from '../payment/enum';
+import { AccountsReceivableInput } from './dto/accounts-receivable.input';
 
 @Injectable()
 export class IncomeService extends TypeOrmQueryService<Income> {
@@ -35,9 +37,69 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     private readonly _discountRepository: Repository<Discount>,
     @InjectRepository(ClipAccount)
     private readonly _clipAccountRepository: Repository<ClipAccount>,
+    @InjectRepository(Concept)
+    private readonly _conceptRepository: Repository<Concept>,
     @InjectDataSource() public dataSource: DataSource,
   ) {
     super(_incomeRepository, { useSoftDelete: true });
+  }
+
+  public async getAccountsReceivable(params: AccountsReceivableInput) {
+    const { debitId } = params;
+
+    const debitQuery = this._debitRepository.createQueryBuilder('debit');
+
+    debitQuery.leftJoinAndMapOne(
+      'debit.related',
+      (query) =>
+        query
+          .select(['related.conceptsId', 'related.debtsId'])
+          .from('concepts_to_debits', 'related')
+          .distinctOn(['related.debtsId'])
+          .orderBy('related.debtsId', 'ASC'),
+      'related',
+      'related."related_debtsId" = debit.id',
+    );
+
+    debitQuery.select([
+      'debit.id',
+      'debit.state',
+      'debit.dueDate',
+      'debit.paymentDate',
+      'related."related_conceptsId"',
+    ]);
+
+    debitQuery.where('debit.id = :debitId', { debitId });
+
+    const debit = await debitQuery.getRawOne();
+
+    const conceptId = debit?.related_conceptsId;
+
+    if (!conceptId) throw new NotFoundException('¡Concepto no encontrado!');
+
+    const incomeQuery = this._incomeRepository.createQueryBuilder('income');
+
+    incomeQuery.leftJoinAndSelect('income.concepts', 'concept');
+    incomeQuery.leftJoinAndSelect('income.payments', 'payment');
+    incomeQuery.leftJoinAndSelect('income.clipLinks', 'links');
+
+    incomeQuery.where('concept.id = :conceptId', { conceptId });
+
+    const income = await incomeQuery.getOne();
+
+    if (!income) throw new NotFoundException('Ingreso no encontrado!');
+
+    return income;
+  }
+
+  public async addPaymentToIncome(params: AddPaymentInput) {
+    const { id, payments } = params;
+
+    const { income, concepts } = await this._fetchIncome(id);
+
+    console.log(income, concepts, payments);
+
+    return income;
   }
 
   public async createLinkIncomes(params: CreateLinkIncomeInput) {
@@ -217,7 +279,9 @@ export class IncomeService extends TypeOrmQueryService<Income> {
   }
 
   private async _fetchDebitsFromConcepts(concepts: CreateConceptInput[]) {
-    const debitIds = concepts.map((concept) => concept.debitId);
+    const debitIds = concepts
+      .filter((concept) => !!concept.debitId)
+      .map((concept) => concept.debitId);
 
     return this._debitRepository.find({
       where: { id: In(debitIds) },
@@ -240,5 +304,25 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     return this._clipAccountRepository.findOne({
       where: { branchs: { id: branchId } },
     });
+  }
+
+  private async _fetchIncome(ID: string) {
+    const income = await this._incomeRepository.findOne({ where: { id: ID } });
+
+    if (!income) {
+      throw new NotFoundException('¡Venta no encontrada!');
+    }
+
+    const concepts = await this._conceptRepository.find({
+      where: {
+        incomeId: ID,
+      },
+      relations: ['discounts', 'debits'],
+    });
+
+    return {
+      income,
+      concepts,
+    };
   }
 }
