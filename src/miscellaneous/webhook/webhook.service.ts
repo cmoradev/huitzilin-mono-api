@@ -39,7 +39,7 @@ export class WebhookService {
    * TODO: Implementar colas
    */
   async listenClipUpdates(params: ListenPaymentDto) {
-    const { account } = await this.getAccount(params);
+    const { account } = await this.getAccount(params.id);
 
     const state = await getStateLink(params.id, account.token);
 
@@ -69,8 +69,8 @@ export class WebhookService {
         method: PaymentMethod.CLIP,
       };
 
+      // TODO: Posiblemente mejorar la lógica de pago
       const updatedConcepts = applyClipPaymentInConcepts(conceptBulk, payment);
-
       const updatedIncome = applyClipPaymentInIncome(income, payment);
 
       await this._saveClipPayment(updatedIncome, updatedConcepts, payment);
@@ -112,18 +112,24 @@ export class WebhookService {
           }) as Concept,
       );
 
-      await queryRunner.manager.save(Concept, conceptUpdates);
+      if (conceptUpdates.length) {
+        await queryRunner.manager.save(Concept, conceptUpdates);
+      }
 
-      const debitUpdates: Debit[] = concepts.map(
-        (concept) =>
-          ({
-            id: concept.debitId,
-            state: concept.debitState,
-            paymentDate: concept.debitPaymentDate,
-          }) as Debit,
-      );
+      const debitUpdates: Debit[] = concepts
+        .filter((concept) => !!concept.debitId)
+        .map(
+          (concept) =>
+            ({
+              id: concept.debitId,
+              state: concept.debitState,
+              paymentDate: concept.debitPaymentDate,
+            }) as Debit,
+        );
 
-      await queryRunner.manager.save(Debit, debitUpdates);
+      if (debitUpdates?.length) {
+        await queryRunner.manager.save(Debit, debitUpdates);
+      }
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -160,15 +166,15 @@ export class WebhookService {
     };
   }
 
-  private async getAccount(params: ListenPaymentDto) {
+  private async getAccount(requestId: string) {
     const link = await this._clipLinkRepository.findOne({
-      where: { requestId: params.id },
+      where: { requestId },
       relations: ['account'],
     });
 
     if (!link?.id && !link?.account?.id) {
       throw new ConflictException(
-        `No se encontró el link con requestId: ${params.id}`,
+        `No se encontró el link con requestId: ${requestId}`,
       );
     }
 

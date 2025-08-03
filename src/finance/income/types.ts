@@ -44,4 +44,5 @@ export type ConceptMetadata = {
   debitId: string | null;
   debitPaymentDate: Date;
   debitState: DebitState;
+  debitDueDate: Date;
 };

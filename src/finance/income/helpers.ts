@@ -127,9 +127,13 @@ export const applyClipPaymentInConcepts = (
   concepts: ConceptMetadata[],
   payment: CreatePaymentInput,
 ) => {
+  const currentDetails = [...concepts].sort(
+    (a, b) => a.debitDueDate.getTime() - b.debitDueDate.getTime(),
+  );
+
   let received = new Decimal(payment.amount);
 
-  for (const concept of concepts) {
+  currentDetails.forEach((concept) => {
     const total = new Decimal(concept.conceptPendingPayment);
 
     if (received.greaterThan(0)) {
@@ -143,10 +147,10 @@ export const applyClipPaymentInConcepts = (
       concept.debitState = pendingPayment.equals(0)
         ? DebitState.PAID
         : DebitState.PARTIALLY_PAID;
-    } else break;
-  }
+    }
+  });
 
-  return concepts;
+  return currentDetails;
 };
 
 export const buildBreakdown = (details: CreateConceptPayload[]) => {
@@ -292,6 +296,7 @@ export const prepareConceptWithDebit = (
       debitId: debit?.id || null,
       debitPaymentDate: new Date(),
       debitState: DebitState.DEBT,
+      debitDueDate: new Date(debit?.dueDate ?? new Date()),
     };
   });
 };
