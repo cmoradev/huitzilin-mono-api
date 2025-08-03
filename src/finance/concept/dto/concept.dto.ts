@@ -41,6 +41,9 @@ export class ConceptDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   total: number;
 
+  @Field(() => Float, { nullable: false })
+  pendingPayment: number;
+
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 

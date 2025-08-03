@@ -79,6 +79,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const incomeQuery = this._incomeRepository.createQueryBuilder('income');
 
     incomeQuery.leftJoinAndSelect('income.concepts', 'concept');
+    incomeQuery.leftJoinAndSelect('concept.discounts', 'discount');
     incomeQuery.leftJoinAndSelect('income.payments', 'payment');
     incomeQuery.leftJoinAndSelect('income.clipLinks', 'links');
 
