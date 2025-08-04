@@ -2,6 +2,7 @@ import { NestedIdInput } from 'src/common/dtos';
 import { DebitState } from 'src/school/debit/enums';
 
 export class CreateConceptPayload {
+  id?: string;
   description: string;
   unitPrice: number;
   quantity: number;

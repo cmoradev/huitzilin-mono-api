@@ -319,6 +319,27 @@ export const applyClipPaymentInIncome = (
   return income;
 };
 
+export const applyPaymentsInIncome = (
+  income: Income,
+  payments: CreatePaymentInput[],
+) => {
+  let pendingPayment = new Decimal(income.pendingPayment);
+
+  const received = payments.reduce(
+    (acc, payment) => acc.plus(payment.amount),
+    new Decimal(0),
+  );
+
+  pendingPayment = pendingPayment.minus(received);
+
+  income.pendingPayment = pendingPayment.toNumber();
+  income.state = pendingPayment.greaterThan(0)
+    ? IncomeState.PENDING
+    : IncomeState.PAID;
+
+  return income;
+};
+
 export const createLinkClip = (clipAccount: ClipAccount, income: Income) => {
   const logger = new Logger('Clip');
 
@@ -434,6 +455,6 @@ export const conceptToCreateConceptMap = (concepts: Concept[]) => {
         state: debit?.state || null,
         paymentDate: new Date(),
         dueDate: new Date(),
-      } as CreateConceptPayload;
+      };
     });
 };

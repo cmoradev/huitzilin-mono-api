@@ -18,6 +18,7 @@ import { Income } from './entities/income.entity';
 import {
   applyCalculationsInConcepts,
   applyPaymentsInConcepts,
+  applyPaymentsInIncome,
   buildIncomesWithoutPayments,
   buildIncomesWithPayments,
   conceptToCreateConceptMap,
@@ -25,6 +26,8 @@ import {
   matchConceptWithDebit,
 } from './helpers';
 import { CreateIncomePayload } from './types';
+import { CreatePaymentInput } from '../payment/dto/create-payment.input';
+import { CreateConceptPayload } from '../concept/types';
 
 @Injectable()
 export class IncomeService extends TypeOrmQueryService<Income> {
@@ -96,11 +99,13 @@ export class IncomeService extends TypeOrmQueryService<Income> {
   public async addPaymentToIncome(params: AddPaymentInput) {
     const { incomeID, payments } = params;
 
-    const income = await this._fetchIncome(incomeID);
+    let income = await this._fetchIncome(incomeID);
     const concepts = conceptToCreateConceptMap(income.concepts);
-    const { details } = applyPaymentsInConcepts(concepts, payments);
 
-    return income;
+    const { details } = applyPaymentsInConcepts(concepts, payments);
+    income = applyPaymentsInIncome(income, payments);
+
+    return this._saveAddPayment(income, details, payments);
   }
 
   public async createLinkIncomes(params: CreateLinkIncomeInput) {
@@ -340,5 +345,89 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     if (!income) throw new NotFoundException('Ingreso no encontrado!');
 
     return income;
+  }
+
+  private async _saveAddPayment(
+    income: Income,
+    concepts: CreateConceptPayload[],
+    payments: CreatePaymentInput[],
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.save(Income, {
+        id: income.id,
+        state: income.state,
+        pendingPayment: income.pendingPayment,
+      });
+
+      if (payments?.length) {
+        const payloadPayments: Payment[] = payments.map(
+          (payment) =>
+            ({
+              method: payment.method,
+              amount: payment.amount,
+              date: payment.date,
+              state: PaymentState.PAID,
+              bank: payment.bank,
+              transaction: payment.transaction,
+              incomeId: income.id,
+            }) as Payment,
+        );
+
+        const newPayments = await queryRunner.manager.save(
+          Payment,
+          payloadPayments,
+        );
+
+        income.payments = [...income.payments, ...newPayments];
+      }
+
+      if (concepts?.length) {
+        const conceptUpdates: Concept[] = concepts.map(
+          (concept) =>
+            ({
+              id: concept.id,
+              pendingPayment: concept.pendingPayment,
+            }) as Concept,
+        );
+
+        await queryRunner.manager.save(Concept, conceptUpdates);
+
+        const debitUpdates: Debit[] = concepts
+          .filter(
+            (concept) =>
+              !!concept.debitId && !!concept.state && !!concept.paymentDate,
+          )
+          .map(
+            (concept) =>
+              ({
+                id: concept.debitId,
+                state: concept.state,
+                paymentDate: concept.paymentDate,
+              }) as Debit,
+          );
+
+        if (debitUpdates?.length) {
+          await queryRunner.manager.save(Debit, debitUpdates);
+        }
+      }
+
+      await queryRunner.commitTransaction();
+
+      return income;
+    } catch (error) {
+      console.error('Error error:', error);
+      console.error('Error income:', income);
+      console.error('Error concepts:', concepts);
+      console.error('Error payment:', payments);
+      await queryRunner.rollbackTransaction();
+      throw new NotFoundException('¡No hemos podido actualizar la venta!');
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
