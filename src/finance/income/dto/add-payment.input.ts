@@ -6,7 +6,7 @@ import { CreatePaymentInput } from 'src/finance/payment/dto/create-payment.input
 export class AddPaymentInput {
   @IsUUID()
   @Field(() => ID, { nullable: false })
-  id: string;
+  incomeID: string;
 
   @Field(() => [CreatePaymentInput], { nullable: true })
   payments: CreatePaymentInput[];

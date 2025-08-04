@@ -282,6 +282,7 @@ export const distributePayments = (
   };
 };
 
+// TODO: Posiblemente mejorar la lógica de pago
 export const prepareConceptWithDebit = (
   concepts: Concept[],
 ): ConceptMetadata[] => {
@@ -408,4 +409,31 @@ export const generatePurchaseDescription = (concepts: Concept[]): string => {
   const lines = concepts.map((c) => `~ ${c.description}`);
 
   return `${lines.join(' | ')}`;
+};
+
+export const conceptToCreateConceptMap = (concepts: Concept[]) => {
+  return concepts
+    .filter((concept) => new Decimal(concept.pendingPayment).greaterThan(0))
+    .map((concept) => {
+      const debit = concept.debits.find(() => true);
+
+      return {
+        id: concept.id,
+        description: concept.description,
+        unitPrice: concept.unitPrice,
+        quantity: concept.quantity,
+        amount: concept.amount,
+        discount: concept.discount,
+        subtotal: concept.subtotal,
+        taxes: concept.taxes,
+        total: concept.total,
+        pendingPayment: concept.pendingPayment,
+        withTax: concept.withTax,
+        discounts: concept.discounts,
+        debitId: debit?.id || null,
+        state: debit?.state || null,
+        paymentDate: new Date(),
+        dueDate: new Date(),
+      } as CreateConceptPayload;
+    });
 };

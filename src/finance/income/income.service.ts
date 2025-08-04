@@ -20,6 +20,7 @@ import {
   applyPaymentsInConcepts,
   buildIncomesWithoutPayments,
   buildIncomesWithPayments,
+  conceptToCreateConceptMap,
   createLinkClip,
   matchConceptWithDebit,
 } from './helpers';
@@ -93,11 +94,11 @@ export class IncomeService extends TypeOrmQueryService<Income> {
   }
 
   public async addPaymentToIncome(params: AddPaymentInput) {
-    const { id, payments } = params;
+    const { incomeID, payments } = params;
 
-    const { income, concepts } = await this._fetchIncome(id);
-
-    console.log(income, concepts, payments);
+    const income = await this._fetchIncome(incomeID);
+    const concepts = conceptToCreateConceptMap(income.concepts);
+    const { details } = applyPaymentsInConcepts(concepts, payments);
 
     return income;
   }
@@ -321,24 +322,23 @@ export class IncomeService extends TypeOrmQueryService<Income> {
       where: { branchs: { id: branchId } },
     });
   }
+  // TODO: Obtener el adeudo correcto.
+  // Ultimo adeudo con adeudo pendiente.
+  private async _fetchIncome(incomeId: string) {
+    const incomeQuery = this._incomeRepository.createQueryBuilder('income');
 
-  private async _fetchIncome(ID: string) {
-    const income = await this._incomeRepository.findOne({ where: { id: ID } });
+    incomeQuery.leftJoinAndSelect('income.concepts', 'concept');
+    incomeQuery.leftJoinAndSelect('concept.discounts', 'discount');
+    incomeQuery.leftJoinAndSelect('concept.debits', 'debit');
+    incomeQuery.leftJoinAndSelect('income.payments', 'payment');
+    incomeQuery.leftJoinAndSelect('income.clipLinks', 'links');
 
-    if (!income) {
-      throw new NotFoundException('¡Venta no encontrada!');
-    }
+    incomeQuery.where('income.id = :incomeId', { incomeId });
 
-    const concepts = await this._conceptRepository.find({
-      where: {
-        incomeId: ID,
-      },
-      relations: ['discounts', 'debits'],
-    });
+    const income = await incomeQuery.getOne();
 
-    return {
-      income,
-      concepts,
-    };
+    if (!income) throw new NotFoundException('Ingreso no encontrado!');
+
+    return income;
   }
 }
