@@ -4,6 +4,7 @@ import {
   FilterableField,
   FilterableUnPagedRelation,
   QueryOptions,
+  UnPagedRelation,
 } from '@ptc-org/nestjs-query-graphql';
 import { IsUUID } from 'class-validator';
 import { BaseDto } from 'src/common/dtos';
@@ -18,9 +19,9 @@ import { ClipLinkDto } from 'src/miscellaneous';
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 @FilterableUnPagedRelation('students', () => StudentDto)
-@FilterableUnPagedRelation('concepts', () => ConceptDto)
-@FilterableUnPagedRelation('payments', () => PaymentDto)
-@FilterableUnPagedRelation('clipLinks', () => ClipLinkDto)
+@UnPagedRelation('concepts', () => ConceptDto)
+@UnPagedRelation('payments', () => PaymentDto)
+@UnPagedRelation('clipLinks', () => ClipLinkDto)
 export class IncomeDto extends BaseDto {
   @FilterableField(() => Int, { nullable: false })
   folio: number;

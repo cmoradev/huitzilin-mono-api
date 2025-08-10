@@ -1,18 +1,17 @@
 import { Policy } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { ActionEffect } from '../enums';
 
 @Entity({ schema: 'auth', name: 'actions' })
 export class Action extends Base {
-  @Column({ type: 'enum', nullable: false, enum: ActionEffect })
-  effect: ActionEffect;
-
-  @Column({ type: 'varchar', nullable: false, length: 32 })
-  action: string;
+  @Column({ type: 'varchar', nullable: false })
+  resources: string;
 
   @Column({ type: 'varchar', nullable: false, length: 32 })
   route: string;
+
+  @Column({ type: 'varchar', nullable: false, array: true })
+  actions: string[];
 
   @Column({ type: 'uuid', nullable: false })
   @Index()
