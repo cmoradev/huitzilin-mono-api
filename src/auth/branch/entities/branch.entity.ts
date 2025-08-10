@@ -1,4 +1,4 @@
-import { Policy, User } from 'src/auth';
+import { User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
 import { Income } from 'src/finance';
 import { ClipAccount, Discount } from 'src/miscellaneous';
@@ -23,9 +23,6 @@ export class Branch extends Base {
 
   @Column({ type: 'varchar', nullable: false, length: 16 })
   name: string;
-
-  @OneToMany(() => Policy, (action) => action.branch)
-  policies: Policy[];
 
   @OneToMany(() => User, (action) => action.branch)
   users: User[];

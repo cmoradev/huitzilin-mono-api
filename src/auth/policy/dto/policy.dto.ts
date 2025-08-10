@@ -2,6 +2,7 @@ import { ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
+  PagingStrategies,
   QueryOptions,
   UnPagedRelation,
 } from '@ptc-org/nestjs-query-graphql';
@@ -12,7 +13,9 @@ import { BaseDto } from 'src/common/dtos/base.dto';
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-@UnPagedRelation('actions', () => ActionDto)
+@UnPagedRelation('actions', () => ActionDto, {
+  pagingStrategy: PagingStrategies.NONE,
+})
 export class PolicyDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   name: string;

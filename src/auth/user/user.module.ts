@@ -11,6 +11,7 @@ import { ConfigKey } from 'src/common/config';
 import { Cycle } from 'src/school';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UserService } from './user.service';
         {
           DTOClass: UserDto,
           ServiceClass: UserService,
+          UpdateDTOClass: UpdateUserInput,
           pagingStrategy: PagingStrategies.OFFSET,
           enableTotalCount: true,
           enableSubscriptions: false,
