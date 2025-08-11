@@ -1,8 +1,11 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsUUID } from 'class-validator';
+import { InputType, Field, ID } from '@nestjs/graphql';
+import { IDField } from '@ptc-org/nestjs-query-graphql';
 
 @InputType('CreateAction')
 export class CreateActionInput {
+  @IDField(() => ID, { nullable: true })
+  id: string;
+
   @Field(() => String, { nullable: false })
   resources: string;
 
@@ -11,8 +14,4 @@ export class CreateActionInput {
 
   @Field(() => [String], { nullable: false })
   actions: string[];
-
-  @IsUUID()
-  @Field(() => String, { nullable: false })
-  policyId: string;
 }

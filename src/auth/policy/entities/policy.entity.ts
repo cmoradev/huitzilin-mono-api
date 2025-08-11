@@ -7,7 +7,7 @@ export class Policy extends Base {
   @Column({ type: 'varchar', nullable: false, length: 32 })
   name: string;
 
-  @OneToMany(() => Action, (action) => action.policy, { cascade: ['insert'] })
+  @OneToMany(() => Action, (action) => action.policy, { cascade: true })
   actions: Action[];
 
   @ManyToMany(() => User, (user) => user.policies)
