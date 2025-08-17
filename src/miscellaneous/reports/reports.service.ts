@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { IncomeParams } from './dto';
 import { IncomeData } from './types';
 import { groupIncomeByPaymentMethod, totalIncome } from './helpers';
+import { incomesExcel } from './templates';
 
 @Injectable()
 export class ReportsService {
@@ -12,6 +13,18 @@ export class ReportsService {
     @InjectRepository(Payment)
     private readonly _paymentRepository: Repository<Payment>,
   ) {}
+
+  public async incomesDownload(params: IncomeParams) {
+    const { start, end } = params;
+
+    const data = await this.getIncomesData(params);
+
+    const document = incomesExcel(data, start, end);
+
+    return {
+      document,
+    };
+  }
 
   public async incomes(params: IncomeParams) {
     const data = await this.getIncomesData(params);
@@ -85,6 +98,7 @@ export class ReportsService {
       incomePendingPayment: `${payment.income.pendingPayment}`,
       branchId: payment.income.branch.id,
       branchName: payment.income.branch.name,
+      withTax: payment.income.taxes > 0,
       students: payment.income.students.map((student) => ({
         id: student.id,
         fullname: student.fullname,

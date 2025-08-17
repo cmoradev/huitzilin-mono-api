@@ -17,6 +17,7 @@ export type IncomeData = {
   paymentBank: string;
   incomeId: string;
   incomeFolio: number;
+  withTax: boolean;
   incomeState: IncomeState;
   incomeDate: string;
   incomeAmount: string;
