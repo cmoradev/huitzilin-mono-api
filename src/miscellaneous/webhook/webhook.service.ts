@@ -123,7 +123,7 @@ export class WebhookService {
             ({
               id: concept.debitId,
               state: concept.debitState,
-              paymentDate: concept.debitPaymentDate,
+              paymentDate: concept.debitPaymentDate.toISOString(),
             }) as Debit,
         );
 
