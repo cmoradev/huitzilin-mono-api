@@ -8,7 +8,7 @@ import { groupIncomeByPaymentMethod, totalIncome } from './helpers';
 import { incomesExcel } from './templates';
 
 @Injectable()
-export class ReportsService {
+export class IncomesService {
   constructor(
     @InjectRepository(Payment)
     private readonly _paymentRepository: Repository<Payment>,

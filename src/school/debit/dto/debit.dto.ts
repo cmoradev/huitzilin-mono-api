@@ -1,4 +1,4 @@
-import { Field, Float, GraphQLISODateTime, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
@@ -53,8 +53,8 @@ export class DebitDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   dueDate: string;
 
-  @Field(() => GraphQLISODateTime, { nullable: true })
-  paymentDate: Date | null;
+  @Field(() => String, { nullable: true })
+  paymentDate: string | null;
 
   @IsUUID()
   @FilterableField(() => String, { nullable: false })

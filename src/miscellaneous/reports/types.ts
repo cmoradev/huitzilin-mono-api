@@ -1,5 +1,6 @@
 import { IncomeState } from 'src/finance/income/enum';
 import { PaymentMethod, PaymentState } from 'src/finance/payment/enum';
+import { DebitState } from 'src/school/debit/enums';
 
 export type StudentData = {
   id: string;
@@ -29,6 +30,20 @@ export type IncomeData = {
   branchId: string;
   branchName: string;
   students: Array<StudentData>;
+};
+
+export type DebitData = {
+  debitId: string;
+  debitDescription: string;
+  debitAmount: string;
+  debitDiscount: string;
+  debitSubtotal: string;
+  debitTaxes: string;
+  debitTotal: string;
+  debitWithTax: boolean;
+  debitState: DebitState;
+  debitDueDate: string;
+  debitPaymentDate: string | null;
 };
 
 export type Grouped = {
