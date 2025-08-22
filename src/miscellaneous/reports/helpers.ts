@@ -1,6 +1,44 @@
 import Decimal from 'decimal.js';
-import { Grouped, IncomeData } from './types'; // Ajusta la ruta si es necesario
+import { DebitData, Grouped, IncomeData } from './types'; // Ajusta la ruta si es necesario
 import { PaymentMethod } from 'src/finance/payment/enum';
+
+/**
+ * Agrupa los conceptos por estado.
+ */
+export function summaryDebits(data: DebitData[]): Grouped[] {
+  const debitTotal = data.reduce(
+    (previous, current) => previous.plus(current.debitTotal),
+    new Decimal(0),
+  );
+
+  const pendingPayment = data.reduce(
+    (previous, current) => previous.plus(current.conceptPendingPayment ?? 0),
+    new Decimal(0),
+  );
+
+  const received = data.reduce(
+    (previous, current) => previous.plus(current.conceptReceived ?? 0),
+    new Decimal(0),
+  );
+
+  return [
+    {
+      id: 'total',
+      name: 'Total',
+      count: debitTotal.toString(),
+    },
+    {
+      id: 'received',
+      name: 'Recibido',
+      count: received.toString(),
+    },
+    {
+      id: 'pendingPayment',
+      name: 'Pendiente de pago',
+      count: pendingPayment.toString(),
+    },
+  ];
+}
 
 /**
  * Agrupa los ingresos por método de pago.
@@ -16,7 +54,7 @@ export function groupIncomeByPaymentMethod(data: IncomeData[]): Grouped[] {
       result[method] = { id: method, name: method, count: '0' };
     }
 
-    const lastCount = new Decimal(result[method].count || '0');
+    const lastCount = new Decimal(result[method].count ?? '0');
     result[method].count = lastCount.plus(income).toString();
   });
 

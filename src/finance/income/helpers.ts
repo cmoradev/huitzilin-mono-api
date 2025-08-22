@@ -111,7 +111,7 @@ export const applyPaymentsInConcepts = (
 
       concept.pendingPayment = pendingPayment.toNumber();
       concept.paymentDate = new Date();
-      concept.state = pendingPayment.abs().lessThanOrEqualTo(0.000001)
+      concept.state = pendingPayment.abs().lessThanOrEqualTo(0.01)
         ? DebitState.PAID
         : DebitState.PARTIALLY_PAID;
     }
@@ -144,7 +144,7 @@ export const applyClipPaymentInConcepts = (
 
       concept.conceptPendingPayment = pendingPayment.toNumber();
       concept.debitPaymentDate = new Date();
-      concept.debitState = pendingPayment.abs().lessThanOrEqualTo(0.000001)
+      concept.debitState = pendingPayment.abs().lessThanOrEqualTo(0.01)
         ? DebitState.PAID
         : DebitState.PARTIALLY_PAID;
     }

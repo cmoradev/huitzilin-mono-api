@@ -44,6 +44,18 @@ export type DebitData = {
   debitState: DebitState;
   debitDueDate: string;
   debitPaymentDate: string | null;
+  branchId: string;
+  branchName: string;
+  studentId: string;
+  studentFullname: string;
+  conceptId: string | null;
+  conceptDescription: string | null;
+  conceptSubtotal: string | null;
+  conceptTaxes: string | null;
+  conceptTotal: string | null;
+  conceptPendingPayment: string | null;
+  conceptReceived: string | null;
+  conceptWithTax: boolean | null;
 };
 
 export type Grouped = {
