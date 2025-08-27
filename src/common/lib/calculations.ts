@@ -15,13 +15,13 @@ export function calculateAllFromTotal(
 
   const totalDecimal = new Decimal(total);
   const baseDecimal = totalDecimal.dividedBy(1.197);
-  const comissionsDecimal = totalDecimal.times(0.037);
+  const comissionsDecimal = baseDecimal.times(0.037);
   const taxesDecimal = baseDecimal.times(rateDecimal);
 
   return {
     base: Number(baseDecimal.toFixed(6)),
-    taxes: Number(taxesDecimal.toFixed(6)),
     comissions: Number(comissionsDecimal.toFixed(6)),
+    taxes: Number(taxesDecimal.toFixed(6)),
     total: Number(totalDecimal.toFixed(6)),
   };
 }
