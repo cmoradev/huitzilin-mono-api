@@ -4,10 +4,7 @@ import { IncomeData } from './types';
 import { format } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import { TableColumnProperties } from 'exceljs';
-import {
-  calculateBaseAndTaxFromTotal,
-  TaxEnum,
-} from 'src/common/lib/calculations';
+import { calculateAllFromTotal, TaxEnum } from 'src/common/lib/calculations';
 
 export const incomesExcel = (
   data: IncomeData[],
@@ -67,13 +64,20 @@ export const incomesExcel = (
       { name: 'Folio Pago', filterButton: true },
       { name: 'Fecha Pago', filterButton: true },
       { name: 'Método de Pago', filterButton: true },
+      { name: 'Base', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Importe', filterButton: false, totalsRowFunction: 'sum' },
+      { name: 'Comisiòn', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Impuesto', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Total', filterButton: false, totalsRowFunction: 'sum' },
     ];
 
     const dataRows = items.map((row) => {
-      const { total, taxes, amount } = calculateBaseAndTaxFromTotal(
+      // const { total, taxes, amount } = calculateBaseAndTaxFromTotal(
+      //   parseFloat(row.paymentAmount),
+      //   row.withTax ? TaxEnum.Sixteen : 0,
+      // );
+
+      const { base, comissions, taxes, total } = calculateAllFromTotal(
         parseFloat(row.paymentAmount),
         row.withTax ? TaxEnum.Sixteen : 0,
       );
@@ -84,7 +88,8 @@ export const incomesExcel = (
         `P${generateFolio(row.paymentFolio)}`,
         row.paymentDate,
         getMethodName(row.paymentMethod),
-        amount,
+        base,
+        comissions,
         taxes,
         total,
       ];

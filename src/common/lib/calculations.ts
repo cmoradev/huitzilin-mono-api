@@ -2,6 +2,31 @@ import Decimal from 'decimal.js';
 import { DiscountBy } from 'src/miscellaneous/discounts/enums';
 
 /**
+ * Calcula la base y el impuesto a partir del total (con impuestos) y el porcentaje de impuestos.
+ * @param total Importe total con impuestos incluidos
+ * @param taxRate Porcentaje de impuestos (por ejemplo, 16 para 16%)
+ * @returns Un objeto con base (sin impuestos), impuestos y total
+ */
+export function calculateAllFromTotal(
+  total: number,
+  taxRate: number = TaxEnum.Sixteen,
+) {
+  const rateDecimal = new Decimal(taxRate).dividedBy(100);
+
+  const totalDecimal = new Decimal(total);
+  const baseDecimal = totalDecimal.dividedBy(1.197);
+  const comissionsDecimal = totalDecimal.times(0.037);
+  const taxesDecimal = baseDecimal.times(rateDecimal);
+
+  return {
+    base: Number(baseDecimal.toFixed(6)),
+    taxes: Number(taxesDecimal.toFixed(6)),
+    comissions: Number(comissionsDecimal.toFixed(6)),
+    total: Number(totalDecimal.toFixed(6)),
+  };
+}
+
+/**
  * Calculates the tax based on a fixed rate.
  */
 export enum TaxEnum {
