@@ -65,7 +65,6 @@ export const incomesExcel = (
       { name: 'Fecha Pago', filterButton: true },
       { name: 'Método de Pago', filterButton: true },
       { name: 'Base', filterButton: false, totalsRowFunction: 'sum' },
-      { name: 'Importe', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Comisiòn', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Impuesto', filterButton: false, totalsRowFunction: 'sum' },
       { name: 'Total', filterButton: false, totalsRowFunction: 'sum' },
