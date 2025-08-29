@@ -145,7 +145,6 @@ export class IncomeService extends TypeOrmQueryService<Income> {
       const income = await this._saveIncome(payload);
       incomes.push(income);
     }
-    console.log(JSON.stringify(incomes, null, 2));
     return incomes;
   }
 

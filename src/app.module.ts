@@ -11,8 +11,6 @@ import { IncomeModule } from './finance/income/income.module';
 import { ConceptModule } from './finance/concept/concept.module';
 import { PaymentModule } from './finance/payment/payment.module';
 
-console.log(); // Log the NODE_ENV value
-
 @Module({
   imports: [
     ConfigModule.forRoot({
