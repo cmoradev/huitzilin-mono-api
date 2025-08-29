@@ -23,6 +23,7 @@ import {
   buildIncomesWithPayments,
   conceptToCreateConceptMap,
   createLinkClip,
+  groupByBranchId,
   matchConceptWithDebit,
 } from './helpers';
 import { CreateIncomePayload } from './types';
@@ -105,41 +106,47 @@ export class IncomeService extends TypeOrmQueryService<Income> {
       income.branchId,
     );
 
-    const { details } = applyPaymentsInConcepts(concepts, payments);
+    const details = applyPaymentsInConcepts(concepts, payments);
     income = applyPaymentsInIncome(income, payments);
 
     return this._saveAddPayment(income, details, payments);
   }
 
   public async createLinkIncomes(params: CreateLinkIncomeInput) {
-    const { concepts, branchID, studentIDs } = params;
-
-    const debits = await this._fetchDebitsFromConcepts(concepts);
-    const discounts = await this._fetchDiscountsFromConcepts(concepts);
-    const matches = matchConceptWithDebit(concepts, debits);
-    const calculations = applyCalculationsInConcepts(matches, discounts);
-
-    const income = buildIncomesWithoutPayments(
-      calculations,
-      branchID,
-      studentIDs,
-    );
-
-    return this._saveIncome(income, true);
+    const { concepts, studentIDs } = params;
+    const groups = await this._buildDetailsGroupByBranch(concepts);
+    const incomes: Income[] = [];
+    for (const [branchID, details] of groups.entries()) {
+      const payload = buildIncomesWithoutPayments(
+        details,
+        branchID,
+        studentIDs,
+      );
+      const income = await this._saveIncome(payload, true);
+      incomes.push(income);
+    }
+    return incomes;
   }
 
   public async createIncomes(params: CreateIncomeInput) {
-    const { concepts, payments, studentIDs } = params;
-
-    const debits = await this._fetchDebitsFromConcepts(concepts);
-    const discounts = await this._fetchDiscountsFromConcepts(concepts);
-    const matches = matchConceptWithDebit(concepts, debits);
-    const calculations = applyCalculationsInConcepts(matches, discounts);
-    // TODO: Implementar la lógica para manejar los pagos en la creación de ingresos
-    const { details } = applyPaymentsInConcepts(calculations, payments);
-    const income = buildIncomesWithPayments(details, payments, studentIDs);
-
-    return this._saveIncome(income);
+    const { concepts, studentIDs } = params;
+    const groups = await this._buildDetailsGroupByBranch(concepts);
+    let payments = [...params.payments];
+    const incomes: Income[] = [];
+    for (const [branchID, data] of groups.entries()) {
+      const details = applyPaymentsInConcepts(data, payments);
+      const { income: payload, remainingPayments } = buildIncomesWithPayments(
+        details,
+        payments,
+        studentIDs,
+        branchID,
+      );
+      payments = remainingPayments;
+      const income = await this._saveIncome(payload);
+      incomes.push(income);
+    }
+    console.log(JSON.stringify(incomes, null, 2));
+    return incomes;
   }
 
   private async _saveIncome(
@@ -427,5 +434,13 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async _buildDetailsGroupByBranch(concepts: CreateConceptInput[]) {
+    const debits = await this._fetchDebitsFromConcepts(concepts);
+    const discounts = await this._fetchDiscountsFromConcepts(concepts);
+    const matches = matchConceptWithDebit(concepts, debits);
+    const calculations = applyCalculationsInConcepts(matches, discounts);
+    return groupByBranchId(calculations);
   }
 }

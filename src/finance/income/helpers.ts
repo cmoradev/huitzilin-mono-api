@@ -27,17 +27,17 @@ import {
 } from './types';
 
 export const groupByBranchId = (concepts: CreateConceptPayload[]) => {
-  return concepts.reduce(
-    (acc, concept) => {
-      const branchId = concept.branchID;
-      if (!acc[branchId]) {
-        acc[branchId] = [];
-      }
-      acc[branchId].push(concept);
-      return acc;
-    },
-    {} as Record<string, CreateConceptPayload[]>,
-  );
+  const map = new Map<string, CreateConceptPayload[]>();
+
+  concepts.forEach((concept) => {
+    const branchId = concept.branchID;
+    if (!map.has(branchId)) {
+      map.set(branchId, []);
+    }
+    map.get(branchId)?.push(concept);
+  });
+
+  return map;
 };
 
 export const matchConceptWithDebit = (
@@ -105,37 +105,37 @@ export const applyPaymentsInConcepts = (
   details: CreateConceptPayload[],
   payments: CreatePaymentInput[],
 ) => {
-  const currentPayments = [...payments].sort((a, b) => b.amount - a.amount);
   const currentDetails = [...details].sort(
     (a, b) => a.dueDate.getTime() - b.dueDate.getTime(),
   );
-
+  const currentPayments = [...payments].sort((a, b) => b.amount - a.amount);
   let received = currentPayments.reduce(
     (acc, payment) => acc.plus(payment.amount),
     new Decimal(0),
   );
 
-  currentDetails.forEach((concept) => {
-    const total = new Decimal(concept.pendingPayment);
+  return currentDetails.map((concept) => {
+    let decimalPending = new Decimal(concept.pendingPayment);
+    let paymentDate: Date | null = null;
+    let state: DebitState | null = null;
 
     if (received.greaterThan(0)) {
-      const paidAmount = Decimal.min(received, total);
+      const paidAmount = Decimal.min(received, decimalPending);
       received = received.minus(paidAmount);
-
-      const pendingPayment = total.minus(paidAmount);
-
-      concept.pendingPayment = pendingPayment.toNumber();
-      concept.paymentDate = new Date();
-      concept.state = pendingPayment.abs().lessThanOrEqualTo(0.01)
+      decimalPending = decimalPending.minus(paidAmount);
+      paymentDate = new Date();
+      state = decimalPending.abs().lessThanOrEqualTo(0.01)
         ? DebitState.PAID
         : DebitState.PARTIALLY_PAID;
     }
-  });
 
-  return {
-    balance: Number(received.toFixed(6)),
-    details: currentDetails,
-  };
+    return {
+      ...concept,
+      pendingPayment: decimalPending.toNumber(),
+      paymentDate,
+      state,
+    };
+  });
 };
 
 export const applyClipPaymentInConcepts = (
@@ -227,7 +227,8 @@ export const buildIncomesWithPayments = (
   concepts: CreateConceptPayload[],
   payments: CreatePaymentInput[],
   studentIds: string[],
-): CreateIncomePayload => {
+  branchId: string,
+) => {
   const withPending = concepts.some((concept) =>
     new Decimal(concept.pendingPayment).greaterThan(0),
   );
@@ -242,9 +243,7 @@ export const buildIncomesWithPayments = (
     currentPayments,
   );
 
-  currentPayments = remainingPayments;
-
-  return {
+  const income: CreateIncomePayload = {
     amount,
     discount,
     subtotal,
@@ -252,10 +251,15 @@ export const buildIncomesWithPayments = (
     total,
     pendingPayment,
     studentIds,
+    branchId,
     payments: adjustedPayments,
     state: withPending ? IncomeState.PENDING : IncomeState.PAID,
     concepts,
   };
+
+  currentPayments = remainingPayments;
+
+  return { income, remainingPayments };
 };
 
 export const distributePayments = (

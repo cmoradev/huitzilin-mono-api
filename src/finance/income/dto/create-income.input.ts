@@ -16,9 +16,6 @@ export class CreateIncomeInput {
 
 @InputType('CreateLinkIncome')
 export class CreateLinkIncomeInput {
-  @Field(() => String, { nullable: false })
-  branchID: string;
-
   @Field(() => [String], { nullable: false })
   studentIDs: string[];
 
