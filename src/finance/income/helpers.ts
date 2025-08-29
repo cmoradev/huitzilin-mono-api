@@ -26,6 +26,20 @@ import {
   LinkClipResponse,
 } from './types';
 
+export const groupByBranchId = (concepts: CreateConceptPayload[]) => {
+  return concepts.reduce(
+    (acc, concept) => {
+      const branchId = concept.branchID;
+      if (!acc[branchId]) {
+        acc[branchId] = [];
+      }
+      acc[branchId].push(concept);
+      return acc;
+    },
+    {} as Record<string, CreateConceptPayload[]>,
+  );
+};
+
 export const matchConceptWithDebit = (
   concepts: CreateConceptInput[],
   debits: Debit[],
@@ -65,6 +79,7 @@ export const applyCalculationsInConcepts = (
     );
 
     return {
+      branchID: concept.branchID,
       withTax: concept.withTax,
       description: concept.description,
       amount,
@@ -211,7 +226,6 @@ export const buildIncomesWithoutPayments = (
 export const buildIncomesWithPayments = (
   concepts: CreateConceptPayload[],
   payments: CreatePaymentInput[],
-  branchId: string,
   studentIds: string[],
 ): CreateIncomePayload => {
   const withPending = concepts.some((concept) =>
@@ -237,7 +251,6 @@ export const buildIncomesWithPayments = (
     taxes,
     total,
     pendingPayment,
-    branchId,
     studentIds,
     payments: adjustedPayments,
     state: withPending ? IncomeState.PENDING : IncomeState.PAID,
@@ -432,7 +445,10 @@ export const generatePurchaseDescription = (concepts: Concept[]): string => {
   return `${lines.join(' | ')}`;
 };
 
-export const conceptToCreateConceptMap = (concepts: Concept[]) => {
+export const conceptToCreateConceptMap = (
+  concepts: Concept[],
+  branchID: string,
+) => {
   return concepts
     .filter((concept) => new Decimal(concept.pendingPayment).greaterThan(0))
     .map((concept) => {
@@ -455,6 +471,7 @@ export const conceptToCreateConceptMap = (concepts: Concept[]) => {
         state: debit?.state || null,
         paymentDate: new Date(),
         dueDate: new Date(),
+        branchID,
       };
     });
 };

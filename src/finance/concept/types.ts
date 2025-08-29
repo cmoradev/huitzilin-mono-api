@@ -17,5 +17,6 @@ export class CreateConceptPayload {
   state: DebitState | null;
   paymentDate: Date | null;
   debitId: string | null;
+  branchID: string;
   discounts: NestedIdInput[];
 }

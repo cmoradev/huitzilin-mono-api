@@ -100,7 +100,10 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const { incomeID, payments } = params;
 
     let income = await this._fetchIncome(incomeID);
-    const concepts = conceptToCreateConceptMap(income.concepts);
+    const concepts = conceptToCreateConceptMap(
+      income.concepts,
+      income.branchId,
+    );
 
     const { details } = applyPaymentsInConcepts(concepts, payments);
     income = applyPaymentsInIncome(income, payments);
@@ -112,8 +115,8 @@ export class IncomeService extends TypeOrmQueryService<Income> {
     const { concepts, branchID, studentIDs } = params;
 
     const debits = await this._fetchDebitsFromConcepts(concepts);
-    const matches = matchConceptWithDebit(concepts, debits);
     const discounts = await this._fetchDiscountsFromConcepts(concepts);
+    const matches = matchConceptWithDebit(concepts, debits);
     const calculations = applyCalculationsInConcepts(matches, discounts);
 
     const income = buildIncomesWithoutPayments(
@@ -126,20 +129,15 @@ export class IncomeService extends TypeOrmQueryService<Income> {
   }
 
   public async createIncomes(params: CreateIncomeInput) {
-    const { concepts, payments, branchID, studentIDs } = params;
+    const { concepts, payments, studentIDs } = params;
 
     const debits = await this._fetchDebitsFromConcepts(concepts);
-    const matches = matchConceptWithDebit(concepts, debits);
     const discounts = await this._fetchDiscountsFromConcepts(concepts);
+    const matches = matchConceptWithDebit(concepts, debits);
     const calculations = applyCalculationsInConcepts(matches, discounts);
+    // TODO: Implementar la lógica para manejar los pagos en la creación de ingresos
     const { details } = applyPaymentsInConcepts(calculations, payments);
-
-    const income = buildIncomesWithPayments(
-      details,
-      payments,
-      branchID,
-      studentIDs,
-    );
+    const income = buildIncomesWithPayments(details, payments, studentIDs);
 
     return this._saveIncome(income);
   }

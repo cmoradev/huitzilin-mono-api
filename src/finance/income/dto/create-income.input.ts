@@ -4,9 +4,6 @@ import { CreatePaymentInput } from 'src/finance/payment/dto/create-payment.input
 
 @InputType('CreateIncome')
 export class CreateIncomeInput {
-  @Field(() => String, { nullable: false })
-  branchID: string;
-
   @Field(() => [String], { nullable: false })
   studentIDs: string[];
 

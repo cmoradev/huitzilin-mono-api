@@ -5,6 +5,9 @@ import { Debit } from 'src/school';
 @InputType('CreateConcept')
 export class CreateConceptInput {
   @Field(() => String, { nullable: false })
+  branchID: string;
+
+  @Field(() => String, { nullable: false })
   description: string;
 
   @Field(() => Float, { nullable: false })
@@ -24,6 +27,7 @@ export class CreateConceptInput {
 }
 
 export class CreateConceptInputWithDebit {
+  branchID: string;
   description: string;
   unitPrice: number;
   quantity: number;
