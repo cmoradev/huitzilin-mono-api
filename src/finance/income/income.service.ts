@@ -208,6 +208,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
             subtotal: concept.subtotal,
             taxes: concept.taxes,
             total: concept.total,
+            application: concept.application,
             pendingPayment: concept.pendingPayment,
             withTax: concept.withTax,
             discounts: discounts.map((d) => ({ id: d.id }) as Discount),
@@ -331,8 +332,7 @@ export class IncomeService extends TypeOrmQueryService<Income> {
       where: { branchs: { id: branchId } },
     });
   }
-  // TODO: Obtener el adeudo correcto.
-  // Ultimo adeudo con adeudo pendiente.
+
   private async _fetchIncome(incomeId: string) {
     const incomeQuery = this._incomeRepository.createQueryBuilder('income');
 

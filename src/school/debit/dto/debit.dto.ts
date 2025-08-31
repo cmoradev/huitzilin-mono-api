@@ -41,6 +41,9 @@ export class DebitDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   total: number;
 
+  @Field(() => Float, { nullable: false })
+  delinquency: number;
+
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 

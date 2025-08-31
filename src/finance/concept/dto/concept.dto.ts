@@ -9,6 +9,7 @@ import { IsUUID } from 'class-validator';
 import { BaseDto } from 'src/common/dtos';
 import { DiscountDto } from 'src/miscellaneous';
 import { DebitDto } from 'src/school';
+import { ConceptApplication } from '../enum';
 
 @ObjectType('Concept')
 @QueryOptions({
@@ -50,4 +51,7 @@ export class ConceptDto extends BaseDto {
   @IsUUID()
   @FilterableField(() => String, { nullable: false })
   incomeId: string;
+
+  @FilterableField(() => ConceptApplication, { nullable: false })
+  application: ConceptApplication;
 }

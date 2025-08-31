@@ -1,6 +1,7 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
 import { NestedIdInput } from 'src/common/dtos';
 import { Debit } from 'src/school';
+import { ConceptApplication } from '../enum';
 
 @InputType('CreateConcept')
 export class CreateConceptInput {
@@ -22,6 +23,9 @@ export class CreateConceptInput {
   @Field(() => String, { nullable: true })
   debitId: string | null;
 
+  @Field(() => ConceptApplication, { nullable: false })
+  application: ConceptApplication;
+
   @Field(() => [NestedIdInput], { nullable: true })
   discounts: NestedIdInput[];
 }
@@ -32,6 +36,7 @@ export class CreateConceptInputWithDebit {
   unitPrice: number;
   quantity: number;
   withTax: boolean;
+  application: ConceptApplication;
   debitId: string | null;
   debit: Debit | null;
   discounts: NestedIdInput[];

@@ -2,6 +2,7 @@ import { DebitState } from 'src/school/debit/enums';
 import { CreateConceptPayload } from '../concept/types';
 import { CreatePaymentInput } from '../payment/dto/create-payment.input';
 import { IncomeState } from './enum';
+import { ConceptApplication } from '../concept/enum';
 
 export type CreateIncomePayload = {
   branchId: string;
@@ -41,6 +42,7 @@ export type LinkClipResponse = {
 export type ConceptMetadata = {
   conceptId: string;
   conceptPendingPayment: number;
+  conceptApplication: ConceptApplication;
   debitId: string | null;
   debitPaymentDate: Date;
   debitState: DebitState;

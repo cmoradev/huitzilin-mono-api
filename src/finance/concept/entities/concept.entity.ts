@@ -11,6 +11,7 @@ import {
   ManyToMany,
   ManyToOne,
 } from 'typeorm';
+import { ConceptApplication } from '../enum';
 
 @Entity({ schema: 'finance', name: 'concepts' })
 export class Concept extends Base {
@@ -47,6 +48,14 @@ export class Concept extends Base {
   @Column({ type: 'uuid', nullable: false })
   @Index()
   incomeId: string;
+
+  @Column({
+    type: 'enum',
+    nullable: false,
+    enum: ConceptApplication,
+    default: ConceptApplication.DEBT_PAYMENT,
+  })
+  application: ConceptApplication;
 
   @ManyToOne(() => Income, (income) => income.concepts)
   @JoinColumn({ name: 'incomeId' })

@@ -18,6 +18,9 @@ export class CreateDebitInput {
   @Field(() => Float, { nullable: false })
   discount: number;
 
+  @Field(() => Float, { nullable: false })
+  delinquency: number;
+
   @Field(() => Boolean, { nullable: false })
   withTax: boolean;
 

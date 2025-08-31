@@ -41,6 +41,15 @@ export class Debit extends Base {
   @Column({ type: 'decimal', nullable: false, precision: 14, scale: 6 })
   total: number;
 
+  @Column({
+    type: 'decimal',
+    nullable: false,
+    precision: 14,
+    scale: 6,
+    default: 0,
+  })
+  delinquency: number;
+
   @Column({ type: 'boolean', nullable: false, default: true })
   withTax: boolean;
 

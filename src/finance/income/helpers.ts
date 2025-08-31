@@ -25,6 +25,7 @@ import {
   CreateIncomePayload,
   LinkClipResponse,
 } from './types';
+import { ConceptApplication } from '../concept/enum';
 
 export const groupByBranchId = (concepts: CreateConceptPayload[]) => {
   const map = new Map<string, CreateConceptPayload[]>();
@@ -63,7 +64,6 @@ export const applyCalculationsInConcepts = (
 
     // TODO: Aplicar varias veces el mismo descuento
     // Posiblemente no acepte varios descuentos con el mismo ID
-
     // Optimiza la búsqueda de descuentos usando un Set para O(1) lookups
     const discountIdsSet = new Set(concept.discounts.map((c) => c.id));
     const discounts = allDiscounts.filter((d) => discountIdsSet.has(d.id));
@@ -89,6 +89,7 @@ export const applyCalculationsInConcepts = (
       discount,
       taxes,
       total,
+      application: concept.application,
       pendingPayment: total,
       paymentDate: null,
       state: DebitState.DEBT,
@@ -123,10 +124,12 @@ export const applyPaymentsInConcepts = (
       const paidAmount = Decimal.min(received, decimalPending);
       received = received.minus(paidAmount);
       decimalPending = decimalPending.minus(paidAmount);
-      paymentDate = new Date();
-      state = decimalPending.abs().lessThanOrEqualTo(0.01)
-        ? DebitState.PAID
-        : DebitState.PARTIALLY_PAID;
+      if (concept.application === ConceptApplication.DEBT_PAYMENT) {
+        paymentDate = new Date();
+        state = decimalPending.abs().lessThanOrEqualTo(0.01)
+          ? DebitState.PAID
+          : DebitState.PARTIALLY_PAID;
+      }
     }
 
     return {
@@ -158,10 +161,14 @@ export const applyClipPaymentInConcepts = (
       const pendingPayment = total.minus(paidAmount);
 
       concept.conceptPendingPayment = pendingPayment.toNumber();
-      concept.debitPaymentDate = new Date();
-      concept.debitState = pendingPayment.abs().lessThanOrEqualTo(0.01)
-        ? DebitState.PAID
-        : DebitState.PARTIALLY_PAID;
+      if (concept.conceptApplication === ConceptApplication.DEBT_PAYMENT) {
+        concept.debitPaymentDate = new Date();
+        concept.debitState = pendingPayment.abs().lessThanOrEqualTo(0.01)
+          ? DebitState.PAID
+          : DebitState.PARTIALLY_PAID;
+      } else {
+        concept.debitId = null;
+      }
     }
   });
 
@@ -304,13 +311,14 @@ export const prepareConceptWithDebit = (
   concepts: Concept[],
 ): ConceptMetadata[] => {
   return concepts.map((concept) => {
-    const { id, pendingPayment, debits } = concept;
+    const { id, pendingPayment, debits, application } = concept;
 
     const debit = debits.find(() => true);
 
     return {
       conceptId: id,
       conceptPendingPayment: pendingPayment,
+      conceptApplication: application,
       debitId: debit?.id || null,
       debitPaymentDate: new Date(),
       debitState: DebitState.DEBT,
@@ -468,6 +476,7 @@ export const conceptToCreateConceptMap = (
         subtotal: concept.subtotal,
         taxes: concept.taxes,
         total: concept.total,
+        application: concept.application,
         pendingPayment: concept.pendingPayment,
         withTax: concept.withTax,
         discounts: concept.discounts,
