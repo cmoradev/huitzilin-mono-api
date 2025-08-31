@@ -236,10 +236,6 @@ export const buildIncomesWithPayments = (
   studentIds: string[],
   branchId: string,
 ) => {
-  const withPending = concepts.some((concept) =>
-    new Decimal(concept.pendingPayment).greaterThan(0),
-  );
-
   const { amount, discount, subtotal, taxes, total, pendingPayment } =
     buildBreakdown(concepts);
 
@@ -249,6 +245,10 @@ export const buildIncomesWithPayments = (
     total,
     currentPayments,
   );
+
+  const state = new Decimal(pendingPayment).abs().lessThanOrEqualTo(0.01)
+    ? IncomeState.PAID
+    : IncomeState.PENDING;
 
   const income: CreateIncomePayload = {
     amount,
@@ -260,7 +260,7 @@ export const buildIncomesWithPayments = (
     studentIds,
     branchId,
     payments: adjustedPayments,
-    state: withPending ? IncomeState.PENDING : IncomeState.PAID,
+    state,
     concepts,
   };
 
@@ -337,9 +337,9 @@ export const applyClipPaymentInIncome = (
   pendingPayment = pendingPayment.minus(received);
 
   income.pendingPayment = pendingPayment.toNumber();
-  income.state = pendingPayment.greaterThan(0)
-    ? IncomeState.PENDING
-    : IncomeState.PAID;
+  income.state = pendingPayment.abs().lessThanOrEqualTo(0.01)
+    ? IncomeState.PAID
+    : IncomeState.PENDING;
 
   return income;
 };
@@ -358,9 +358,9 @@ export const applyPaymentsInIncome = (
   pendingPayment = pendingPayment.minus(received);
 
   income.pendingPayment = pendingPayment.toNumber();
-  income.state = pendingPayment.greaterThan(0)
-    ? IncomeState.PENDING
-    : IncomeState.PAID;
+  income.state = pendingPayment.abs().lessThanOrEqualTo(0.01)
+    ? IncomeState.PAID
+    : IncomeState.PENDING;
 
   return income;
 };
