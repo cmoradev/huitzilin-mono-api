@@ -15,9 +15,9 @@ import { DisciplineDto, EnrollmentDto, LevelDto, PeriodDto } from 'src/school';
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-@Relation('branch', () => BranchDto, { nullable: false })
-@Relation('period', () => PeriodDto, { nullable: false })
-@Relation('discipline', () => DisciplineDto, { nullable: false })
+@Relation('branch', () => BranchDto, { nullable: true })
+@Relation('period', () => PeriodDto, { nullable: true })
+@Relation('discipline', () => DisciplineDto, { nullable: true })
 @FilterableUnPagedRelation('levels', () => LevelDto)
 @FilterableUnPagedRelation('enrollments', () => EnrollmentDto, {
   nullable: false,

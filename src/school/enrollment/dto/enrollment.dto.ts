@@ -22,13 +22,13 @@ import {
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-@Relation('branch', () => BranchDto, { nullable: false })
-@Relation('student', () => StudentDto, { nullable: false })
-@Relation('packageId', () => PackageDto, { nullable: false })
-@Relation('cycle', () => CycleDto, { nullable: false })
-@Relation('level', () => LevelDto, { nullable: false })
-@Relation('package', () => PackageDto, { nullable: false })
-@Relation('period', () => PeriodDto, { nullable: false })
+@Relation('branch', () => BranchDto, { nullable: true })
+@Relation('student', () => StudentDto, { nullable: true })
+@Relation('packageId', () => PackageDto, { nullable: true })
+@Relation('cycle', () => CycleDto, { nullable: true })
+@Relation('level', () => LevelDto, { nullable: true })
+@Relation('package', () => PackageDto, { nullable: true })
+@Relation('period', () => PeriodDto, { nullable: true })
 @FilterableUnPagedRelation('schedules', () => ScheduleDto)
 export class EnrollmentDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
