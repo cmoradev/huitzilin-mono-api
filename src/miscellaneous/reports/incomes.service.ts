@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from 'src/finance';
 import { Repository } from 'typeorm';
@@ -6,6 +6,8 @@ import { IncomeParams } from './dto';
 import { IncomeData } from './types';
 import { groupIncomeByPaymentMethod, totalIncome } from './helpers';
 import { incomesExcel } from './templates';
+import { PaymentState } from 'src/finance/payment/enum';
+import { IncomeState } from 'src/finance/income/enum';
 
 @Injectable()
 export class IncomesService {
@@ -49,6 +51,10 @@ export class IncomesService {
     query.innerJoinAndSelect('income.students', 'student');
     query.where('branch.id = :branchId', { branchId });
     query.andWhere('payment.date BETWEEN :start AND :end', { start, end });
+    query.andWhere('payment.state = :state', { state: PaymentState.PAID });
+    query.andWhere('income.state != :cancelled', {
+      cancelled: IncomeState.CANCELLED,
+    });
     query.orderBy('payment.date', 'DESC');
     query.select([
       'payment.id',
