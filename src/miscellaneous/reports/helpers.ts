@@ -58,7 +58,10 @@ export function groupIncomeByPaymentMethod(data: IncomeData[]): Grouped[] {
     result[method].count = lastCount.plus(income).toString();
   });
 
-  return Object.values(result);
+  return Object.values(result).map((item) => ({
+    ...item,
+    count: new Decimal(item.count).toFixed(2),
+  }));
 }
 
 /**
