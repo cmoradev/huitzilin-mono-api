@@ -10,6 +10,7 @@ import { UpdateTeacherInput } from './dto/update-teacher.input';
 import { Teacher } from './entities/teacher.entity';
 import { TeacherResolver } from './teacher.resolver';
 import { TeacherService } from './teacher.service';
+import { TeacherEventSubscriber } from './teacher.subscriber';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { TeacherService } from './teacher.service';
       ],
     }),
   ],
-  providers: [TeacherResolver],
+  providers: [TeacherResolver, TeacherEventSubscriber],
 })
 export class TeacherModule {}

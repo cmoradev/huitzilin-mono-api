@@ -1,5 +1,6 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsUUID, MaxLength } from 'class-validator';
+import { NestedIdInput } from 'src/common/dtos';
 
 @InputType('CreateTeacher')
 export class CreateTeacherInput {
@@ -18,4 +19,7 @@ export class CreateTeacherInput {
   @IsUUID()
   @Field(() => String, { nullable: true })
   userId: string;
+
+  @Field(() => [NestedIdInput], { nullable: true })
+  branchs: NestedIdInput[];
 }
