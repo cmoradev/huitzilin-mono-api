@@ -126,7 +126,7 @@ export const applyPaymentsInConcepts = (
       decimalPending = decimalPending.minus(paidAmount);
       if (concept.application === ConceptApplication.DEBT_PAYMENT) {
         paymentDate = new Date();
-        state = decimalPending.abs().lessThanOrEqualTo(0.01)
+        state = decimalPending.abs().lessThanOrEqualTo(0.5)
           ? DebitState.PAID
           : DebitState.PARTIALLY_PAID;
       }
