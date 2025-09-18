@@ -92,7 +92,7 @@ export function totalIncome(data: IncomeData[]): string {
       (acc, item) => acc.plus(new Decimal(item.paymentAmount)),
       new Decimal(0),
     )
-    .toString();
+    .toFixed(2);
 }
 
 export const getMethodName = (value: PaymentMethod): string => {
