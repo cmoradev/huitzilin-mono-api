@@ -90,7 +90,7 @@ export const incomesExcel = (
         base,
         comissions,
         taxes,
-        total.toFixed(2),
+        Number(total.toFixed(2)),
       ];
     });
 
