@@ -2,6 +2,7 @@ import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { SortDirection } from '@ptc-org/nestjs-query-core';
 import {
   FilterableField,
+  FilterableRelation,
   QueryOptions,
   UnPagedRelation,
 } from '@ptc-org/nestjs-query-graphql';
@@ -10,6 +11,7 @@ import { BaseDto } from 'src/common/dtos';
 import { DiscountDto } from 'src/miscellaneous';
 import { DebitDto } from 'src/school';
 import { ConceptApplication } from '../enum';
+import { IncomeDto } from 'src/finance/income/dto';
 
 @ObjectType('Concept')
 @QueryOptions({
@@ -17,6 +19,7 @@ import { ConceptApplication } from '../enum';
 })
 @UnPagedRelation('discounts', () => DiscountDto)
 @UnPagedRelation('debits', () => DebitDto)
+@FilterableRelation('income', () => IncomeDto)
 export class ConceptDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   description: string;
@@ -42,7 +45,7 @@ export class ConceptDto extends BaseDto {
   @Field(() => Float, { nullable: false })
   total: number;
 
-  @Field(() => Float, { nullable: false })
+  @FilterableField(() => Float, { nullable: false })
   pendingPayment: number;
 
   @Field(() => Boolean, { nullable: false })

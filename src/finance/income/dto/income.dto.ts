@@ -26,7 +26,7 @@ export class IncomeDto extends BaseDto {
   @FilterableField(() => Int, { nullable: false })
   folio: number;
 
-  @Field(() => IncomeState, { nullable: false })
+  @FilterableField(() => IncomeState, { nullable: false })
   state: IncomeState;
 
   @Field(() => Float, { nullable: false })

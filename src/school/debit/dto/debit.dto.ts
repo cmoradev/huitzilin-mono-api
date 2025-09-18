@@ -10,12 +10,14 @@ import { BaseDto } from 'src/common/dtos/base.dto';
 import { DiscountDto } from 'src/miscellaneous';
 import { Frequency } from 'src/school/fee/enums';
 import { DebitState } from '../enums';
+import { ConceptDto } from 'src/finance';
 
 @ObjectType('Debit')
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
 @UnPagedRelation('discounts', () => DiscountDto)
+@UnPagedRelation('concepts', () => ConceptDto)
 export class DebitDto extends BaseDto {
   @FilterableField(() => String, { nullable: false })
   description: string;
