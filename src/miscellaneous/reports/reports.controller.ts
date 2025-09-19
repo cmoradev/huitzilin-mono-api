@@ -1,14 +1,16 @@
 import { Controller, Get, Header, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { IncomesService } from './incomes.service';
-import { IncomeParams } from './dto';
 import { DebitsService } from './debits.service';
+import { IncomeParams } from './dto';
+import { IncomesByDisciplinesService } from './incomes-by-disciplines.service';
+import { IncomesService } from './incomes.service';
 
 @Controller('reports')
 export class ReportsController {
   constructor(
     private readonly incomesService: IncomesService,
     private readonly debitsService: DebitsService,
+    private readonly incomesByDisciplinesService: IncomesByDisciplinesService,
   ) {}
 
   @Get('incomes')
@@ -31,6 +33,11 @@ export class ReportsController {
     await document.write(res);
 
     res.end();
+  }
+
+  @Get('incomes-by-disciplines')
+  public async incomesByDiscipline(@Query() params: IncomeParams) {
+    return this.incomesByDisciplinesService.incomesByDisciplines(params);
   }
 
   @Get('debits')
