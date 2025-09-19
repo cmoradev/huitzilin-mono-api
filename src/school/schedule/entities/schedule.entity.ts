@@ -1,6 +1,6 @@
 import { Branch } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
-import { Discipline, Enrollment, Level, Period } from 'src/school';
+import { Discipline, Enrollment, Level, Period, Teacher } from 'src/school';
 import {
   Column,
   Entity,
@@ -45,6 +45,14 @@ export class Schedule extends Base {
   @ManyToOne(() => Discipline, (discipline) => discipline.schedules)
   @JoinColumn({ name: 'disciplineId' })
   discipline: Discipline;
+
+  @Column({ type: 'uuid', nullable: true })
+  @Index()
+  teacherId: string;
+
+  @ManyToOne(() => Teacher, (teacher) => teacher.schedules)
+  @JoinColumn({ name: 'teacherId' })
+  teacher: Teacher;
 
   @ManyToMany(() => Level, (level) => level.schedules, { cascade: true })
   @JoinTable({ name: 'schedules_to_levels' })

@@ -21,6 +21,9 @@ export class CreateScheduleInput {
   @Field(() => ID, { nullable: false })
   disciplineId: string;
 
+  @Field(() => ID, { nullable: true })
+  teacherId: string;
+
   @Field(() => [NestedIdInput], { nullable: true })
   levels?: NestedIdInput[];
 }

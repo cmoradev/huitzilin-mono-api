@@ -9,7 +9,13 @@ import {
 } from '@ptc-org/nestjs-query-graphql';
 import { BranchDto } from 'src/auth';
 import { BaseDto } from 'src/common/dtos';
-import { DisciplineDto, EnrollmentDto, LevelDto, PeriodDto } from 'src/school';
+import {
+  DisciplineDto,
+  EnrollmentDto,
+  LevelDto,
+  PeriodDto,
+  TeacherDto,
+} from 'src/school';
 
 @ObjectType('Schedule')
 @QueryOptions({
@@ -18,6 +24,7 @@ import { DisciplineDto, EnrollmentDto, LevelDto, PeriodDto } from 'src/school';
 @Relation('branch', () => BranchDto, { nullable: true })
 @Relation('period', () => PeriodDto, { nullable: true })
 @Relation('discipline', () => DisciplineDto, { nullable: true })
+@Relation('teacher', () => TeacherDto, { nullable: true })
 @FilterableUnPagedRelation('levels', () => LevelDto)
 @FilterableUnPagedRelation('enrollments', () => EnrollmentDto, {
   nullable: false,
@@ -44,4 +51,7 @@ export class ScheduleDto extends BaseDto {
 
   @FilterableField(() => ID, { nullable: false })
   disciplineId: string;
+
+  @FilterableField(() => ID, { nullable: true })
+  teacherId: string;
 }

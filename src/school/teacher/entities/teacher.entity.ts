@@ -1,5 +1,6 @@
 import { Branch, User } from 'src/auth';
 import { Base } from 'src/common/utils/base.entity';
+import { Schedule } from 'src/school';
 import {
   Column,
   Entity,
@@ -8,6 +9,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ schema: 'school', name: 'teachers' })
@@ -31,6 +33,9 @@ export class Teacher extends Base {
   @ManyToOne(() => User, (user) => user.teachers)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @OneToMany(() => Schedule, (schedule) => schedule.teacher)
+  schedules: Schedule[];
 
   @ManyToMany(() => Branch, (branch) => branch.teachers)
   @JoinTable({ name: 'branchs_to_teachers' })
