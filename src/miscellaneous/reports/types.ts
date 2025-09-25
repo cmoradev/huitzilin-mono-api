@@ -32,6 +32,34 @@ export type IncomeData = {
   students: Array<StudentData>;
 };
 
+export type IncomeDisciplineData = {
+  incomeId: string;
+  incomeFolio: number;
+  incomeState: IncomeState;
+  incomeDate: string;
+  branchId: string;
+  branchName: string;
+  received: number;
+  students: Array<StudentData>;
+};
+
+export type ConceptData = {
+  conceptId: string;
+  conceptDescription: string;
+  conceptTotal: string;
+  conceptPendingPayment: string;
+  incomeId: string;
+  debitId: string;
+  enrollmentId: string;
+};
+
+export type PaymentData = {
+  paymentId: string;
+  paymentState: PaymentState;
+  paymentDate: string;
+  paymentAmount: string;
+};
+
 export type DebitData = {
   debitId: string;
   debitDescription: string;
