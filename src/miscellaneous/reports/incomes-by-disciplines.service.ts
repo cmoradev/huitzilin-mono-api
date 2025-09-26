@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
 import { Concept, Payment } from 'src/finance';
@@ -7,12 +7,20 @@ import { PaymentState } from 'src/finance/payment/enum';
 import { Enrollment } from 'src/school';
 import { Repository } from 'typeorm';
 import { IncomeParams } from './dto';
-import { incomesExcel } from './templates';
-import { ConceptData, IncomeDisciplineData, ScheduleData } from './types';
-import { calculateMonthlyHours } from './helpers';
+import { incomesByDisciplinesExcel } from './templates';
+import {
+  ConceptData,
+  ConceptWithIncomeData,
+  IncomeDisciplineData,
+  MonthlyByDisciplineData,
+  ScheduleData,
+} from './types';
+import { calculateMonthlyHours, groupMonthlyByDiscipline } from './helpers';
 
 @Injectable()
 export class IncomesByDisciplinesService {
+  private readonly logger = new Logger(IncomesByDisciplinesService.name);
+
   constructor(
     @InjectRepository(Payment)
     private readonly _paymentRepository: Repository<Payment>,
@@ -28,7 +36,12 @@ export class IncomesByDisciplinesService {
     const { otherItems, monthlyDetailsItems } =
       await this.getIncomesData(params);
 
-    const document = incomesExcel([], start, end);
+    const document = incomesByDisciplinesExcel(
+      otherItems,
+      monthlyDetailsItems,
+      start,
+      end,
+    );
 
     return {
       document,
@@ -36,33 +49,67 @@ export class IncomesByDisciplinesService {
   }
 
   public async incomesByDisciplines(params: IncomeParams) {
-    const { otherItems, monthlyDetailsItems } =
-      await this.getIncomesData(params);
+    const {
+      otherItems,
+      monthlyDetailsItems,
+      receivedPerMonthlyItems,
+      receivedPerOtherItems,
+    } = await this.getIncomesData(params);
 
-    // const groupedByMethod = groupIncomeByPaymentMethod(data);
-    // const total = totalIncome(data);
+    const groupedByDiscipline = groupMonthlyByDiscipline(monthlyDetailsItems);
+
+    groupedByDiscipline.push({
+      id: 'other',
+      name: 'Otros ingresos',
+      count: receivedPerOtherItems,
+    });
+
+    const total = new Decimal(receivedPerMonthlyItems)
+      .plus(new Decimal(receivedPerOtherItems))
+      .toString();
 
     return {
-      // groupedByMethod,
-      // total,
       otherItems,
+      monthlyDetailsItems,
+      receivedPerMonthlyItems,
+      groupedByDiscipline: groupedByDiscipline.toSorted((a, b) =>
+        new Decimal(b.count).comparedTo(new Decimal(a.count)),
+      ),
+      receivedPerOtherItems,
+      total: total.toString(),
     };
   }
 
   private async getIncomesData(params: IncomeParams) {
-    const incomes = await this._fetchIncomes(params);
-
-    const incomeIDs = incomes.map((data) => data.incomeId);
+    const incomeGroups = await this._fetchIncomes(params);
+    const incomeIDs = Array.from(incomeGroups.values()).map(
+      (data) => data.incomeId,
+    );
     // TODO: Aplicar pagos en conceptos para filtrar los que ya están pagados con fechas
-    const concepts = await this._fetchConceptsByIncomeIDs(incomeIDs);
+    const details = await this._fetchConceptsByIncomeIDs(incomeIDs);
+
+    const concepts = details.map((concept): ConceptWithIncomeData => {
+      const income = incomeGroups.get(concept.incomeId) as IncomeDisciplineData;
+
+      if (!income) {
+        this.logger.warn(
+          `No income found for concept ${concept.conceptId} with income ID ${concept.incomeId}`,
+        );
+      }
+
+      return {
+        ...concept,
+        ...income,
+      };
+    });
 
     const enrollmentIDs = [
       ...new Set(concepts.map((concept) => concept.enrollmentId)),
     ];
 
     // Use a single pass to separate monthly and other items for better performance
-    const monthlyItems: ConceptData[] = [];
-    const otherItems: ConceptData[] = [];
+    const monthlyItems: ConceptWithIncomeData[] = [];
+    const otherItems: ConceptWithIncomeData[] = [];
 
     for (const concept of concepts) {
       if (concept.conceptDescription.includes('Mensualidad')) {
@@ -74,33 +121,56 @@ export class IncomesByDisciplinesService {
 
     const schedules = await this._fetchSchedules(enrollmentIDs);
 
-    const monthlyDetailsItems = monthlyItems.flatMap((monthly) => {
-      const matchedSchedules = schedules.get(monthly.enrollmentId) ?? [];
-      const conceptReceived = new Decimal(monthly.conceptReceived ?? 0);
-      if (matchedSchedules.length == 0) {
-        console.log('No matched for', monthly);
-      }
-      // console.log('Matched', matchedSchedules.length);
+    const monthlyDetailsItems: Array<MonthlyByDisciplineData> =
+      monthlyItems.flatMap((monthly) => {
+        const matchedSchedules = schedules.get(monthly.enrollmentId) ?? [];
+        const conceptReceived = new Decimal(monthly.conceptReceived ?? 0);
+        if (matchedSchedules.length == 0) {
+          this.logger.warn(
+            `No matched schedules for enrollment ${monthly.enrollmentId} in concept ${monthly.conceptId} with debit ${monthly.debitId}`,
+          );
+        }
 
-      return matchedSchedules.map((schedule) => {
-        const monthlyHours = new Decimal(schedule.enrollmentHours ?? 1);
-        const receivedPerHour = conceptReceived.dividedBy(monthlyHours);
-        const receivedPerDiscipline = receivedPerHour.mul(
-          schedule.disciplineTotalHours,
-        );
+        const income = incomeGroups.get(
+          monthly.incomeId,
+        ) as IncomeDisciplineData;
 
-        return {
-          ...monthly,
-          ...schedule,
-          receivedPerHour: receivedPerHour.toString(),
-          receivedPerDiscipline: receivedPerDiscipline.toString(),
-        };
+        if (!income) {
+          this.logger.warn(
+            `No income found for concept ${monthly.conceptId} with income ID ${monthly.incomeId}`,
+          );
+        }
+
+        return matchedSchedules.map((schedule) => {
+          const monthlyHours = new Decimal(schedule.enrollmentHours ?? 1);
+          const receivedPerHour = conceptReceived.dividedBy(monthlyHours);
+          const receivedPerDiscipline = receivedPerHour.mul(
+            schedule.disciplineTotalHours,
+          );
+
+          return {
+            ...monthly,
+            ...schedule,
+            ...income,
+            receivedPerHour: receivedPerHour.toString(),
+            receivedPerDiscipline: receivedPerDiscipline.toString(),
+          };
+        });
       });
-    });
-    // console.log(monthlyDetailsItems);
+
+    const receivedPerOtherItems = otherItems.reduce((acc, item) => {
+      return acc.plus(new Decimal(item.conceptReceived ?? 0));
+    }, new Decimal(0));
+
+    const receivedPerMonthlyItems = monthlyDetailsItems.reduce((acc, item) => {
+      return acc.plus(new Decimal(item.receivedPerDiscipline ?? 0));
+    }, new Decimal(0));
+
     return {
       otherItems,
       monthlyDetailsItems,
+      receivedPerOtherItems: receivedPerOtherItems.toString(),
+      receivedPerMonthlyItems: receivedPerMonthlyItems.toString(),
     };
   }
 
@@ -108,8 +178,12 @@ export class IncomesByDisciplinesService {
     if (!enrollmentIDs.length) return new Map<string, ScheduleData[]>();
 
     const query = this._enrollmentRepository.createQueryBuilder('enrollment');
-
-    query.innerJoinAndSelect('enrollment.schedules', 'schedule');
+    query.withDeleted();
+    query.innerJoinAndSelect(
+      'enrollment.schedules',
+      'schedule',
+      'schedule.deletedAt IS NULL',
+    );
     query.innerJoinAndSelect('enrollment.student', 'student');
     query.innerJoinAndSelect('schedule.discipline', 'discipline');
 
@@ -158,11 +232,16 @@ export class IncomesByDisciplinesService {
     const { start, end, branchId } = params;
 
     const query = this._paymentRepository.createQueryBuilder('payment');
-
-    query.innerJoinAndSelect('payment.income', 'income');
+    query.withDeleted();
+    query.innerJoinAndSelect(
+      'payment.income',
+      'income',
+      'income.deletedAt IS NULL',
+    );
     query.innerJoinAndSelect('income.branch', 'branch');
     query.innerJoinAndSelect('income.students', 'student');
-    query.where('branch.id = :branchId', { branchId });
+    query.where('payment.deletedAt IS NULL');
+    query.andWhere('branch.id = :branchId', { branchId });
     query.andWhere('payment.date BETWEEN :start AND :end', { start, end });
     query.andWhere('payment.state = :state', { state: PaymentState.PAID });
     query.andWhere('income.state != :cancelled', {
@@ -183,7 +262,6 @@ export class IncomesByDisciplinesService {
       'student.id',
       'student.fullname',
     ]);
-
     const payments = await query.getMany();
 
     const groups = payments.reduce((acc, payment) => {
@@ -216,7 +294,7 @@ export class IncomesByDisciplinesService {
       return acc;
     }, new Map<string, IncomeDisciplineData>());
 
-    return Array.from(groups.values());
+    return groups;
   }
 
   private async _fetchConceptsByIncomeIDs(
@@ -225,19 +303,24 @@ export class IncomesByDisciplinesService {
     if (!incomeIDs.length) return [];
 
     const query = this._conceptRepository.createQueryBuilder('concept');
-
-    query.innerJoin('concept.income', 'income');
+    query.withDeleted();
+    query.innerJoin('concept.income', 'income', 'income.deletedAt IS NULL');
+    // TODO: Solo obtener un adeudo por concepto
     query.innerJoinAndSelect('concept.debits', 'debit');
+    query.innerJoin('debit.enrollment', 'enrollment');
     query.select([
       'concept.id',
       'concept.description',
       'concept.total',
       'concept.pendingPayment',
       'concept.incomeId',
+      'concept.withTax',
       'debit.id',
       'debit.enrollmentId',
+      'enrollment.details',
     ]);
-    query.where('income.id IN (:...incomeIDs)', { incomeIDs });
+    query.where('concept.deletedAt IS NULL');
+    query.andWhere('income.id IN (:...incomeIDs)', { incomeIDs });
 
     const concepts = await query.getMany();
 
@@ -252,10 +335,12 @@ export class IncomesByDisciplinesService {
         conceptDescription: concept.description,
         conceptTotal: `${concept.total}`,
         conceptPendingPayment: `${concept.pendingPayment}`,
+        conceptWithTax: concept.withTax,
         conceptReceived: totalDecimal.minus(pendingDecimal).toString(),
         incomeId: concept.incomeId,
         debitId: debit?.id ?? '',
         enrollmentId: debit?.enrollmentId ?? '',
+        enrollmentDetails: debit?.enrollment.details ?? '',
       };
     });
   }

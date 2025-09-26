@@ -43,15 +43,55 @@ export type IncomeDisciplineData = {
   students: Array<StudentData>;
 };
 
+export type MonthlyByDisciplineData = {
+  receivedPerHour: string;
+  receivedPerDiscipline: string;
+  incomeId: string;
+  incomeFolio: number;
+  incomeState: IncomeState;
+  incomeDate: string;
+  branchId: string;
+  branchName: string;
+  received: number;
+  students: Array<StudentData>;
+  enrollmentId: string;
+  enrollmentHours: number;
+  studentId: string;
+  studentFullname: string;
+  disciplineId: string;
+  disciplineName: string;
+  disciplineTotalHours: number;
+  conceptId: string;
+  conceptDescription: string;
+  conceptTotal: string;
+  conceptPendingPayment: string;
+  conceptReceived: string;
+  conceptWithTax: boolean;
+  debitId: string;
+};
+
 export type ConceptData = {
   conceptId: string;
   conceptDescription: string;
   conceptTotal: string;
   conceptPendingPayment: string;
   conceptReceived: string;
+  conceptWithTax: boolean;
   incomeId: string;
   debitId: string;
   enrollmentId: string;
+  enrollmentDetails: string;
+};
+
+export type ConceptWithIncomeData = ConceptData & {
+  incomeId: string;
+  incomeFolio: number;
+  incomeState: IncomeState;
+  incomeDate: string;
+  branchId: string;
+  branchName: string;
+  received: number;
+  students: Array<StudentData>;
 };
 
 export type PaymentData = {

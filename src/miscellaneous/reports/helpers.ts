@@ -1,8 +1,19 @@
 import Decimal from 'decimal.js';
-import { DebitData, Grouped, HoursByDiscipline, IncomeData } from './types'; // Ajusta la ruta si es necesario
+import {
+  DebitData,
+  Grouped,
+  HoursByDiscipline,
+  IncomeData,
+  MonthlyByDisciplineData,
+} from './types'; // Ajusta la ruta si es necesario
 import { PaymentMethod } from 'src/finance/payment/enum';
 import { Schedule } from 'src/school';
 import { differenceInMinutes, parse } from 'date-fns';
+
+export const capitalize = (s: string) => {
+  if (typeof s !== 'string') return '';
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+};
 
 /**
  * Agrupa los conceptos por estado.
@@ -40,6 +51,37 @@ export function summaryDebits(data: DebitData[]): Grouped[] {
       count: pendingPayment.toString(),
     },
   ];
+}
+
+/**
+ * Agrupa los ingresos por método de pago.
+ */
+export function groupMonthlyByDiscipline(
+  data: MonthlyByDisciplineData[],
+): Grouped[] {
+  const result: Record<string, Grouped> = {};
+
+  data.forEach((item) => {
+    const disciplineID = String(item.disciplineId);
+    const disciplineName = String(item.disciplineName);
+    const income = new Decimal(item.receivedPerDiscipline);
+
+    if (!result[disciplineID]) {
+      result[disciplineID] = {
+        id: disciplineID,
+        name: capitalize(disciplineName),
+        count: '0',
+      };
+    }
+
+    const lastCount = new Decimal(result[disciplineID].count ?? '0');
+    result[disciplineID].count = lastCount.plus(income).toString();
+  });
+
+  return Object.values(result).map((item) => ({
+    ...item,
+    count: new Decimal(item.count).toFixed(2),
+  }));
 }
 
 /**
@@ -173,4 +215,27 @@ export function calculateMonthlyHours(schedules: Schedule[]) {
     totalHours: totalMinutes / 60,
     hoursByDiscipline: Array.from(disciplineMap.values()),
   };
+}
+
+/**
+ * Agrupa elementos de un array por una clave dinámica.
+ * @param data Array de elementos.
+ * @param keyFunc Función que retorna la clave de agrupación.
+ * @returns Un objeto donde las claves son los valores retornados por keyFunc y los valores son arrays de elementos agrupados.
+ */
+export function groupBy<T, K extends string | number | symbol>(
+  data: T[],
+  keyFunc: (item: T) => K,
+): Record<K, T[]> {
+  return data.reduce(
+    (acc, item) => {
+      const key = keyFunc(item);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {} as Record<K, T[]>,
+  );
 }

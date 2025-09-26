@@ -40,6 +40,27 @@ export class ReportsController {
     return this.incomesByDisciplinesService.incomesByDisciplines(params);
   }
 
+  @Get('incomes-by-disciplines-download')
+  @Header(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  )
+  @Header(
+    'Content-Disposition',
+    'attachment; filename="ingresos-por-disciplinas.xlsx"',
+  )
+  public async incomesByDisciplineDownload(
+    @Query() params: IncomeParams,
+    @Res() res: Response,
+  ) {
+    const { document } =
+      await this.incomesByDisciplinesService.incomesDownload(params);
+
+    await document.write(res);
+
+    res.end();
+  }
+
   @Get('debits')
   public async debits(@Query() params: IncomeParams) {
     return this.debitsService.debits(params);
