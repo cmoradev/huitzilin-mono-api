@@ -8,7 +8,8 @@ import { Enrollment } from 'src/school';
 import { Repository } from 'typeorm';
 import { IncomeParams } from './dto';
 import { incomesExcel } from './templates';
-import { ConceptData, IncomeDisciplineData } from './types';
+import { ConceptData, IncomeDisciplineData, ScheduleData } from './types';
+import { calculateMonthlyHours } from './helpers';
 
 @Injectable()
 export class IncomesByDisciplinesService {
@@ -24,9 +25,10 @@ export class IncomesByDisciplinesService {
   public async incomesDownload(params: IncomeParams) {
     const { start, end } = params;
 
-    const data = await this.getIncomesData(params);
+    const { otherItems, monthlyDetailsItems } =
+      await this.getIncomesData(params);
 
-    const document = incomesExcel(data, start, end);
+    const document = incomesExcel([], start, end);
 
     return {
       document,
@@ -34,19 +36,20 @@ export class IncomesByDisciplinesService {
   }
 
   public async incomesByDisciplines(params: IncomeParams) {
-    const data = await this.getIncomesData(params);
-    // console.log('Data', data);
+    const { otherItems, monthlyDetailsItems } =
+      await this.getIncomesData(params);
+
     // const groupedByMethod = groupIncomeByPaymentMethod(data);
     // const total = totalIncome(data);
 
     return {
       // groupedByMethod,
       // total,
-      data,
+      otherItems,
     };
   }
 
-  private async getIncomesData(params: IncomeParams): Promise<Array<any>> {
+  private async getIncomesData(params: IncomeParams) {
     const incomes = await this._fetchIncomes(params);
 
     const incomeIDs = incomes.map((data) => data.incomeId);
@@ -57,14 +60,52 @@ export class IncomesByDisciplinesService {
       ...new Set(concepts.map((concept) => concept.enrollmentId)),
     ];
 
-    const schedules = await this._fetchSchedules(enrollmentIDs);
-    console.log('schedules', schedules);
+    // Use a single pass to separate monthly and other items for better performance
+    const monthlyItems: ConceptData[] = [];
+    const otherItems: ConceptData[] = [];
 
-    return incomes;
+    for (const concept of concepts) {
+      if (concept.conceptDescription.includes('Mensualidad')) {
+        monthlyItems.push(concept);
+      } else {
+        otherItems.push(concept);
+      }
+    }
+
+    const schedules = await this._fetchSchedules(enrollmentIDs);
+
+    const monthlyDetailsItems = monthlyItems.flatMap((monthly) => {
+      const matchedSchedules = schedules.get(monthly.enrollmentId) ?? [];
+      const conceptReceived = new Decimal(monthly.conceptReceived ?? 0);
+      if (matchedSchedules.length == 0) {
+        console.log('No matched for', monthly);
+      }
+      // console.log('Matched', matchedSchedules.length);
+
+      return matchedSchedules.map((schedule) => {
+        const monthlyHours = new Decimal(schedule.enrollmentHours ?? 1);
+        const receivedPerHour = conceptReceived.dividedBy(monthlyHours);
+        const receivedPerDiscipline = receivedPerHour.mul(
+          schedule.disciplineTotalHours,
+        );
+
+        return {
+          ...monthly,
+          ...schedule,
+          receivedPerHour: receivedPerHour.toString(),
+          receivedPerDiscipline: receivedPerDiscipline.toString(),
+        };
+      });
+    });
+    // console.log(monthlyDetailsItems);
+    return {
+      otherItems,
+      monthlyDetailsItems,
+    };
   }
 
   private async _fetchSchedules(enrollmentIDs: Array<string>) {
-    if (!enrollmentIDs.length) return [];
+    if (!enrollmentIDs.length) return new Map<string, ScheduleData[]>();
 
     const query = this._enrollmentRepository.createQueryBuilder('enrollment');
 
@@ -88,21 +129,29 @@ export class IncomesByDisciplinesService {
 
     const enrollments = await query.getMany();
 
-    const schedules = enrollments.flatMap((enrollment) =>
-      enrollment.schedules.map((schedule) => ({
+    const schedules = enrollments.flatMap((enrollment) => {
+      const hours = calculateMonthlyHours(enrollment.schedules);
+
+      return hours.hoursByDiscipline.map((discipline) => ({
         enrollmentId: enrollment.id,
+        enrollmentHours: hours.totalHours,
         studentId: enrollment.student.id,
         studentFullname: enrollment.student.fullname,
-        scheduleId: schedule.id,
-        scheduleDay: schedule.day,
-        scheduleStart: schedule.start,
-        scheduleEnd: schedule.end,
-        disciplineId: schedule.discipline.id,
-        disciplineName: schedule.discipline.name,
-      })),
-    );
+        disciplineId: discipline.disciplineId,
+        disciplineName: discipline.disciplineName,
+        disciplineTotalHours: discipline.totalHours,
+      }));
+    });
 
-    return schedules;
+    const groups = schedules.reduce((acc, schedule) => {
+      if (!acc.has(schedule.enrollmentId)) {
+        acc.set(schedule.enrollmentId, []);
+      }
+      acc.get(schedule.enrollmentId)!.push(schedule);
+      return acc;
+    }, new Map<string, ScheduleData[]>());
+
+    return groups;
   }
 
   private async _fetchIncomes(params: IncomeParams) {

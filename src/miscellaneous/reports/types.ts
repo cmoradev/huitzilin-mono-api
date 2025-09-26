@@ -48,6 +48,7 @@ export type ConceptData = {
   conceptDescription: string;
   conceptTotal: string;
   conceptPendingPayment: string;
+  conceptReceived: string;
   incomeId: string;
   debitId: string;
   enrollmentId: string;
@@ -90,4 +91,20 @@ export type Grouped = {
   id: string;
   name: string;
   count: string;
+};
+
+export type ScheduleData = {
+  enrollmentId: string;
+  enrollmentHours: number;
+  studentId: string;
+  studentFullname: string;
+  disciplineId: string;
+  disciplineName: string;
+  disciplineTotalHours: number;
+};
+
+export type HoursByDiscipline = {
+  disciplineId: string;
+  disciplineName: string;
+  totalHours: number;
 };

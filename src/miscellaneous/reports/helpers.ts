@@ -1,6 +1,8 @@
 import Decimal from 'decimal.js';
-import { DebitData, Grouped, IncomeData } from './types'; // Ajusta la ruta si es necesario
+import { DebitData, Grouped, HoursByDiscipline, IncomeData } from './types'; // Ajusta la ruta si es necesario
 import { PaymentMethod } from 'src/finance/payment/enum';
+import { Schedule } from 'src/school';
+import { differenceInMinutes, parse } from 'date-fns';
 
 /**
  * Agrupa los conceptos por estado.
@@ -139,4 +141,36 @@ export function getRandomTableStyle():
   const index = Math.floor(Math.random() * styles.length);
 
   return styles[index];
+}
+
+export function calculateMonthlyHours(schedules: Schedule[]) {
+  let totalMinutes = 0;
+
+  const disciplineMap = new Map<string, HoursByDiscipline>();
+
+  for (const schedule of schedules) {
+    // Parse start and end times
+    const startDate = parse(schedule.start, 'HH:mm:ss', new Date());
+    const endDate = parse(schedule.end, 'HH:mm:ss', new Date());
+    const minutes = differenceInMinutes(endDate, startDate);
+    // Asume que cada horario es semanal, multiplica por 4 para obtener horas mensuales
+    const monthlyMinutes = minutes * 4;
+    totalMinutes += monthlyMinutes;
+
+    // Agrupa por disciplina
+    if (!disciplineMap.has(schedule.discipline.id)) {
+      disciplineMap.set(schedule.discipline.id, {
+        disciplineId: schedule.discipline.id,
+        disciplineName: schedule.discipline.name,
+        totalHours: 0,
+      });
+    }
+    disciplineMap.get(schedule.discipline.id)!.totalHours +=
+      monthlyMinutes / 60;
+  }
+
+  return {
+    totalHours: totalMinutes / 60,
+    hoursByDiscipline: Array.from(disciplineMap.values()),
+  };
 }
