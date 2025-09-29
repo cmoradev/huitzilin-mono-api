@@ -212,8 +212,8 @@ export const incomesByDisciplinesExcel = (
     });
 
     worksheet.addTable({
-      displayName: `Mensualidades - ${branchName}`,
-      name: `monthlies`,
+      displayName: `Mensualidades`,
+      name: `Mensualidades`,
       ref: `B${lastRow}`,
       totalsRow: true,
       headerRow: true,
@@ -303,10 +303,9 @@ export const incomesByDisciplinesExcel = (
         Number(total.toFixed(2)),
       ];
     });
-
     worksheet.addTable({
-      displayName: `Otros ingresos - ${branchName}`,
-      name: `othrers`,
+      displayName: `Otros`,
+      name: `Otros`,
       ref: `B${lastRow}`,
       totalsRow: true,
       headerRow: true,
