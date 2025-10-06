@@ -21,13 +21,26 @@ import {
 @QueryOptions({
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
 })
-@Relation('branch', () => BranchDto, { nullable: true })
-@Relation('period', () => PeriodDto, { nullable: true })
-@Relation('discipline', () => DisciplineDto, { nullable: true })
+@Relation('branch', () => BranchDto, {
+  nullable: true,
+  withDeleted: true,
+})
+@Relation('period', () => PeriodDto, {
+  nullable: true,
+  withDeleted: true,
+})
+@Relation('discipline', () => DisciplineDto, {
+  nullable: true,
+  withDeleted: true,
+})
 @Relation('teacher', () => TeacherDto, { nullable: true })
-@FilterableUnPagedRelation('levels', () => LevelDto)
+@FilterableUnPagedRelation('levels', () => LevelDto, {
+  nullable: true,
+  withDeleted: true,
+})
 @FilterableUnPagedRelation('enrollments', () => EnrollmentDto, {
   nullable: false,
+  withDeleted: true,
   defaultSort: [{ field: 'createdAt', direction: SortDirection.DESC }],
   pagingStrategy: PagingStrategies.OFFSET,
   enableTotalCount: true,
