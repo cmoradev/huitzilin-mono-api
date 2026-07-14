@@ -1,14 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migration1753111024025 implements MigrationInterface {
-  name = 'Migration1753111024025';
+export class Migration1784049634876 implements MigrationInterface {
+  name = 'Migration1784049634876';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TYPE "auth"."actions_effect_enum" AS ENUM('allow', 'deny')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "auth"."actions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "effect" "auth"."actions_effect_enum" NOT NULL, "action" character varying(32) NOT NULL, "route" character varying(32) NOT NULL, "policyId" uuid NOT NULL, CONSTRAINT "PK_7bfb822f56be449c0b8adbf83cf" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "auth"."actions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "resources" character varying NOT NULL, "route" character varying(32) NOT NULL, "actions" character varying array NOT NULL, "policyId" uuid NOT NULL, CONSTRAINT "PK_7bfb822f56be449c0b8adbf83cf" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_fd0976f6bbaaf7876f52f04b84" ON "auth"."actions" ("policyId") `,
@@ -20,19 +17,22 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TYPE "miscellaneous"."discounts_type_enum" AS ENUM('percentage', 'fixed')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "miscellaneous"."discounts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "value" numeric(10,2) NOT NULL, "type" "miscellaneous"."discounts_type_enum" NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_66c522004212dc814d6e2f14ecc" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "miscellaneous"."discounts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "value" numeric(14,6) NOT NULL, "type" "miscellaneous"."discounts_type_enum" NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_66c522004212dc814d6e2f14ecc" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_4f9ff564fe6488a270521d8af8" ON "miscellaneous"."discounts" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "miscellaneous"."clip-links" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "amount" numeric(10,2) NOT NULL, "link" character varying NOT NULL, "qr" character varying NOT NULL, "expiresAt" TIMESTAMP NOT NULL, "requestId" character varying NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_8af1345a5d6d9a1a9275622ddf0" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "miscellaneous"."clip-accounts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "token" character varying NOT NULL, "webhook" character varying NOT NULL, "default" character varying NOT NULL, "success" character varying NOT NULL, "error" character varying NOT NULL, CONSTRAINT "PK_6db65bc87d10261089bcf37b596" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "miscellaneous"."clip-links" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "amount" numeric(14,6) NOT NULL, "link" character varying NOT NULL, "qr" character varying NOT NULL, "expiresAt" TIMESTAMP NOT NULL, "requestId" character varying NOT NULL, "accountId" uuid NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_8af1345a5d6d9a1a9275622ddf0" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_43497e2e0be185bab11f526f10" ON "miscellaneous"."clip-links" ("accountId") `,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_fa11a314f929e8647ec4ef74a9" ON "miscellaneous"."clip-links" ("incomeId") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "miscellaneous"."clip-accounts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "token" character varying NOT NULL, "webhook" character varying NOT NULL, "default" character varying NOT NULL, "success" character varying NOT NULL, "error" character varying NOT NULL, CONSTRAINT "PK_6db65bc87d10261089bcf37b596" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TYPE "school"."debts_state_enum" AS ENUM('debt', 'paid', 'partially_paid', 'condoned', 'canceled')`,
@@ -41,7 +41,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TYPE "school"."debts_frequency_enum" AS ENUM('single', 'monthly', 'weekly', 'daily', 'hourly')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "school"."debts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "description" character varying NOT NULL, "unitPrice" numeric(10,2) NOT NULL, "quantity" numeric(10,2) NOT NULL, "amount" numeric(10,2) NOT NULL, "discount" numeric(10,2) NOT NULL, "subtotal" numeric(10,2) NOT NULL, "taxes" numeric(10,2) NOT NULL, "total" numeric(10,2) NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "state" "school"."debts_state_enum" NOT NULL, "frequency" "school"."debts_frequency_enum" NOT NULL, "dueDate" date NOT NULL, "paymentDate" TIMESTAMP, "branchId" uuid NOT NULL, "studentId" uuid NOT NULL, "enrollmentId" uuid NOT NULL, CONSTRAINT "PK_4bd9f54aab9e59628a3a2657fa1" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "school"."debts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "description" character varying NOT NULL, "unitPrice" numeric(14,6) NOT NULL, "quantity" numeric(14,6) NOT NULL, "amount" numeric(14,6) NOT NULL, "discount" numeric(14,6) NOT NULL, "subtotal" numeric(14,6) NOT NULL, "taxes" numeric(14,6) NOT NULL, "total" numeric(14,6) NOT NULL, "delinquency" numeric(14,6) NOT NULL DEFAULT '0', "withTax" boolean NOT NULL DEFAULT true, "state" "school"."debts_state_enum" NOT NULL, "frequency" "school"."debts_frequency_enum" NOT NULL, "dueDate" date NOT NULL, "paymentDate" TIMESTAMP, "branchId" uuid NOT NULL, "studentId" uuid NOT NULL, "enrollmentId" uuid NOT NULL, CONSTRAINT "PK_4bd9f54aab9e59628a3a2657fa1" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_84129d6d0ad1153485411ed657" ON "school"."debts" ("branchId") `,
@@ -95,7 +95,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TYPE "school"."fees_frequency_enum" AS ENUM('single', 'monthly', 'weekly', 'daily', 'hourly')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "school"."fees" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "amount" numeric(10,2) NOT NULL, "taxes" numeric(10,2) NOT NULL, "price" numeric(10,2) NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "autoLoad" boolean NOT NULL DEFAULT true, "frequency" "school"."fees_frequency_enum" NOT NULL, "packageId" uuid NOT NULL, CONSTRAINT "PK_97f3a1b1b8ee5674fd4da93f461" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "school"."fees" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(64) NOT NULL, "amount" numeric(14,6) NOT NULL, "taxes" numeric(14,6) NOT NULL, "price" numeric(14,6) NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "autoLoad" boolean NOT NULL DEFAULT true, "frequency" "school"."fees_frequency_enum" NOT NULL, "packageId" uuid NOT NULL, CONSTRAINT "PK_97f3a1b1b8ee5674fd4da93f461" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_8a17ba014eb5d602dda94985b4" ON "school"."fees" ("packageId") `,
@@ -122,7 +122,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE INDEX "IDX_75a3901d1518a40cff1ce772bc" ON "school"."periods" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "school"."schedules" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "day" smallint NOT NULL, "start" TIME NOT NULL, "end" TIME NOT NULL, "branchId" uuid NOT NULL, "periodId" uuid NOT NULL, "disciplineId" uuid NOT NULL, CONSTRAINT "PK_7e33fc2ea755a5765e3564e66dd" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "school"."schedules" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "day" smallint NOT NULL, "start" TIME NOT NULL, "end" TIME NOT NULL, "branchId" uuid NOT NULL, "periodId" uuid NOT NULL, "disciplineId" uuid NOT NULL, "teacherId" uuid, CONSTRAINT "PK_7e33fc2ea755a5765e3564e66dd" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_92233c841da29d74c4ed39e1d9" ON "school"."schedules" ("branchId") `,
@@ -134,6 +134,9 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE INDEX "IDX_eebb78c6429057c4fb46c9921e" ON "school"."schedules" ("disciplineId") `,
     );
     await queryRunner.query(
+      `CREATE INDEX "IDX_d53e9c0b8f2c83ecaf15c9c4e6" ON "school"."schedules" ("teacherId") `,
+    );
+    await queryRunner.query(
       `CREATE TABLE "school"."teachers" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "picture" character varying(128) NOT NULL, "firstname" character varying(32) NOT NULL, "lastname" character varying(32) NOT NULL, "fullname" character varying(64) NOT NULL, "userId" uuid, CONSTRAINT "PK_a8d4f83be3abe4c687b0a0093c8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
@@ -143,13 +146,16 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TYPE "finance"."incomes_state_enum" AS ENUM('paid', 'pending', 'cancelled')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "finance"."incomes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "folio" smallint NOT NULL, "date" TIMESTAMP NOT NULL, "state" "finance"."incomes_state_enum" NOT NULL, "amount" numeric(10,2) NOT NULL, "discount" numeric(10,2) NOT NULL, "subtotal" numeric(10,2) NOT NULL, "taxes" numeric(10,2) NOT NULL, "total" numeric(10,2) NOT NULL, "pendingPayment" numeric(10,2) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_d737b3d0314c1f0da5461a55e5e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "finance"."incomes" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "folio" smallint NOT NULL, "date" TIMESTAMP NOT NULL, "state" "finance"."incomes_state_enum" NOT NULL, "amount" numeric(14,6) NOT NULL, "discount" numeric(14,6) NOT NULL, "subtotal" numeric(14,6) NOT NULL, "taxes" numeric(14,6) NOT NULL, "total" numeric(14,6) NOT NULL, "pendingPayment" numeric(14,6) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_d737b3d0314c1f0da5461a55e5e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_140037077096ef87d161e902c3" ON "finance"."incomes" ("branchId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "finance"."concepts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "description" character varying NOT NULL, "unitPrice" numeric(10,2) NOT NULL, "quantity" numeric(10,2) NOT NULL, "amount" numeric(10,2) NOT NULL, "discount" numeric(10,2) NOT NULL, "subtotal" numeric(10,2) NOT NULL, "taxes" numeric(10,2) NOT NULL, "total" numeric(10,2) NOT NULL, "pendingPayment" numeric(10,2) NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "incomeId" uuid NOT NULL, CONSTRAINT "PK_0026cb8bc253eab30b171606891" PRIMARY KEY ("id"))`,
+      `CREATE TYPE "finance"."concepts_application_enum" AS ENUM('debt_payment', 'additional_charge', 'delinquency_charge')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "finance"."concepts" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "description" character varying NOT NULL, "unitPrice" numeric(14,6) NOT NULL, "quantity" numeric(14,6) NOT NULL, "amount" numeric(14,6) NOT NULL, "discount" numeric(14,6) NOT NULL, "subtotal" numeric(14,6) NOT NULL, "taxes" numeric(14,6) NOT NULL, "total" numeric(14,6) NOT NULL, "pendingPayment" numeric(14,6) NOT NULL, "withTax" boolean NOT NULL DEFAULT true, "incomeId" uuid NOT NULL, "application" "finance"."concepts_application_enum" NOT NULL DEFAULT 'debt_payment', CONSTRAINT "PK_0026cb8bc253eab30b171606891" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_8e7761d502cf207918f11aecad" ON "finance"."concepts" ("incomeId") `,
@@ -161,7 +167,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TYPE "finance"."payments_method_enum" AS ENUM('card', 'transfer', 'cash', 'clip')`,
     );
     await queryRunner.query(
-      `CREATE TABLE "finance"."payments" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "folio" smallint NOT NULL, "state" "finance"."payments_state_enum" NOT NULL, "method" "finance"."payments_method_enum" NOT NULL, "date" TIMESTAMP NOT NULL, "amount" numeric(10,2) NOT NULL, "transaction" character varying NOT NULL, "bank" character varying NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_197ab7af18c93fbb0c9b28b4a59" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "finance"."payments" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "folio" smallint NOT NULL, "state" "finance"."payments_state_enum" NOT NULL, "method" "finance"."payments_method_enum" NOT NULL, "date" TIMESTAMP NOT NULL, "amount" numeric(14,6) NOT NULL, "transaction" character varying NOT NULL, "bank" character varying NOT NULL, "incomeId" uuid NOT NULL, CONSTRAINT "PK_197ab7af18c93fbb0c9b28b4a59" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_f99d0b492f45102cfe795d5b99" ON "finance"."payments" ("incomeId") `,
@@ -170,10 +176,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `CREATE TABLE "auth"."branchs" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "picture" character varying(128) NOT NULL, "name" character varying(16) NOT NULL, CONSTRAINT "PK_c2a14f542feef68e3968ce1766c" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "auth"."policies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, "branchId" uuid NOT NULL, CONSTRAINT "PK_603e09f183df0108d8695c57e28" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_5e234b497d27d66e987c2ee0b9" ON "auth"."policies" ("branchId") `,
+      `CREATE TABLE "auth"."policies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "name" character varying(32) NOT NULL, CONSTRAINT "PK_603e09f183df0108d8695c57e28" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "auth"."users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "version" integer NOT NULL DEFAULT '0', "username" character varying(16) NOT NULL, "password" character varying(96) NOT NULL, "email" character varying(64) NOT NULL, "branchId" uuid, "cycleId" uuid, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
@@ -323,6 +326,9 @@ export class Migration1753111024025 implements MigrationInterface {
       `ALTER TABLE "miscellaneous"."discounts" ADD CONSTRAINT "FK_4f9ff564fe6488a270521d8af81" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "miscellaneous"."clip-links" ADD CONSTRAINT "FK_43497e2e0be185bab11f526f10b" FOREIGN KEY ("accountId") REFERENCES "miscellaneous"."clip-accounts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "miscellaneous"."clip-links" ADD CONSTRAINT "FK_fa11a314f929e8647ec4ef74a93" FOREIGN KEY ("incomeId") REFERENCES "finance"."incomes"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -380,6 +386,9 @@ export class Migration1753111024025 implements MigrationInterface {
       `ALTER TABLE "school"."schedules" ADD CONSTRAINT "FK_eebb78c6429057c4fb46c9921e5" FOREIGN KEY ("disciplineId") REFERENCES "school"."disciplines"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "school"."schedules" ADD CONSTRAINT "FK_d53e9c0b8f2c83ecaf15c9c4e60" FOREIGN KEY ("teacherId") REFERENCES "school"."teachers"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "school"."teachers" ADD CONSTRAINT "FK_4d8041cbc103a5142fa2f2afad4" FOREIGN KEY ("userId") REFERENCES "auth"."users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -390,9 +399,6 @@ export class Migration1753111024025 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "finance"."payments" ADD CONSTRAINT "FK_f99d0b492f45102cfe795d5b990" FOREIGN KEY ("incomeId") REFERENCES "finance"."incomes"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "auth"."policies" ADD CONSTRAINT "FK_5e234b497d27d66e987c2ee0b98" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "auth"."users" ADD CONSTRAINT "FK_246426dfd001466a1d5e47322f4" FOREIGN KEY ("branchId") REFERENCES "auth"."branchs"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -584,9 +590,6 @@ export class Migration1753111024025 implements MigrationInterface {
       `ALTER TABLE "auth"."users" DROP CONSTRAINT "FK_246426dfd001466a1d5e47322f4"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "auth"."policies" DROP CONSTRAINT "FK_5e234b497d27d66e987c2ee0b98"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "finance"."payments" DROP CONSTRAINT "FK_f99d0b492f45102cfe795d5b990"`,
     );
     await queryRunner.query(
@@ -597,6 +600,9 @@ export class Migration1753111024025 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "school"."teachers" DROP CONSTRAINT "FK_4d8041cbc103a5142fa2f2afad4"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "school"."schedules" DROP CONSTRAINT "FK_d53e9c0b8f2c83ecaf15c9c4e60"`,
     );
     await queryRunner.query(
       `ALTER TABLE "school"."schedules" DROP CONSTRAINT "FK_eebb78c6429057c4fb46c9921e5"`,
@@ -654,6 +660,9 @@ export class Migration1753111024025 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "miscellaneous"."clip-links" DROP CONSTRAINT "FK_fa11a314f929e8647ec4ef74a93"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "miscellaneous"."clip-links" DROP CONSTRAINT "FK_43497e2e0be185bab11f526f10b"`,
     );
     await queryRunner.query(
       `ALTER TABLE "miscellaneous"."discounts" DROP CONSTRAINT "FK_4f9ff564fe6488a270521d8af81"`,
@@ -772,9 +781,6 @@ export class Migration1753111024025 implements MigrationInterface {
       `DROP INDEX "auth"."IDX_246426dfd001466a1d5e47322f"`,
     );
     await queryRunner.query(`DROP TABLE "auth"."users"`);
-    await queryRunner.query(
-      `DROP INDEX "auth"."IDX_5e234b497d27d66e987c2ee0b9"`,
-    );
     await queryRunner.query(`DROP TABLE "auth"."policies"`);
     await queryRunner.query(`DROP TABLE "auth"."branchs"`);
     await queryRunner.query(
@@ -787,6 +793,7 @@ export class Migration1753111024025 implements MigrationInterface {
       `DROP INDEX "finance"."IDX_8e7761d502cf207918f11aecad"`,
     );
     await queryRunner.query(`DROP TABLE "finance"."concepts"`);
+    await queryRunner.query(`DROP TYPE "finance"."concepts_application_enum"`);
     await queryRunner.query(
       `DROP INDEX "finance"."IDX_140037077096ef87d161e902c3"`,
     );
@@ -796,6 +803,9 @@ export class Migration1753111024025 implements MigrationInterface {
       `DROP INDEX "school"."IDX_4d8041cbc103a5142fa2f2afad"`,
     );
     await queryRunner.query(`DROP TABLE "school"."teachers"`);
+    await queryRunner.query(
+      `DROP INDEX "school"."IDX_d53e9c0b8f2c83ecaf15c9c4e6"`,
+    );
     await queryRunner.query(
       `DROP INDEX "school"."IDX_eebb78c6429057c4fb46c9921e"`,
     );
@@ -865,11 +875,14 @@ export class Migration1753111024025 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "school"."debts"`);
     await queryRunner.query(`DROP TYPE "school"."debts_frequency_enum"`);
     await queryRunner.query(`DROP TYPE "school"."debts_state_enum"`);
-    await queryRunner.query(`DROP TABLE "miscellaneous"."clip-accounts"`);
     await queryRunner.query(
       `DROP INDEX "miscellaneous"."IDX_fa11a314f929e8647ec4ef74a9"`,
     );
+    await queryRunner.query(
+      `DROP INDEX "miscellaneous"."IDX_43497e2e0be185bab11f526f10"`,
+    );
     await queryRunner.query(`DROP TABLE "miscellaneous"."clip-links"`);
+    await queryRunner.query(`DROP TABLE "miscellaneous"."clip-accounts"`);
     await queryRunner.query(
       `DROP INDEX "miscellaneous"."IDX_4f9ff564fe6488a270521d8af8"`,
     );
@@ -880,6 +893,5 @@ export class Migration1753111024025 implements MigrationInterface {
       `DROP INDEX "auth"."IDX_fd0976f6bbaaf7876f52f04b84"`,
     );
     await queryRunner.query(`DROP TABLE "auth"."actions"`);
-    await queryRunner.query(`DROP TYPE "auth"."actions_effect_enum"`);
   }
 }
