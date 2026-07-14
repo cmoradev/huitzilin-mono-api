@@ -48,7 +48,7 @@ export class CreateEnrollmentInput {
   levelId: string;
 
   @IsUUID()
-  @Field(() => String, { nullable: false })
+  @Field(() => String, { nullable: true })
   periodId: string;
 
   @Field(() => [NestedIdInput], { nullable: true })

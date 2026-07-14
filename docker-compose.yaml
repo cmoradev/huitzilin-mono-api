@@ -32,7 +32,7 @@ services:
       DB_NAME: ${DB_NAME}
   # Storage Server
   storage-server:
-    image: registry.digitalocean.com/softmora/utils/storage-ms:26cddb8
+    image: registry.digitalocean.com/softmora/utils/storage-ms:50b6edb
     ports:
       - '4100:3000'
     environment:

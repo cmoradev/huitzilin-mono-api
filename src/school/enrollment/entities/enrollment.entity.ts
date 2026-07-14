@@ -84,7 +84,7 @@ export class Enrollment extends Base {
   @JoinColumn({ name: 'levelId' })
   level: Level;
 
-  @Column({ type: 'uuid', nullable: false })
+  @Column({ type: 'uuid', nullable: true })
   @Index()
   periodId: string;
 
